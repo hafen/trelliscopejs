@@ -1,4 +1,4 @@
-Package: trelliscope2
+Package: trelliscopecore
 Title: Create TrelliscopeJS Specifications
 Version: 0.0.0.9000
 Authors@R: person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre"))
