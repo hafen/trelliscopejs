@@ -12,7 +12,7 @@ The general steps of creating a display ready for TrelliscopeJS are the followin
   - `write_config()`: writes a basic app config file neccessary for the viewer to run
   - `copy_viewer_files()`: grabs the latest TrelliscopeJS dependencies from the web (only needs to be called each time a new viewer is available)
 
-All of the "write" functions have an option "jsonp", which if "TRUE", would
+All of the "write" functions have an option `jsonp`, which if `TRUE` (default) will use jsonp instead of json so that the display can be viewed without a web server.
 
 ### Install
 
