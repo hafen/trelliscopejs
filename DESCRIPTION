@@ -1,0 +1,28 @@
+Package: trelliscope2
+Title: Create TrelliscopeJS Specifications
+Version: 0.0.0.9000
+Authors@R: person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre"))
+Description: This package contains methods that make it easy to create a
+    Trelliscope display specification for TrelliscopeJS, Currently it provides
+    mostly low-level methods.
+Depends:
+    R (>= 3.3.1)
+License: BSD_3_clause + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    curl,
+    htmltools,
+    DistributionUtils,
+    grDevices,
+    digest,
+    jsonlite,
+    lattice,
+    ggplot2,
+    base64enc,
+    htmlwidgets,
+    graphics,
+    utils
+Suggests:
+    Cairo
+RoxygenNote: 5.0.1
