@@ -1,4 +1,4 @@
-## trelliscope2
+## trelliscopecore
 
 This is an experimental R package that provides lower-level functions that generate a Trelliscope spec that can be read by the [TrelliscopeJS](https://github.com/hafen/trelliscopejs) viewer.  The idea is that these lower-level constructs can be used in more flexible ways (such as creating a `facet_trelliscope()` for ggplot2), opening up more possibilities for creating Trelliscope displays.
 
