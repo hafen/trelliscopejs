@@ -17,7 +17,7 @@ All of the "write" functions have an option `jsonp`, which if `TRUE` (default) w
 ### Install
 
 ```r
-devtools::install_github("hafen/trelliscope2")
+devtools::install_github("hafen/trelliscopecore")
 ```
 
 ### Example
