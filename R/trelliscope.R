@@ -331,16 +331,24 @@ copy_viewer_files <- function(
     "bundle.js.map",
     "index.html",
     "favicon.ico",
-    "static/fonts/IcoMoon/style.css",
-    "static/fonts/IcoMoon/fonts/icomoon.eot",
-    "static/fonts/IcoMoon/fonts/icomoon.svg",
-    "static/fonts/IcoMoon/fonts/icomoon.ttf",
-    "static/fonts/IcoMoon/fonts/icomoon.woff",
-    "static/fonts/OpenSans/opensans-light-webfont.woff",
-    "static/fonts/OpenSans/opensans-light-webfont.woff2",
-    "static/fonts/OpenSans/opensans-regular-webfont.woff",
-    "static/fonts/OpenSans/opensans-regular-webfont.woff2",
-    "static/fonts/OpenSans/stylesheet.css"
+    paste("static", "fonts", c(
+      paste("IcoMoon", c(
+        "style.css",
+        paste("fonts", c(
+          "icomoon.eot",
+          "icomoon.svg",
+          "icomoon.ttf",
+          "icomoon.woff"
+        ), sep = "/")
+      ), sep = "/"),
+      paste("OpenSans", c(
+        "opensans-light-webfont.woff",
+        "opensans-light-webfont.woff2",
+        "opensans-regular-webfont.woff",
+        "opensans-regular-webfont.woff2",
+        "stylesheet.css"
+      ), sep = "/")
+    ), sep = "/")
   )
 
   for (ff in to_copy) {
