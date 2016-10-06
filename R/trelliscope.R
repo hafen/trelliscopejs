@@ -7,16 +7,24 @@
 #' @param width width in pixels of each panel
 #' @param height height in pixels of each panel
 #' @param jsonp should json for panels be jsonp (TRUE) or json (FALSE)?
+#' @param progress = TRUE
+#' @import progress
 #' @export
 write_panels <- function(plot_list, base_path, name, group = "common",
-  width = 500, height = 500, jsonp = TRUE) {
+  width = 500, height = 500, jsonp = TRUE, progress = TRUE) {
 
   nms <- names(plot_list)
   if (length(nms) == 0) {
     stop("panels must be a named list, with the names being used as the panel key")
   }
 
+  message("writing panels...")
+  pb <- progress::progress_bar$new(
+    total = length(nms),
+    format = "[:bar] :percent :current/:total eta::eta"
+  )
   lapply(nms, function(nm) {
+    pb$tick()
     write_panel(plot_list[[nm]], key = nm, base_path = base_path,
       name = name, group = group,
       width = width, height = height, jsonp = jsonp)
