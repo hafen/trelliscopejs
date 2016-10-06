@@ -1,7 +1,10 @@
 Package: trelliscopecore
 Title: Create TrelliscopeJS Specifications
 Version: 0.0.0.9000
-Authors@R: person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre"))
+Authors@R: c(
+      person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre")),
+      person("Barret", "Schloerke", email = "schloerke@gmail.com", role = "aut")
+    )
 Description: This package contains methods that make it easy to create a
     Trelliscope display specification for TrelliscopeJS, Currently it provides
     mostly low-level methods.
