@@ -323,8 +323,8 @@ copy_viewer_files <- function(
   base_path,
   src = "https://raw.githubusercontent.com/hafen/trelliscopejs-demo/gh-pages/") {
 
-  dir.create(file.path(base_path, "static/fonts/IcoMoon/fonts"), recursive = TRUE)
-  dir.create(file.path(base_path, "static/fonts/OpenSans"), recursive = TRUE)
+  dir.create(file.path(base_path, "static", "fonts", "IcoMoon", "fonts"), recursive = TRUE, showWarnings = FALSE)
+  dir.create(file.path(base_path, "static/fonts/OpenSans"), recursive = TRUE, showWarnings = FALSE)
 
   to_copy <- c(
     "bundle.js",
