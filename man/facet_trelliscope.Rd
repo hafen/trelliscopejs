@@ -13,6 +13,7 @@ facet_trelliscope(..., dir = tempdir())
 Facet Trelliscope
 }
 \examples{
+library(ggplot2)
 p <- qplot(cty, hwy, data = mpg) +
   facet_trelliscope(
     ~ class + manufacturer,

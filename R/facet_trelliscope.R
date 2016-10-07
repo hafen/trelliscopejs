@@ -4,6 +4,7 @@
 #' @param ... all parameters passed onto \code{ggplot2::\link[ggplot]{facet_wrap}}
 #' @export
 #' @examples
+#' library(ggplot2)
 #' p <- qplot(cty, hwy, data = mpg) +
 #'   facet_trelliscope(
 #'     ~ class + manufacturer,
