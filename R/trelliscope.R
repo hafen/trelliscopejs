@@ -15,16 +15,19 @@
 #' \dontrun{
 #' library(dplyr)
 #' library(rbokeh)
-#'
-#' dd <- iris %>%
-#'   group_by(Species) %>%
+#' p <- mpg %>%
+#'   group_by(class, manufacturer) %>%
 #'   summarise(
-#'     msl = cog(mean(Sepal.Length), desc = "mean sepal length"),
-#'     panel = panel(figure() %>%
-#'       ly_points(Sepal.Length, Sepal.Width))) %>%
-#'   trelliscope(name = "test", cond_cols = "Species")
-#'
-#' dd
+#'     panel = panel(
+#'       figure(xlab = "City mpg", ylab = "Highway mpg") %>%
+#'         ly_points(cty, hwy,
+#'           hover = data_frame(model = paste(year, trans, model),
+#'           cty = cty, hwy = hwy)) %>%
+#'         y_range(c(9, 47)) %>%
+#'         x_range(c(7, 37)))) %>%
+#'   trelliscope(name = "city_vs_highway_mpg", path = "_test",
+#'     cond_cols = c("class", "manufacturer"))
+#' p
 #' }
 #' @export
 trelliscope <- function(x, name, group = "common", desc = "",
@@ -40,6 +43,8 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
   if (is.null(path))
     path <- tempfile("trelliscope")
 
+  path <- normalizePath(path)
+
   classes <- unlist(lapply(x, function(a) class(a)[1]))
 
   # nn <- nrow(x)
@@ -49,10 +54,14 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
   # if (length(cond_vars) == 0)
   #   stop("Could not find any unique conditioning variables.", call. = FALSE)
 
-  if (length(cond_cols) == 0)
-    stop("Could not find any unique conditioning variables.", call. = FALSE)
+  name <- sanitize(name)
+  group <- sanitize(group)
 
-  keys <- apply(x[cond_cols], 1, function(a) paste(a, collapse = "_"))
+  if (length(cond_cols) == 0)
+    stop("Must specify conditioning variables.", call. = FALSE)
+
+  keys <- apply(x[cond_cols], 1, function(a) paste(a, collapse = "_")) %>%
+    sanitize()
   x$panelKey <- keys
 
   panel_col <- which(classes == "trelliscope_panels")

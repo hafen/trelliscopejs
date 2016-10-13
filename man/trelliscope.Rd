@@ -38,16 +38,19 @@ Create a Trelliscope Display
 \dontrun{
 library(dplyr)
 library(rbokeh)
-
-dd <- iris \%>\%
-  group_by(Species) \%>\%
+p <- mpg \%>\%
+  group_by(class, manufacturer) \%>\%
   summarise(
-    msl = cog(mean(Sepal.Length), desc = "mean sepal length"),
-    panel = panel(figure() \%>\%
-      ly_points(Sepal.Length, Sepal.Width))) \%>\%
-  trelliscope(name = "test", cond_cols = "Species")
-
-dd
+    panel = panel(
+      figure(xlab = "City mpg", ylab = "Highway mpg") \%>\%
+        ly_points(cty, hwy,
+          hover = data_frame(model = paste(year, trans, model),
+          cty = cty, hwy = hwy)) \%>\%
+        y_range(c(9, 47)) \%>\%
+        x_range(c(7, 37)))) \%>\%
+  trelliscope(name = "city_vs_highway_mpg", path = "_test",
+    cond_cols = c("class", "manufacturer"))
+p
 }
 }
 
