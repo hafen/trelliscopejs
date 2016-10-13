@@ -4,21 +4,25 @@
 \alias{facet_trelliscope}
 \title{Facet Trelliscope}
 \usage{
-facet_trelliscope(..., dir = tempdir())
+facet_trelliscope(..., path = tempdir())
 }
 \arguments{
-\item{...}{all parameters passed onto \code{ggplot2::\link[ggplot]{facet_wrap}}}
+\item{...}{all parameters passed onto \code{ggplot2::\link[ggplot2]{facet_wrap}}}
+
+\item{path}{the base directory of the trelliscope application}
 }
 \description{
 Facet Trelliscope
 }
 \examples{
+\dontrun{
 library(ggplot2)
 p <- qplot(cty, hwy, data = mpg) +
   facet_trelliscope(
     ~ class + manufacturer,
-    dir = "_test"
+    path = "_test"
   )
 p
+}
 }
 

@@ -1,20 +1,24 @@
 
 #' Facet Trelliscope
 #'
-#' @param ... all parameters passed onto \code{ggplot2::\link[ggplot]{facet_wrap}}
+#' @param ... all parameters passed onto \code{ggplot2::\link[ggplot2]{facet_wrap}}
+#' @param path the base directory of the trelliscope application
 #' @export
 #' @examples
+#' \dontrun{
 #' library(ggplot2)
 #' p <- qplot(cty, hwy, data = mpg) +
 #'   facet_trelliscope(
 #'     ~ class + manufacturer,
-#'     dir = "_test"
+#'     path = "_test"
 #'   )
 #' p
-facet_trelliscope <- function(..., dir = tempdir()) {
+#' }
+#' @importFrom ggplot2 facet_wrap
+facet_trelliscope <- function(..., path = tempdir()) {
   ret <- list(
-    dir = dir,
-    facet_wrap = facet_wrap(...)
+    path = path,
+    facet_wrap = ggplot2::facet_wrap(...)
   )
 
   class(ret) <- "facet_trelliscope"
@@ -29,7 +33,7 @@ facet_trelliscope <- function(..., dir = tempdir()) {
   if (inherits(e2, "facet_trelliscope")) {
 
     e1 <- e1 %+% (e2$facet_wrap)
-    attr(e1, "trelliscope_dir") <- e2$dir
+    attr(e1, "trelliscope_dir") <- e2$path
     class(e1) <- c("facet_trelliscope", class(e1))
     return(e1)
   }
@@ -43,6 +47,7 @@ facet_trelliscope <- function(..., dir = tempdir()) {
 #' @param x plot object
 #' @param ... ignored
 #' @import dplyr
+#' @importFrom stats as.formula
 #' @export
 print.facet_trelliscope <- function(x, ...) {
 
@@ -74,7 +79,7 @@ print.facet_trelliscope <- function(x, ...) {
     if (is.numeric(data[[col]])) {
       functions_to_run[[
         paste(col, "_mean", sep = "")
-      ]] <- as.formula(paste(
+      ]] <- stats::as.formula(paste(
         "~ cog(",
           "mean(", col, "),",
           "desc = \"mean ", col, "\"",
@@ -114,7 +119,6 @@ print.facet_trelliscope <- function(x, ...) {
   if (is.null(base_path)) {
     base_path <- tempdir()
   }
-
 
   # try to make a plot name
   plot_name <- paste(

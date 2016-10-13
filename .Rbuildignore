@@ -16,3 +16,4 @@ rhipe-java*.log
 tools/
 cran-comments.md
 ^tools
+_test/
