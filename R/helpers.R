@@ -1,3 +1,13 @@
+
+
+
+sanitize <- function(x) {
+  gsub("[^a-zA-Z0-9_/\\.]", "_", x)
+}
+
+## low-level helpers
+##---------------------------------------------------------
+
 get_jsonp_text <- function(jsonp, fn_name) {
   if (jsonp) {
     list(
