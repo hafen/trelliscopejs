@@ -4,10 +4,28 @@
 \alias{facet_trelliscope}
 \title{Facet Trelliscope}
 \usage{
-facet_trelliscope(..., path = tempdir())
+facet_trelliscope(..., name = NULL, group = "common", desc = "",
+  md_desc = "", height = 500, width = 500, state = NULL, jsonp = TRUE,
+  path = tempdir())
 }
 \arguments{
 \item{...}{all parameters passed onto \code{ggplot2::\link[ggplot2]{facet_wrap}}}
+
+\item{name}{name of the display}
+
+\item{group}{group that the display belongs to}
+
+\item{desc}{description of the display}
+
+\item{md_desc}{optional string of markdown that will be shown in the viewer for additional context about the display}
+
+\item{height}{height in pixels of each panel}
+
+\item{width}{width in pixels of each panel}
+
+\item{state}{the initial state the display will open in}
+
+\item{jsonp}{should json for display object be jsonp (TRUE) or json (FALSE)?}
 
 \item{path}{the base directory of the trelliscope application}
 }
@@ -20,7 +38,9 @@ library(ggplot2)
 p <- qplot(cty, hwy, data = mpg) +
   facet_trelliscope(
     ~ class + manufacturer,
-    path = "_test"
+    path = "_test",
+    name = "testytest",
+    width = 800
   )
 p
 }
