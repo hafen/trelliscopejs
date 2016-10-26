@@ -19,7 +19,7 @@ p <- qplot(cty, hwy, data = mpg) +
   facet_trelliscope(
     ~ class + manufacturer,
     path = "_test",
-    name = "testytest",
+    name = "city_vs_highway_mpg_gg",
     width = 800
   )
 p
@@ -43,7 +43,7 @@ p <- ggplot2::mpg %>%
           cty = cty, hwy = hwy)) %>%
         y_range(c(9, 47)) %>%
         x_range(c(7, 37)))) %>%
-  trelliscope(name = "city_vs_highway_mpg", path = "_test",
+  trelliscope(name = "city_vs_highway_mpg_bk", path = "_test",
     cond_cols = c("class", "manufacturer"))
 p
 ```

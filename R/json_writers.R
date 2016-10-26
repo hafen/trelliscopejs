@@ -254,7 +254,6 @@ prepare_display <- function(base_path, jsonp = TRUE, copy_viewer_files = TRUE) {
 #' @export
 update_display_list <- function(base_path, jsonp = TRUE) {
   # read all displayObj files and write them into a display list
-
   groups <- list.files(file.path(base_path, "displays"), full.names = TRUE)
   names <- unlist(lapply(groups, function(gp) {
     list.files(gp, full.names = TRUE)
