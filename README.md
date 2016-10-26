@@ -10,7 +10,11 @@ devtools::install_github("hafen/trelliscopecore")
 
 ### Usage with ggplot
 
+Example:
+
 ```r
+library(ggplot2)
+
 p <- qplot(cty, hwy, data = mpg) +
   facet_trelliscope(
     ~ class + manufacturer,
@@ -21,12 +25,15 @@ p <- qplot(cty, hwy, data = mpg) +
 p
 ```
 
-### Usage with dplyr
+### Usage with dplyr (and rbokeh)
 
 Example:
 
 ```r
-p <- mpg %>%
+library(dplyr)
+library(rbokeh)
+
+p <- ggplot2::mpg %>%
   group_by(class, manufacturer) %>%
   summarise(
     panel = panel(
