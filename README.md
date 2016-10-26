@@ -1,6 +1,47 @@
 ## trelliscopecore
 
-This is an experimental R package that provides lower-level functions that generate a Trelliscope spec that can be read by the [TrelliscopeJS](https://github.com/hafen/trelliscopejs) viewer.  The idea is that these lower-level constructs can be used in more flexible ways (such as creating a `facet_trelliscope()` for ggplot2), opening up more possibilities for creating Trelliscope displays.
+This is an experimental R package that provides lower-level functions that generate a Trelliscope spec that can be read by the [TrelliscopeJS](https://github.com/hafen/trelliscopejs) viewer, as well as some high-level utility functions for plugging into popular visualization systems like ggplot2 with `facet_trelliscope()`.
+
+### Install
+
+```r
+devtools::install_github("hafen/trelliscopecore")
+```
+
+### Usage with ggplot
+
+```r
+p <- qplot(cty, hwy, data = mpg) +
+  facet_trelliscope(
+    ~ class + manufacturer,
+    path = "_test",
+    name = "testytest",
+    width = 800
+  )
+p
+```
+
+### Usage with dplyr
+
+Example:
+
+```r
+p <- mpg %>%
+  group_by(class, manufacturer) %>%
+  summarise(
+    panel = panel(
+      figure(xlab = "City mpg", ylab = "Highway mpg") %>%
+        ly_points(cty, hwy,
+          hover = data_frame(model = paste(year, trans, model),
+          cty = cty, hwy = hwy)) %>%
+        y_range(c(9, 47)) %>%
+        x_range(c(7, 37)))) %>%
+  trelliscope(name = "city_vs_highway_mpg", path = "_test",
+    cond_cols = c("class", "manufacturer"))
+p
+```
+
+### Low-level functions
 
 The general steps of creating a display ready for TrelliscopeJS are the following:
 
@@ -13,12 +54,6 @@ The general steps of creating a display ready for TrelliscopeJS are the followin
   - `copy_viewer_files()`: grabs the latest TrelliscopeJS dependencies from the web (only needs to be called each time a new viewer is available)
 
 All of the "write" functions have an option `jsonp`, which if `TRUE` (default) will use jsonp instead of json so that the display can be viewed without a web server.
-
-### Install
-
-```r
-devtools::install_github("hafen/trelliscopecore")
-```
 
 ### Example
 
