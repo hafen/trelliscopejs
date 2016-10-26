@@ -2,6 +2,7 @@
 
 S3method("+",gg)
 S3method(print,facet_trelliscope)
+S3method(print,trelliscope_display)
 S3method(trelliscope,data.frame)
 export(as_cognostics)
 export(cog)

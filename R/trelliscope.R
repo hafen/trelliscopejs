@@ -95,6 +95,7 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
     class = "trelliscope_display")
 }
 
+#' @export
 print.trelliscope_display <- function(x) {
   view_display(x$path)
 }
