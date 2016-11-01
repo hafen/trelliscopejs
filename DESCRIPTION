@@ -9,7 +9,7 @@ Description: This package contains methods that make it easy to create a
     Trelliscope display specification for TrelliscopeJS, Currently it provides
     mostly low-level methods.
 Depends:
-    R (>= 3.3.1)
+    R (>= 3.2.3)
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 LazyData: true
