@@ -30,12 +30,16 @@ p
 Example:
 
 ```r
+library(trelliscopecore)
 library(dplyr)
 library(rbokeh)
 
 p <- ggplot2::mpg %>%
   group_by(class, manufacturer) %>%
   summarise(
+    mean_city_mpg = cog(mean(cty), desc = "Mean city mpg"),
+    mean_hwy_mpg = cog(mean(hwy), desc = "Mean highway mpg"),
+    most_common_drv = cog(tail(names(table(drv)), 1), desc = "Most common drive type"),
     panel = panel(
       figure(xlab = "City mpg", ylab = "Highway mpg") %>%
         ly_points(cty, hwy,
