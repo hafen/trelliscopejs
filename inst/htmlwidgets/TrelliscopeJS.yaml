@@ -1,0 +1,6 @@
+dependencies:
+- name: TrelliscopeJS
+  version: 0.1.0
+  src: htmlwidgets/lib/TrelliscopeJS
+  script:
+    - trelliscope.min.js
