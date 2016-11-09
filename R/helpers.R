@@ -1,5 +1,11 @@
 
-
+#' @importFrom digest digest
+get_id <- function(path) {
+  ff <- file.path(path, "id")
+  if (!file.exists(ff))
+    return(digest::digest(Sys.time(), algo = "crc32"))
+  readLines(ff, warn = FALSE)
+}
 
 sanitize <- function(x) {
   gsub("[^a-zA-Z0-9_/\\.]", "_", x)

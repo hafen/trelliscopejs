@@ -62,7 +62,6 @@ The general steps of creating a display ready for TrelliscopeJS are the followin
 4. Call `prepare_display()` which calls the following functions (which can also be called independently)
   - `update_display_list()`: loops over all display object files and builds a master display list (must be called each time a new display has been added or an existing display has been updated)
   - `write_config()`: writes a basic app config file neccessary for the viewer to run
-  - `copy_viewer_files()`: grabs the latest TrelliscopeJS dependencies from the web (only needs to be called each time a new viewer is available)
 
 All of the "write" functions have an option `jsonp`, which if `TRUE` (default) will use jsonp instead of json so that the display can be viewed without a web server.
 
@@ -104,7 +103,7 @@ write_display_obj(
   name = "iris"
 )
 
-prepare_display(base_path)
+prepare_display(base_path, id = "bk_app")
 
 view_display(base_path)
 
@@ -129,7 +128,7 @@ write_display_obj(
 )
 
 # still need to update the display list so both displays are registered
-prepare_display(base_path, copy_viewer_files = FALSE)
+prepare_display(base_path, id = "gg_app")
 
 view_display(base_path)
 ```

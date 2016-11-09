@@ -15,7 +15,7 @@
 #' \dontrun{
 #' library(dplyr)
 #' library(rbokeh)
-#' p <- mpg %>%
+#' p <- ggplot2::mpg %>%
 #'   group_by(class, manufacturer) %>%
 #'   summarise(
 #'     panel = panel(
@@ -40,10 +40,12 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
   cond_cols = NULL, md_desc = "", path = NULL, height = 500, width = 500,
   state = NULL, jsonp = TRUE) {
 
-  if (is.null(path))
-    path <- tempfile("trelliscope")
-
-  path <- normalizePath(path)
+  if (is.null(path)) {
+    www_dir <- tempfile("trelliscope")
+  } else {
+    www_dir <- normalizePath(path, mustWork = FALSE)
+  }
+  path <- file.path(www_dir, "appfiles")
 
   classes <- unlist(lapply(x, function(a) class(a)[1]))
 
@@ -56,6 +58,8 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
 
   name <- sanitize(name)
   group <- sanitize(group)
+
+  id <- get_id(path)
 
   if (length(cond_cols) == 0)
     stop("Must specify conditioning variables.", call. = FALSE)
@@ -82,17 +86,16 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
     as_cognostics(x[, -panel_col], cond_cols = cond_cols, key_col = "panelKey"),
     panel_example = panels[[1]],
     base_path = path,
+    id = id,
     name = name
   )
 
-  prepare_display(
-    path,
-    # only copy if there is no bundle.js file
-    copy_viewer_files = ! file.exists(file.path(path, "bundle.js"))
-  )
+  prepare_display(path, id)
 
-  structure(list(path = path, name = name, group = group),
-    class = "trelliscope_display")
+  trelliscope_widget(id = id, url = "appfiles/config.jsonp", www_dir = www_dir)
+
+  # structure(list(path = path, name = name, group = group),
+  #   class = "trelliscope_display")
 }
 
 #' @export

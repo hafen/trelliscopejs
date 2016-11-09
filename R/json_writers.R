@@ -128,14 +128,15 @@ as_cognostics <- function(x, cond_cols, key_col = NULL) {
 #'
 #' @param cogdf a data frame of cognostics, prepared with \code{\link{as_cognostics}}
 #' @param base_path the base directory of the trelliscope application
+#' @param id a unique id for the application
 #' @param name name of the display
 #' @param group group that the display belongs to
 #' @param jsonp should json for cognostics be jsonp (TRUE) or json (FALSE)?
 #' @importFrom jsonlite toJSON
 #' @export
-write_cognostics <- function(cogdf, base_path, name, group = "common", jsonp = TRUE) {
+write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp = TRUE) {
   display_path <- file.path(base_path, "displays", group, name)
-  txt <- get_jsonp_text(jsonp, "__loadCogData__")
+  txt <- get_jsonp_text(jsonp, paste0("__loadCogData__", id, "_", group, "_", name))
   cat(paste0(txt$st, jsonlite::toJSON(cogdf), txt$nd),
     file = file.path(display_path,
       paste0("cogData.", ifelse(jsonp, "jsonp", "json"))))
@@ -146,6 +147,7 @@ write_cognostics <- function(cogdf, base_path, name, group = "common", jsonp = T
 #' @param cogdf a data frame of cognostics, prepared with \code{\link{as_cognostics}}
 #' @param panel_example an example object of one panel of a display (can be trellis, ggplot2, or htmlwidget object)
 #' @param base_path the base directory of the trelliscope application
+#' @param id a unique id for the application
 #' @param name name of the display
 #' @param group group that the display belongs to
 #' @param desc description of the display
@@ -156,7 +158,7 @@ write_cognostics <- function(cogdf, base_path, name, group = "common", jsonp = T
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
 #' @importFrom digest digest
 #' @export
-write_display_obj <- function(cogdf, panel_example, base_path, name, group = "common",
+write_display_obj <- function(cogdf, panel_example, base_path, id, name, group = "common",
   desc = "", height = 500, width = 500, md_desc = "", state = NULL, jsonp = TRUE) {
 
   display_path <- file.path(base_path, "displays", group, name)
@@ -214,36 +216,33 @@ write_display_obj <- function(cogdf, panel_example, base_path, name, group = "co
   }
   dispobj$state <- state
 
-  txt <- get_jsonp_text(jsonp, "__loadDisplayObj__")
+  txt <- get_jsonp_text(jsonp, paste0("__loadDisplayObj__", id, "_", group, "_", name))
   cat(paste0(txt$st,
     jsonlite::toJSON(dispobj, auto_unbox = TRUE), txt$nd),
     file = file.path(display_path,
       paste0("displayObj.", ifelse(jsonp, "jsonp", "json"))))
 
   message("writing cognostics...")
-  write_cognostics(cogdf, base_path, name = name, group = group, jsonp = jsonp)
+  write_cognostics(cogdf, base_path, id = id, name = name, group = group, jsonp = jsonp)
 
   message("writing thumbnail...")
   write_thumb(panel_example,
     file.path(display_path, "thumb.png"), width = width, height = height)
-
 }
 
 #' Set up all auxilliary files needed for a Trelliscope app
 #'
 #' @param base_path the base directory of the trelliscope application
+#' @param id a unique id for the application
 #' @param jsonp should json for display list and app config be jsonp (TRUE) or json (FALSE)?
-#' @param copy_viewer_files should the viewer files be copied (using \code{\link{copy_viewer_files}})
 #' @export
-prepare_display <- function(base_path, jsonp = TRUE, copy_viewer_files = TRUE) {
-  message("writing display list")
+prepare_display <- function(base_path, id, jsonp = TRUE) {
+  # write the id to a plain text file
+  cat(id, file = file.path(base_path, "id"))
+  message("writing display list...")
   update_display_list(base_path, jsonp = jsonp)
   message("writing app config...")
-  write_config(base_path, jsonp = jsonp)
-  if (copy_viewer_files) {
-    message("copying viewer files...")
-    copy_viewer_files(base_path)
-  }
+  write_config(base_path, id = id, jsonp = jsonp)
 }
 
 #' Update Trelliscope app display list file
@@ -253,6 +252,8 @@ prepare_display <- function(base_path, jsonp = TRUE, copy_viewer_files = TRUE) {
 #' @importFrom jsonlite fromJSON
 #' @export
 update_display_list <- function(base_path, jsonp = TRUE) {
+  id <- readLines(file.path(base_path, "id"), warn = FALSE)
+
   # read all displayObj files and write them into a display list
   groups <- list.files(file.path(base_path, "displays"), full.names = TRUE)
   names <- unlist(lapply(groups, function(gp) {
@@ -266,7 +267,8 @@ update_display_list <- function(base_path, jsonp = TRUE) {
     } else {
       ff <- file.path(path, "displayObj.jsonp")
       tmp <- readLines(ff, warn = FALSE)
-      obj <- jsonlite::fromJSON(gsub("^__loadDisplayObj__\\((.*)\\)", "\\1", tmp))
+      rgxp <- paste0("^__loadDisplayObj__[a-zA-Z0-9_/\\.]+\\((.*)\\)")
+      obj <- jsonlite::fromJSON(gsub(rgxp, "\\1", tmp))
     }
     list(
       group = obj$group,
@@ -280,7 +282,7 @@ update_display_list <- function(base_path, jsonp = TRUE) {
     )
   })
 
-  txt <- get_jsonp_text(jsonp, "__loadDisplayList__")
+  txt <- get_jsonp_text(jsonp, paste0("__loadDisplayList__", id))
   cat(paste0(txt$st,
       jsonlite::toJSON(display_list, pretty = TRUE, auto_unbox = TRUE), txt$nd),
       file = file.path(base_path, "displays",
@@ -290,9 +292,10 @@ update_display_list <- function(base_path, jsonp = TRUE) {
 #' Write Trelliscope app configuration file
 #'
 #' @param base_path the base directory of the trelliscope application
+#' @param id a unique id for the application
 #' @param jsonp should json for app config be jsonp (TRUE) or json (FALSE)?
 #' @export
-write_config <- function(base_path, jsonp = TRUE) {
+write_config <- function(base_path, id, jsonp = TRUE) {
   cfg <- as.character(jsonlite::toJSON(
     list(
       display_base = "displays",
@@ -306,67 +309,20 @@ write_config <- function(base_path, jsonp = TRUE) {
     auto_unbox = TRUE
   ))
 
-  txt <- get_jsonp_text(jsonp, "__loadTrscopeConfig__")
+  txt <- get_jsonp_text(jsonp, paste0("__loadTrscopeConfig__", id))
   cat(paste0(txt$st, cfg, txt$nd),
     file = file.path(base_path,
       paste0("config", ifelse(jsonp, ".jsonp", ".json"))))
 }
 
-#' Copy Trelliscope viewer files to local app directory
-#'
-#' @param base_path the base directory of the trelliscope application
-#' @param src the location of the Trelliscope viewer files
-#' @importFrom curl curl_download
-#' @export
-copy_viewer_files <- function(
-  base_path,
-  src = "https://raw.githubusercontent.com/hafen/trelliscopejs-demo/gh-pages/") {
-
-  dir.create(file.path(base_path, "static", "fonts", "IcoMoon", "fonts"),
-    recursive = TRUE, showWarnings = FALSE)
-  dir.create(file.path(base_path, "static/fonts/OpenSans"),
-    recursive = TRUE, showWarnings = FALSE)
-
-  to_copy <- c(
-    "bundle.js",
-    "bundle.js.map",
-    "index.html",
-    "favicon.ico",
-    paste("static", "fonts", c(
-      paste("IcoMoon", c(
-        "style.css",
-        paste("fonts", c(
-          "icomoon.eot",
-          "icomoon.svg",
-          "icomoon.ttf",
-          "icomoon.woff"
-        ), sep = "/")
-      ), sep = "/"),
-      paste("OpenSans", c(
-        "opensans-light-webfont.woff",
-        "opensans-light-webfont.woff2",
-        "opensans-regular-webfont.woff",
-        "opensans-regular-webfont.woff2",
-        "stylesheet.css"
-      ), sep = "/")
-    ), sep = "/")
-  )
-
-  for (ff in to_copy) {
-    curl::curl_download(
-      paste0(src, ff),
-      file.path(base_path, ff))
-  }
-}
-
-#' View a Trelliscope Display
-#'
-#' @param base_path the base directory of the trelliscope application
-#' @export
-#' @importFrom utils browseURL
-view_display <- function(base_path) {
-  utils::browseURL(normalizePath(file.path(base_path, "index.html")))
-}
+# #' View a Trelliscope Display
+# #'
+# #' @param base_path the base directory of the trelliscope application
+# #' @export
+# #' @importFrom utils browseURL
+# view_display <- function(base_path) {
+#   utils::browseURL(normalizePath(file.path(base_path, "index.html")))
+# }
 
 # display_analyze <- function(base_path) {
 #   # make sure everything is in place and formatted properly for viewing

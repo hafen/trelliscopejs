@@ -161,11 +161,15 @@ print.facet_trelliscope <- function(x, ...) {
     )
   }
 
+  plot_name <- sanitize(plot_name)
+  group <- sanitize(attr(p, "trelliscope_group"))
+  id <- get_id(base_path)
+
   write_panels(
     panels,
     base_path = base_path,
     name = plot_name,
-    group = attr(p, "trelliscope_group"),
+    group = group,
     width = attr(p, "trelliscope_width"),
     height = attr(p, "trelliscope_height"),
     jsonp = attr(p, "trelliscope_jsonp")
@@ -175,6 +179,7 @@ print.facet_trelliscope <- function(x, ...) {
     cog_df,
     panel_example = panels[[1]],
     base_path = base_path,
+    id = id,
     name = plot_name,
     group = attr(p, "trelliscope_group"),
     desc = attr(p, "trelliscope_desc"),
@@ -187,9 +192,9 @@ print.facet_trelliscope <- function(x, ...) {
 
   prepare_display(
     base_path,
-    # only copy if there is no bundle.js file
-    jsonp = attr(p, "trelliscope_jsonp"),
-    copy_viewer_files = ! file.exists(file.path(base_path, "bundle.js"))
+    id = id,
+    jsonp = attr(p, "trelliscope_jsonp")
   )
+
   view_display(base_path)
 }
