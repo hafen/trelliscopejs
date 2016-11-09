@@ -38,7 +38,7 @@ Create a Trelliscope Display
 \dontrun{
 library(dplyr)
 library(rbokeh)
-p <- mpg \%>\%
+p <- ggplot2::mpg \%>\%
   group_by(class, manufacturer) \%>\%
   summarise(
     panel = panel(

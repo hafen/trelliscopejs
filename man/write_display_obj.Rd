@@ -4,7 +4,7 @@
 \alias{write_display_obj}
 \title{Write a "display object" file for a Trelliscope app}
 \usage{
-write_display_obj(cogdf, panel_example, base_path, name, group = "common",
+write_display_obj(cogdf, panel_example, base_path, id, name, group = "common",
   desc = "", height = 500, width = 500, md_desc = "", state = NULL,
   jsonp = TRUE)
 }
@@ -14,6 +14,8 @@ write_display_obj(cogdf, panel_example, base_path, name, group = "common",
 \item{panel_example}{an example object of one panel of a display (can be trellis, ggplot2, or htmlwidget object)}
 
 \item{base_path}{the base directory of the trelliscope application}
+
+\item{id}{a unique id for the application}
 
 \item{name}{name of the display}
 

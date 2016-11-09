@@ -4,14 +4,14 @@
 \alias{prepare_display}
 \title{Set up all auxilliary files needed for a Trelliscope app}
 \usage{
-prepare_display(base_path, jsonp = TRUE, copy_viewer_files = TRUE)
+prepare_display(base_path, id, jsonp = TRUE)
 }
 \arguments{
 \item{base_path}{the base directory of the trelliscope application}
 
-\item{jsonp}{should json for display list and app config be jsonp (TRUE) or json (FALSE)?}
+\item{id}{a unique id for the application}
 
-\item{copy_viewer_files}{should the viewer files be copied (using \code{\link{copy_viewer_files}})}
+\item{jsonp}{should json for display list and app config be jsonp (TRUE) or json (FALSE)?}
 }
 \description{
 Set up all auxilliary files needed for a Trelliscope app
