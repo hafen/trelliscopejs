@@ -9,7 +9,7 @@ write_thumb <- function(panel_example, path, width, height) {
 }
 
 #' @importFrom graphics plot
-widget_thumbnail <- function(p, thumb_path, timeout = 1500) {
+widget_thumbnail <- function(p, thumb_path, timeout = 750) {
   phantom <- find_phantom()
   thumb_path <- path.expand(thumb_path)
 
