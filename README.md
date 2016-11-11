@@ -3,7 +3,6 @@
 [![Build Status](https://travis-ci.org/hafen/trelliscope2.svg?branch=master)](https://travis-ci.org/hafen/trelliscope2)
 [![codecov.io](https://codecov.io/github/hafen/trelliscope2/coverage.svg?branch=master)](https://codecov.io/github/hafen/trelliscope2?branch=master)
 [![CRAN](http://www.r-pkg.org/badges/version/trelliscope2)](https://cran.r-project.org/package=trelliscope2)
-[![](http://cranlogs.r-pkg.org/badges/trelliscope2)](https://cran.r-project.org/package=trelliscope2)
 
 Trelliscope is a scalable, flexible, interactive approach to visualizing data. trelliscope2 provides methods that make it easy to create a Trelliscope display specification for [TrelliscopeJS](https://github.com/hafen/trelliscopejs). High-level functions are provided for creating displays from within dplyr (via `summarise()`) or ggplot2 (via `facet_trelliscope()`) workflows. Low-level functions are also provided for creating new interfaces.
 
