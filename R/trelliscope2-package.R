@@ -1,3 +1,4 @@
+utils::globalVariables(c(".", "x", "y", "label"))
 
 #' trelliscope2
 #'
