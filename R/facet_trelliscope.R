@@ -36,6 +36,7 @@ facet_trelliscope <- function(..., nrow = 1, ncol = 1, name = NULL, group = "com
     self_contained = self_contained,
     nrow = nrow,
     ncol = ncol,
+    thumb = thumb,
     facet_wrap = ggplot2::facet_wrap(...)
   )
 

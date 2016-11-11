@@ -15,11 +15,13 @@ test_that("examples run without barfing", {
         figure(xlab = "City mpg", ylab = "Highway mpg") %>%
           ly_points(cty, hwy)))
 
-  d %>% trelliscope(name = "city_vs_highway_mpg")
+  p <- d %>% trelliscope(name = "city_vs_highway_mpg")
+  print(p)
 
   # if you want to use in RStudio Viewer or RMarkdown Notebook, use self_containedd
   # (this will hopefully change, and you should avoid self_contained whenever possible)
   d %>% trelliscope(name = "city_vs_highway_mpg", self_contained = TRUE, thumb = FALSE)
+  print(p)
 
   # set default layout
   d %>% trelliscope(name = "city_vs_highway_mpg", nrow = 2, ncol = 3, thumb = FALSE)
@@ -30,7 +32,8 @@ test_that("examples run without barfing", {
   d %>% trelliscope(name = "city_vs_highway_mpg", path = tf, thumb = FALSE)
 
   # multiple displays can be added to the same path and all will be available in the viewer
-  d %>% trelliscope(name = "city_vs_highway_mpg2", path = tf, thumb = FALSE)
+  p <- d %>% trelliscope(name = "city_vs_highway_mpg2", path = tf, thumb = FALSE)
+  print(p)
 
   # ordering the data frame will set default sort order of the display
   d %>%
@@ -63,19 +66,22 @@ test_that("examples run without barfing", {
     trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2, thumb = FALSE)
 
   # basically swap out facet_wrap for facet_trelliscope
-  qplot(cty, hwy, data = mpg) +
+  p <- qplot(cty, hwy, data = mpg) +
     facet_trelliscope(~ class + manufacturer, self_contained = TRUE)
+  print(p)
 
   # not required, but if you set labels, these will be added as
   # descriptions to the cognostics that are automatically computed
   mpg <- set_labels(mpg, mpg_labels)
 
-  qplot(cty, hwy, data = mpg) +
+  p <- qplot(cty, hwy, data = mpg) +
     xlim(7, 37) + ylim(9, 47) + theme_bw() +
     facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4, thumb = FALSE)
+  print(p)
 
-  qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
+  p <- qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
     facet_trelliscope(~ class, ncol = 7, height = 800, width = 200,
       state = list(sort = list(sort_spec("cty_mean")))) +
     ylim(7, 37) + theme_bw()
+  print(p)
 })

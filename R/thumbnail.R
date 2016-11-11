@@ -12,7 +12,7 @@ write_thumb <- function(panel_example, path, width, height, thumb = TRUE) {
   # need "!thumb" in case overwriting existing
   if (!file.exists(path) || !thumb) {
     suppressMessages(
-      make_png(blank_thumb(), file = path,
+      make_png(blank_image(), file = path,
         width = width, height = height))
   }
 }
@@ -68,8 +68,8 @@ find_phantom <- function() {
 }
 
 #' @import ggplot2
-blank_thumb <- function() {
-  ggplot(data = data.frame(x = 0.5, y = 0.75, label = "no thumbnail")) +
+blank_image <- function(txt = "no thumbnail") {
+  ggplot(data = data.frame(x = 0.5, y = 0.75, label = txt)) +
     geom_text(aes(x = x, y = y, label = label), size = 8) +
     labs(x = NULL, y = NULL, title = NULL) +
     scale_x_continuous(expand = c(0, 0), limits = c(0, 1)) +

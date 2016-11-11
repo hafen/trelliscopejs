@@ -35,14 +35,11 @@ make_png <- function(p, file, width, height, orig_width = width, res = 72,
   finally = grDevices::dev.off(dv))
 
   # if panel function didn't plot anything then make a blank panel
+  # res = res * pixelratio,
   if (!file.exists(file)) {
-    pngfun(filename = file,
-      width = width * pixelratio,
-      height = height * pixelratio,
-      # res = res * pixelratio,
+    pngfun(filename = file, width = width * pixelratio, height = height * pixelratio,
       pointsize = pointsize)
-    print(lattice::xyplot(NA ~ NA, xlab = "", ylab = "", scales = list(draw = FALSE),
-      panel = function(x, y, ...) lattice::panel.text(0.5, 0.5, "no panel")))
+    blank_image("no panel")
     grDevices::dev.off()
   }
 }

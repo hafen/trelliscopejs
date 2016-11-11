@@ -37,6 +37,9 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
 
   spa <- TRUE # "single-page application"
 
+  if (is.null(thumb))
+    thumb <- TRUE
+
   if (in_rmarkdown_notebook()) {
     # spa <- FALSE # (don't need to set spa to FALSE because it's in an iframe)
     if (!self_contained) {
