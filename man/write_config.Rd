@@ -4,12 +4,14 @@
 \alias{write_config}
 \title{Write Trelliscope app configuration file}
 \usage{
-write_config(base_path, id, jsonp = TRUE)
+write_config(base_path, id, self_contained = FALSE, jsonp = TRUE)
 }
 \arguments{
 \item{base_path}{the base directory of the trelliscope application}
 
 \item{id}{a unique id for the application}
+
+\item{self_contained}{should the Trelliscope display be a self-contained html document?}
 
 \item{jsonp}{should json for app config be jsonp (TRUE) or json (FALSE)?}
 }

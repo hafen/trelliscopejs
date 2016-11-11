@@ -6,7 +6,7 @@ make_png <- function(p, file, width, height, orig_width = width, res = 72,
   if (capabilities("aqua")) {
     pngfun <- grDevices::png
   } else {
-    pkg <- "Cairo"
+    pkg <- "Cairo" # nolint
     if (suppressWarnings(suppressMessages(require(pkg, character.only = TRUE)))) {
       pngfun <- Cairo::CairoPNG
     } else {

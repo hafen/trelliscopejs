@@ -8,23 +8,24 @@
 #' @param height height in pixels of each panel
 #' @param jsonp should json for panels be jsonp (TRUE) or json (FALSE)?
 #' @param progress = TRUE
+#' @param pb optional progress bar object to pass in and use to report progress
 #' @import progress
 #' @export
 write_panels <- function(plot_list, base_path, name, group = "common",
-  width = 500, height = 500, jsonp = TRUE, progress = TRUE) {
+  width = 500, height = 500, jsonp = TRUE, progress = TRUE, pb = NULL) {
 
   nms <- names(plot_list)
   if (length(nms) == 0) {
     stop("panels must be a named list, with the names being used as the panel key")
   }
 
-  message("writing panels...")
-  pb <- progress::progress_bar$new(
-    total = length(nms),
-    format = "[:bar] :percent :current/:total eta::eta"
-  )
+  if (is.null(pb))
+    pb <- progress::progress_bar$new(
+      total = length(nms), width = getOption("width") - 5,
+      format = ":what [:bar] :percent :current/:total eta::eta")
+
   lapply(nms, function(nm) {
-    pb$tick()
+    pb$tick(tokens = list(what = "writing panels      "))
     write_panel(plot_list[[nm]], key = nm, base_path = base_path,
       name = name, group = group,
       width = width, height = height, jsonp = jsonp)
@@ -79,51 +80,6 @@ write_panel <- function(plot_object, key, base_path, name, group = "common",
   }
 }
 
-#' Cast a data frame as a cognostics data frame
-#'
-#' @param x a data frame
-#' @param cond_cols the column name(s) that comprise the conditioning variables
-#' @param key_col the column name that indicates the panel key
-#' @export
-as_cognostics <- function(x, cond_cols, key_col = NULL) {
-  # make each column a true cognostic so things are consistent downstream
-
-  if (is.null(key_col))
-    key_col <- "panelKey"
-  if (! key_col %in% names(x))
-    stop("The data frame must either have a column name 'panelKey'",
-      " or the column containing the key must be specified by key_col.",
-      call. = FALSE)
-  x$panelKey <- cog(x[[key_col]], desc = "panel key", type = "key",
-    group = "panelKey", default_active = TRUE, filterable = FALSE)
-
-  if (! all(cond_cols %in% names(x)))
-    stop("The data frame must have all specified cond_cols: ",
-      paste(cond_cols, collapse = ", "))
-
-  for (cl in cond_cols) {
-    x[[cl]] <- cog(x[[cl]], desc = "conditioning variable",
-      type = ifelse(is.numeric(x[[cl]]), "numeric", "factor"),
-      group = "condVar", default_label = TRUE)
-  }
-
-  # TODO: make sure cond_cols are unique and key_col is unique
-
-  # any variables that aren't cogs, fill them in...
-  has_no_cog <- which(!sapply(x, function(x) inherits(x, "cog")))
-  if (length(has_no_cog) > 0)
-    for (idx in has_no_cog)
-      x[[idx]] <- cog(x[[idx]])
-
-  # get rid of cogs that are all NA
-  na_cogs <- which(sapply(x, function(a) all(is.na(a))))
-  if (length(na_cogs) > 0)
-    x[na_cogs] <- NULL
-
-  class(x) <- c(class(x), "cognostics")
-  x
-}
-
 #' Write cognostics data for a display in a Trelliscope app
 #'
 #' @param cogdf a data frame of cognostics, prepared with \code{\link{as_cognostics}}
@@ -156,10 +112,14 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @param md_desc optional string of markdown that will be shown in the viewer for additional context about the display
 #' @param state the initial state the display will open in
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
+#' @param self_contained should the Trelliscope display be a self-contained html document?
+#' @param thumb should a thumbnail be created?
+#' @param pb optional progress bar object to pass in and use to report progress
 #' @importFrom digest digest
 #' @export
 write_display_obj <- function(cogdf, panel_example, base_path, id, name, group = "common",
-  desc = "", height = 500, width = 500, md_desc = "", state = NULL, jsonp = TRUE) {
+  desc = "", height = 500, width = 500, md_desc = "", state = NULL, jsonp = TRUE,
+  self_contained = FALSE, thumb = TRUE, pb = NULL) {
 
   display_path <- file.path(base_path, "displays", group, name)
   panel_path <- file.path(display_path, ifelse(jsonp, "jsonp", "json"))
@@ -175,7 +135,9 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
       width <- panel_example$width
   }
 
-  message("building display object...")
+  if (!is.null(pb))
+    pb$tick(tokens = list(what = "building display obj"))
+
   dispobj <- list(
     name = name,
     group = group,
@@ -185,11 +147,11 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
     n = length(list.files(panel_path)),
     height = height,
     width = width,
-    keySig = digest::digest(sort(cogdf$panelKey)),
+    keySig = digest::digest(sort(cogdf$panelKey)), # nolint
     cogInterface = list(name = name, group = group, type = "JSON"),
     panelInterface = list(
       type = ifelse(inherits(panel_example, "htmlwidget"), "htmlwidget", "image"),
-      deps = get_and_write_widget_deps(panel_example, base_path)
+      deps = get_and_write_widget_deps(panel_example, base_path, self_contained)
     ),
     cogInfo = get_cog_info(cogdf),
     cogDistns = get_cog_distributions(cogdf)
@@ -202,14 +164,14 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
   if (is.null(state$layout))
     state$layout <- list(nrow = 1, ncol = 1, arrange = "row")
   if (is.null(state$labels)) {
-    def_labels <- which(sapply(dispobj$cogInfo, function(x) x$defLabel))
+    def_labels <- which(sapply(dispobj$cogInfo, function(x) x$defLabel)) # nolint
     if (length(def_labels) > 0)
-      state$labels <- I(names(dispobj$cogInfo)[def_labels])
+      state$labels <- I(names(dispobj$cogInfo)[def_labels]) # nolint
   }
   if (is.null(state$sort)) {
-    def_labels <- which(sapply(dispobj$cogInfo, function(x) x$defLabel))
+    def_labels <- which(sapply(dispobj$cogInfo, function(x) x$defLabel)) # nolint
     if (length(def_labels) > 0) {
-      nms <- names(dispobj$cogInfo)[def_labels]
+      nms <- names(dispobj$cogInfo)[def_labels] # nolint
       state$sort <- lapply(seq_along(nms), function(ii)
         list(order = ii, name = nms[ii], dir = "asc"))
     }
@@ -222,27 +184,39 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
     file = file.path(display_path,
       paste0("displayObj.", ifelse(jsonp, "jsonp", "json"))))
 
-  message("writing cognostics...")
+  if (!is.null(pb))
+    pb$tick(tokens = list(what = "writing cognostics  "))
+
   write_cognostics(cogdf, base_path, id = id, name = name, group = group, jsonp = jsonp)
 
-  message("writing thumbnail...")
+  thumb_message <- ifelse(thumb, "writing thumbnail   ", "empty thumbnail     ")
+
+  # if thumb is false, we still write a blank one...
+  if (!is.null(pb))
+    pb$tick(tokens = list(what = thumb_message))
   write_thumb(panel_example,
-    file.path(display_path, "thumb.png"), width = width, height = height)
+    file.path(display_path, "thumb.png"), width = width, height = height,
+    thumb = thumb)
 }
 
 #' Set up all auxilliary files needed for a Trelliscope app
 #'
 #' @param base_path the base directory of the trelliscope application
 #' @param id a unique id for the application
+#' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param jsonp should json for display list and app config be jsonp (TRUE) or json (FALSE)?
+#' @param pb optional progress bar object to pass in and use to report progress
 #' @export
-prepare_display <- function(base_path, id, jsonp = TRUE) {
+prepare_display <- function(base_path, id, self_contained = FALSE, jsonp = TRUE, pb = NULL) {
+
   # write the id to a plain text file
   cat(id, file = file.path(base_path, "id"))
-  message("writing display list...")
+  if (!is.null(pb))
+    pb$tick(tokens = list(what = "writing display list"))
   update_display_list(base_path, jsonp = jsonp)
-  message("writing app config...")
-  write_config(base_path, id = id, jsonp = jsonp)
+  if (!is.null(pb))
+    pb$tick(tokens = list(what = "writing app config  "))
+  write_config(base_path, id = id, self_contained = self_contained, jsonp = jsonp)
 }
 
 #' Update Trelliscope app display list file
@@ -278,7 +252,7 @@ update_display_list <- function(base_path, jsonp = TRUE) {
       height = obj$height,
       width = obj$width,
       updated = obj$updated,
-      keySig = obj$keySig
+      keySig = obj$keySig # nolint
     )
   })
 
@@ -293,16 +267,17 @@ update_display_list <- function(base_path, jsonp = TRUE) {
 #'
 #' @param base_path the base directory of the trelliscope application
 #' @param id a unique id for the application
+#' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param jsonp should json for app config be jsonp (TRUE) or json (FALSE)?
 #' @export
-write_config <- function(base_path, id, jsonp = TRUE) {
+write_config <- function(base_path, id, self_contained = FALSE, jsonp = TRUE) {
   cfg <- as.character(jsonlite::toJSON(
     list(
-      display_base = "displays",
+      display_base = ifelse(self_contained, "__self__", "displays"),
       data_type = ifelse(jsonp, "jsonp", "json"),
       cog_server = list(
         type = ifelse(jsonp, "jsonp", "json"),
-        info = list(base = "displays")
+        info = list(base = ifelse(self_contained, "__self__", "displays"))
       )
     ),
     pretty = TRUE,
@@ -314,15 +289,6 @@ write_config <- function(base_path, id, jsonp = TRUE) {
     file = file.path(base_path,
       paste0("config", ifelse(jsonp, ".jsonp", ".json"))))
 }
-
-# #' View a Trelliscope Display
-# #'
-# #' @param base_path the base directory of the trelliscope application
-# #' @export
-# #' @importFrom utils browseURL
-# view_display <- function(base_path) {
-#   utils::browseURL(normalizePath(file.path(base_path, "index.html")))
-# }
 
 # display_analyze <- function(base_path) {
 #   # make sure everything is in place and formatted properly for viewing

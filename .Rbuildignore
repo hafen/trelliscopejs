@@ -1,6 +1,7 @@
 man-roxygen
 \.git
 ^\.travis\.yml$
+^\.lintr$
 \.DS_Store
 node_modules/
 ..Rcheck
@@ -17,3 +18,4 @@ tools/
 cran-comments.md
 ^tools
 _test/
+^codecov\.yml$

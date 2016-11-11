@@ -2,7 +2,7 @@
 % Please edit documentation in R/facet_trelliscope.R
 \name{+.gg}
 \alias{+.gg}
-\title{Add method to transfer the}
+\title{Add method for gg / facet_trelliscope}
 \usage{
 \method{+}{gg}(e1, e2)
 }
@@ -12,6 +12,6 @@
 \item{e2}{if object is of class 'facet_trelliscope', then 'facet_trelliscope' will be appended to the class of e1}
 }
 \description{
-Add method to transfer the
+Add method for gg / facet_trelliscope
 }
 

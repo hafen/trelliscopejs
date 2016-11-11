@@ -17,6 +17,22 @@
 #' @details Different types of cognostics can be specified through the \code{type} argument that will affect how the user is able to interact with those cognostics in the viewer.  This can usually be ignored because it will be inferred from the implicit data type of \code{val}.  But there are special types of cognostics, such as geographic coordinates and relations (not implemented) that can be specified as well.  Current possibilities for \code{type} are "key", "integer", "numeric", "factor", "date", "time", "href".
 #'
 #' @export
+#' @examples
+#' \dontrun{
+#' mpg %>%
+#'   group_by(manufacturer, class) %>%
+#'   summarise(
+#'     mean_city_mpg = cog(mean(cty), desc = "Mean city mpg"),
+#'     mean_hwy_mpg = cog(mean(hwy), desc = "Mean highway mpg"),
+#'     most_common_drv = cog(tail(names(table(drv)), 1), desc = "Most common drive type"),
+#'     panel = panel(
+#'       figure(xlab = "City mpg", ylab = "Highway mpg",
+#'         xlim = c(9, 47), ylim = c(7, 37)) %>%
+#'         ly_points(cty, hwy,
+#'           hover = data_frame(model = paste(year, model),
+#'           cty = cty, hwy = hwy)))) %>%
+#'   trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
+#' }
 cog <- function(val = NULL, desc = "", group = "common",
   type = NULL, default_label = FALSE, default_active = TRUE,
   filterable = TRUE, sortable = TRUE, log = NULL) {
@@ -91,4 +107,54 @@ infer_cog_type <- function(val) {
     type <- NA
   }
   type
+}
+
+#' Cast a data frame as a cognostics data frame
+#'
+#' @param x a data frame
+#' @param cond_cols the column name(s) that comprise the conditioning variables
+#' @param key_col the column name that indicates the panel key
+#' @export
+as_cognostics <- function(x, cond_cols, key_col = NULL) {
+  # make each column a true cognostic so things are consistent downstream
+
+  if (is.null(key_col))
+    key_col <- "panelKey"
+  if (! key_col %in% names(x))
+    stop("The data frame must either have a column name 'panelKey'",
+      " or the column containing the key must be specified by key_col.",
+      call. = FALSE)
+  x$panelKey <- cog(x[[key_col]], desc = "panel key", type = "key", # nolint
+    group = "panelKey", default_active = TRUE, filterable = FALSE)
+
+  if (! all(cond_cols %in% names(x)))
+    stop("The data frame must have all specified cond_cols: ",
+      paste(cond_cols, collapse = ", "))
+
+  for (cl in cond_cols) {
+    x[[cl]] <- cog(x[[cl]], desc = "conditioning variable",
+      type = ifelse(is.numeric(x[[cl]]), "numeric", "factor"),
+      group = "condVar", default_label = TRUE)
+  }
+
+  # TODO: make sure cond_cols are unique and key_col is unique
+
+  # any variables that aren't cogs, fill them in...
+  has_no_cog <- which(!sapply(x, function(x) inherits(x, "cog")))
+  if (length(has_no_cog) > 0) {
+    for (idx in has_no_cog) {
+      desc <- attr(x[[idx]], "label")
+      if (!is.character(desc))
+        desc <- ""
+      x[[idx]] <- cog(x[[idx]], desc = desc)
+    }
+  }
+
+  # get rid of cogs that are all NA
+  na_cogs <- which(sapply(x, function(a) all(is.na(a))))
+  if (length(na_cogs) > 0)
+    x[na_cogs] <- NULL
+
+  class(x) <- c(class(x), "cognostics")
+  x
 }

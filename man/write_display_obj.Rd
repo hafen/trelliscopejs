@@ -6,7 +6,7 @@
 \usage{
 write_display_obj(cogdf, panel_example, base_path, id, name, group = "common",
   desc = "", height = 500, width = 500, md_desc = "", state = NULL,
-  jsonp = TRUE)
+  jsonp = TRUE, self_contained = FALSE, thumb = TRUE, pb = NULL)
 }
 \arguments{
 \item{cogdf}{a data frame of cognostics, prepared with \code{\link{as_cognostics}}}
@@ -32,6 +32,12 @@ write_display_obj(cogdf, panel_example, base_path, id, name, group = "common",
 \item{state}{the initial state the display will open in}
 
 \item{jsonp}{should json for display object be jsonp (TRUE) or json (FALSE)?}
+
+\item{self_contained}{should the Trelliscope display be a self-contained html document?}
+
+\item{thumb}{should a thumbnail be created?}
+
+\item{pb}{optional progress bar object to pass in and use to report progress}
 }
 \description{
 Write a "display object" file for a Trelliscope app

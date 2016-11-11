@@ -4,12 +4,17 @@
 \alias{facet_trelliscope}
 \title{Facet Trelliscope}
 \usage{
-facet_trelliscope(..., name = NULL, group = "common", desc = "",
-  md_desc = "", height = 500, width = 500, state = NULL, jsonp = TRUE,
-  path = tempdir())
+facet_trelliscope(..., nrow = 1, ncol = 1, name = NULL,
+  group = "common", desc = "", md_desc = "", path = NULL,
+  height = 500, width = 500, state = NULL, jsonp = TRUE,
+  self_contained = FALSE, thumb = TRUE)
 }
 \arguments{
 \item{...}{all parameters passed onto \code{ggplot2::\link[ggplot2]{facet_wrap}}}
+
+\item{nrow}{the number of rows of panels to display by default}
+
+\item{ncol}{the number of columns of panels to display by default}
 
 \item{name}{name of the display}
 
@@ -19,6 +24,8 @@ facet_trelliscope(..., name = NULL, group = "common", desc = "",
 
 \item{md_desc}{optional string of markdown that will be shown in the viewer for additional context about the display}
 
+\item{path}{the base directory of the trelliscope application}
+
 \item{height}{height in pixels of each panel}
 
 \item{width}{width in pixels of each panel}
@@ -27,22 +34,89 @@ facet_trelliscope(..., name = NULL, group = "common", desc = "",
 
 \item{jsonp}{should json for display object be jsonp (TRUE) or json (FALSE)?}
 
-\item{path}{the base directory of the trelliscope application}
+\item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
+
+\item{thumb}{should a thumbnail be created?}
 }
 \description{
 Facet Trelliscope
 }
+\note{
+Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
+}
 \examples{
 \dontrun{
+library(dplyr)
+library(rbokeh)
 library(ggplot2)
-p <- qplot(cty, hwy, data = mpg) +
-  facet_trelliscope(
-    ~ class + manufacturer,
-    path = "_test",
-    name = "testytest",
-    width = 800
-  )
-p
+
+# dplyr + rbokeh
+d <- mpg \%>\%
+  group_by(manufacturer, class) \%>\%
+  summarise(
+    panel = panel(
+      figure(xlab = "City mpg", ylab = "Highway mpg") \%>\%
+        ly_points(cty, hwy)))
+
+d \%>\% trelliscope(name = "city_vs_highway_mpg")
+
+# if you want to use in RStudio Viewer or RMarkdown Notebook, use self_containedd
+# (this will hopefully change, and you should avoid self_contained whenever possible)
+d \%>\% trelliscope(name = "city_vs_highway_mpg", self_contained = TRUE)
+
+# set default layout
+d \%>\% trelliscope(name = "city_vs_highway_mpg", nrow = 2, ncol = 3)
+
+# set the output path for where files will be stored
+d \%>\% trelliscope(name = "city_vs_highway_mpg", path = "mydisplays")
+
+# multiple displays can be added to the same path and all will be available in the viewer
+d \%>\% trelliscope(name = "city_vs_highway_mpg2", path = "mydisplays")
+
+# ordering the data frame will set default sort order of the display
+d \%>\%
+  arrange(-mean_city_mpg) \%>\%
+  trelliscope(name = "city_vs_highway_mpg")
+
+# dplyr + ggplot2
+mpg \%>\%
+  group_by(manufacturer, class) \%>\%
+  summarise(
+    panel = panel(
+      qplot(cty, hwy) + xlab("cty") + ylab("hwy") +
+        xlim(7, 37) + ylim(9, 47) + theme_bw())) \%>\%
+  trelliscope(name = "dplyr_gg")
+
+# computing additional cognostics
+mpg \%>\%
+  group_by(manufacturer, class) \%>\%
+  summarise(
+    mean_city_mpg = mean(cty),
+    mean_hwy_mpg = mean(hwy),
+    most_common_drv = tail(names(table(drv)), 1),
+    panel = panel(
+      figure(xlab = "City mpg", ylab = "Highway mpg",
+        xlim = c(9, 47), ylim = c(7, 37)) \%>\%
+        ly_points(cty, hwy,
+          hover = data_frame(model = paste(year, model),
+          cty = cty, hwy = hwy)))) \%>\%
+  trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
+
+# computing additional cognostics explicitly using cog()
+# so we can specify descriptions, etc.
+mpg \%>\%
+  group_by(manufacturer, class) \%>\%
+  summarise(
+    mean_city_mpg = cog(mean(cty), desc = "Mean city mpg"),
+    mean_hwy_mpg = cog(mean(hwy), desc = "Mean highway mpg"),
+    most_common_drv = cog(tail(names(table(drv)), 1), desc = "Most common drive type"),
+    panel = panel(
+      figure(xlab = "City mpg", ylab = "Highway mpg",
+        xlim = c(9, 47), ylim = c(7, 37)) \%>\%
+        ly_points(cty, hwy,
+          hover = data_frame(model = paste(year, model),
+          cty = cty, hwy = hwy)))) \%>\%
+  trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
 }
 }
 
