@@ -13,13 +13,11 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     dplyr,
-    curl,
     htmltools,
     DistributionUtils,
     grDevices,
     digest,
     jsonlite,
-    lattice,
     ggplot2 (> 2.1.0),
     base64enc,
     htmlwidgets,

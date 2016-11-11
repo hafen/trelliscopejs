@@ -1,4 +1,3 @@
-#' @importFrom lattice xyplot panel.text
 #' @importFrom grDevices png
 make_png <- function(p, file, width, height, orig_width = width, res = 72,
   base_point_size = 12, pixelratio = 2) {
