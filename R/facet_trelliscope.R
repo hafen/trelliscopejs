@@ -71,6 +71,7 @@ facet_trelliscope <- function(..., nrow = 1, ncol = 1, name = NULL, group = "com
 #' @param ... ignored
 #' @import dplyr
 #' @importFrom stats as.formula
+#' @importFrom tidyr nest nest_ unnest
 #' @export
 print.facet_trelliscope <- function(x, ...) {
 
@@ -88,46 +89,14 @@ print.facet_trelliscope <- function(x, ...) {
   facet_cols <- unlist(lapply(facet_params$facets, as.character))
 
   # group by all the facets
-  for (facet_col in facet_cols)
-    data <- group_by_(data, facet_col, add = TRUE)
+  data <- data %>%
+    group_by_(.dots = lapply(facet_cols, as.symbol)) %>%
+    auto_cogs()
 
-  # add functions to summarise with
-  functions_to_run <- list(count = stats::as.formula(paste0(
-    "~ cog(n(), desc = \"number of observations\")"
-  )))
+  cog_desc <- attr(data$auto_cogs, "cog_desc")
 
-  # if any columns are unique per group, add a summary for them
-  tmp <- summarise_all(data, n_distinct) %>% ungroup() %>% select(-one_of(facet_cols))
-  unique_cols <- names(tmp)[sapply(tmp, function(x) all(x == 1))]
-
-  get_label <- function(data, col) {
-    lbl <- attr(data[[col]], "label")
-    if (is.null(lbl))
-      lbl <- col
-    lbl
-  }
-
-  for (col in unique_cols)
-    functions_to_run[[col]] <- stats::as.formula(paste0(
-      "~ cog(", col, "[1],", "desc = \"", get_label(data, col), "\"", ")"))
-
-  num_cols <- names(data)[sapply(data, is.numeric)]
-  num_cols <- setdiff(num_cols, c(unique_cols, facet_cols))
-
-  # if numeric, get the mean
-  for (col in num_cols) {
-    lbl <- get_label(data, col)
-    cog_name <- paste(col, "_mean", sep = "")
-    functions_to_run[[cog_name]] <- stats::as.formula(paste0(
-      "~ cog(", "mean(", col, "),", "desc = \"mean ", lbl, "\"", ")"))
-  }
-
-  # sumarise the data
-  cog_df <- summarise_(data, .dots = functions_to_run)
-  cog_df$panelKey <- apply(cog_df[facet_cols], 1, paste, collapse = "_") %>% # nolint
-    sanitize()
-
-  cog_df <- as_cognostics(cog_df, cond_cols = facet_cols, key_col = "panelKey")
+  cog_df <- data %>% select(-one_of("data")) %>% tidyr::unnest()
+  cog_df <- as_cognostics(cog_df, cond_cols = facet_cols, cog_desc = cog_desc)
 
   # wrapper function that swaps out the data with a subset and removes the facet
   make_plot_obj <- function(dt) {
@@ -136,14 +105,10 @@ print.facet_trelliscope <- function(x, ...) {
     q$facet <- ggplot2::FacetNull
     q
   }
-  plot_df <- do(data, plot = make_plot_obj(.))
-
-  # make sure the panelKeys match
-  merged_df <- suppressMessages(left_join(cog_df, plot_df))
-
-  # remove the plots and name them according to the panelKey
-  panels <- merged_df$plot
-  names(panels) <- merged_df$panelKey # nolint
+  panels <- (data %>%
+    purrr::by_row(~ make_plot_obj(unnest(.x[c(facet_cols, "data")])),
+      .labels = FALSE))[[1]]
+  names(panels) <- cog_df$panelKey # nolint
 
   name <- attrs$name
   if (is.null(name))
@@ -154,7 +119,7 @@ print.facet_trelliscope <- function(x, ...) {
 
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",
-    total = 5 + length(panels), width = getOption("width") - 5)
+    total = 5 + length(panels), width = getOption("width") - 8)
   pb$tick(0, tokens = list(what = "calculating         "))
 
   write_panels(

@@ -54,7 +54,7 @@ cog <- function(val = NULL, desc = "", group = "common",
 
   if (!is.null(type)) {
     if (!type %in% types)
-      stop("Invalid cognostics type: ", type)
+      stop_nice("Invalid cognostics type:", type)
 
     val <- try(cog_types[[type]](val))
     if (inherits(val, "try-error"))
@@ -114,21 +114,22 @@ infer_cog_type <- function(val) {
 #' @param x a data frame
 #' @param cond_cols the column name(s) that comprise the conditioning variables
 #' @param key_col the column name that indicates the panel key
+#' @param cog_desc an optional named list of descriptions for the cognostics columns
 #' @export
-as_cognostics <- function(x, cond_cols, key_col = NULL) {
+as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL) {
   # make each column a true cognostic so things are consistent downstream
 
   if (is.null(key_col))
     key_col <- "panelKey"
-  if (! key_col %in% names(x))
-    stop("The data frame must either have a column name 'panelKey'",
-      " or the column containing the key must be specified by key_col.",
-      call. = FALSE)
-  x$panelKey <- cog(x[[key_col]], desc = "panel key", type = "key", # nolint
-    group = "panelKey", default_active = TRUE, filterable = FALSE)
+  if (! key_col %in% names(x)) {
+    x$panelKey <- cog(sanitize( # nolint
+      apply(x[cond_cols], 1, paste, collapse = "_")),
+      desc = "panel key", type = "key", group = "panelKey",
+      default_active = TRUE, filterable = FALSE)
+  }
 
   if (! all(cond_cols %in% names(x)))
-    stop("The data frame must have all specified cond_cols: ",
+    stop_nice("The cognostics data frame must have all specified cond_cols:",
       paste(cond_cols, collapse = ", "))
 
   for (cl in cond_cols) {
@@ -141,19 +142,23 @@ as_cognostics <- function(x, cond_cols, key_col = NULL) {
 
   # any variables that aren't cogs, fill them in...
   has_no_cog <- which(!sapply(x, function(x) inherits(x, "cog")))
+  nms <- names(x)
   if (length(has_no_cog) > 0) {
     for (idx in has_no_cog) {
-      desc <- attr(x[[idx]], "label")
+      desc <- cog_desc[[nms[idx]]]
       if (!is.character(desc))
-        desc <- ""
+        desc <- nms[idx]
       x[[idx]] <- cog(x[[idx]], desc = desc)
     }
   }
 
   # get rid of cogs that are all NA
   na_cogs <- which(sapply(x, function(a) all(is.na(a))))
-  if (length(na_cogs) > 0)
+  if (length(na_cogs) > 0) {
+    message("Removing the following cognostics that are all NA:",
+      paste(nms[na_cogs], collapse = ", "))
     x[na_cogs] <- NULL
+  }
 
   class(x) <- c(class(x), "cognostics")
   x

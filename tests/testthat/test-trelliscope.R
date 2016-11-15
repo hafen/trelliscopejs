@@ -65,7 +65,18 @@ test_that("examples run without barfing", {
             cty = cty, hwy = hwy)))) %>%
     trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2, thumb = FALSE)
 
-  # basically swap out facet_wrap for facet_trelliscope
+  p <- mpg %>%
+    group_by(manufacturer, class) %>%
+    nest() %>%
+    mutate(panel = panels(data,
+      ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
+          ly_points(cty, hwy, data = .x))) %>%
+    trelliscope(name = "city_vs_highway_mpg")
+  print(p)
+
+  ## ggplot2
+  ##---------------------------------------------------------
+
   p <- qplot(cty, hwy, data = mpg) +
     facet_trelliscope(~ class + manufacturer, self_contained = TRUE)
   print(p)
@@ -81,7 +92,7 @@ test_that("examples run without barfing", {
 
   p <- qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
     facet_trelliscope(~ class, ncol = 7, height = 800, width = 200,
-      state = list(sort = list(sort_spec("cty_mean")))) +
+      state = list(sort = list(sort_spec("cty_mean"))), path = "_test") +
     ylim(7, 37) + theme_bw()
   print(p)
 })

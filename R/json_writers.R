@@ -16,7 +16,7 @@ write_panels <- function(plot_list, base_path, name, group = "common",
 
   nms <- names(plot_list)
   if (length(nms) == 0) {
-    stop("panels must be a named list, with the names being used as the panel key")
+    stop_nice("panels must be a named list, with the names being used as the panel key")
   }
 
   if (is.null(pb))
@@ -125,8 +125,8 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
   panel_path <- file.path(display_path, ifelse(jsonp, "jsonp", "json"))
 
   if (! inherits(cogdf, "cognostics"))
-    stop("cogdf must be a cognostics object - ",
-      "call as_cognostics() to cast it as such.", call. = FALSE)
+    stop_nice("cogdf must be a cognostics object -",
+      "call as_cognostics() to cast it as such.")
 
   if (inherits(panel_example, "htmlwidget")) {
     if (!is.null(panel_example$height))

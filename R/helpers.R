@@ -18,6 +18,27 @@ panel <- function(x) {
   structure(list(x), class = "trelliscope_panels")
 }
 
+#' Panels Wrapper Function
+#' Wrapper function to specify a plot command to be applied to a list-column for use tidy group/nest/mutate/map-like situations
+#'
+#' @param .x a list or atomic vector (see \code{\link[purrr]{map}} for details)
+#' @param .f a function, formula, or atomic vector (see \code{\link[purrr]{map}} for details)
+#' @param ... additional arguments passed on to .f (see \code{\link[purrr]{map}} for details)
+#' @examples
+#' mpg %>%
+#'   group_by(manufacturer, class) %>%
+#'   nest() %>%
+#'   mutate(panel = panels(data,
+#'     ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
+#'         ly_points(cty, hwy, data = .x))) %>%
+#'   trelliscope(name = "city_vs_highway_mpg")
+#' @export
+panels <- function(.x, .f, ...) {
+  res <- map(.x, .f, ...)
+  class(res) <- c("trelliscope_panels", class(res))
+  res
+}
+
 #' Set labels for a data frame
 #'
 #' @param dat a data frame to apply labels to
@@ -109,7 +130,7 @@ get_id <- function(path) {
 }
 
 sanitize <- function(x) {
-  gsub("[^a-zA-Z0-9_/\\.]", "_", x)
+  gsub("[^a-zA-Z0-9_]", "_", x)
 }
 
 ## low-level helpers
@@ -128,8 +149,8 @@ get_jsonp_text <- function(jsonp, fn_name) {
 
 get_cog_info <- function(x) {
   if (! inherits(x, "cognostics"))
-    stop("Cognostics data frame must be a cognostics object - ",
-      "call as_cognostics() to cast it as such.", call. = FALSE)
+    stop_nice("Cognostics data frame must be a cognostics object - ",
+      "call as_cognostics() to cast it as such.")
 
   nms <- names(x)
   cog_info <- do.call(rbind, lapply(seq_along(x), function(i) {

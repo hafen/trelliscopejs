@@ -29,8 +29,20 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
 
   classes <- unlist(lapply(x, function(a) class(a)[1]))
 
-  cond_cols <- find_cond_cols(x)
-  sort_cols <- find_sort_cols(x)
+  panel_col <- names(which(classes == "trelliscope_panels"))
+  if (length(panel_col) != 1)
+    stop_nice("A column containing the panel to be plotted must be specified using panel().")
+
+  atomic_cols <- names(x)[sapply(x, is.atomic)]
+  non_atomic_cols <- setdiff(names(x), c(atomic_cols, panel_col))
+  is_nested <- length(non_atomic_cols) > 0
+
+  if (length(atomic_cols) == 0)
+    stop_nice("There must be at least one atomic column in the data frame passed in",
+      "to trelliscope.data.frame")
+
+  cond_cols <- find_cond_cols(x[atomic_cols], is_nested)
+  sort_cols <- find_sort_cols(x[setdiff(atomic_cols, cond_cols)])
 
   # if we are no longer sorted by a cond_col but are sorted by something else
   # and if sort state is not already specified, then set that as state
@@ -49,6 +61,31 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
     }
   }
 
+  cogs <- list(as_cognostics(x[atomic_cols], cond_cols))
+  if (length(non_atomic_cols) > 0) {
+    usable <- non_atomic_cols[sapply(x[non_atomic_cols], function(a) is.data.frame(a[[1]]))]
+    needs_auto <- usable[sapply(x[usable], function(a) {
+      any(sapply(a, nrow) > 1)
+    })]
+    for (a in needs_auto) {
+      cogs[[length(cogs) + 1]] <- x[c(cond_cols, a)] %>%
+        auto_cogs() %>%
+        select(-one_of(a)) %>%
+        unnest() %>%
+        as_cognostics(cond_cols) %>%
+        select(-one_of(c(cond_cols, "panelKey")))
+    }
+    no_needs_auto <- setdiff(usable, needs_auto)
+    for (a in no_needs_auto) {
+      cogs[[length(cogs) + 1]] <- x[c(cond_cols, a)] %>%
+        unnest() %>%
+        as_cognostics(cond_cols) %>%
+        select(-one_of(c(cond_cols, "panelKey")))
+    }
+  }
+
+  cog_df <- bind_cols(cogs)
+
   params <- resolve_app_params(path, self_contained, jsonp, name, group,
     state, nrow, ncol, thumb)
 
@@ -56,17 +93,12 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
     sanitize()
   x$panelKey <- keys # nolint
 
-  panel_col <- which(classes == "trelliscope_panels")
-  if (length(panel_col) != 1)
-    stop("A column containing the panel to be plotted must be specified using panel().",
-      call. = FALSE)
-
   panels <- x[[panel_col]]
   names(panels) <- keys
 
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",
-    total = 5 + length(panels), width = getOption("width") - 5)
+    total = 5 + length(panels), width = getOption("width") - 8)
   pb$tick(0, tokens = list(what = "calculating         "))
 
   write_panels(
@@ -79,7 +111,7 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
   )
 
   write_display_obj(
-    as_cognostics(x[, -panel_col], cond_cols = cond_cols, key_col = "panelKey"),
+    cog_df,
     panel_example = panels[[1]],
     base_path = params$path,
     id = params$id,
@@ -113,24 +145,38 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
 #   (ideally, we'd use groups(), but dplyr peels one group off after summarise)
 #   we know grouped variables show up first
 #   so iterate through until their combination is unique
-find_cond_cols <- function(x) {
-  nn <- nrow(x)
-  cond_cols <- NULL
-  usable <- names(x)[sapply(x, is.atomic)]
+find_cond_cols <- function(x, is_nested) {
+  if (is_nested)
+    return(names(x))
 
-  if (length(unique(x[[usable[1]]])) == nn) {
-    cond_cols <- usable[1]
+  nn <- nrow(x)
+  nms <- names(x)
+  cond_cols <- NULL
+
+  if (length(unique(x[[1]])) == nn) {
+    cond_cols <- nms[1]
   } else {
     for (i in seq_len(ncol(x))[-1]) {
-      if (length(unique(do.call(paste, c(x[usable[1:i]], sep = "_")))) == nn) {
-        cond_cols <- usable[1:i]
+      if (length(unique(do.call(paste, c(x[1:i], sep = "_")))) == nn) {
+        cond_cols <- nms[1:i]
         break
       }
     }
   }
 
+  # for (i in seq_len(ncol(x))) {
+  #   n_unique <- length(unique(do.call(paste, c(x[1:i], sep = "_"))))
+  #   if (n_unique == nn && i == ncol(x)) {
+  #     cond_cols <- nms[seq_len(i)]
+  #     break
+  #   } else if (n_unique > nn && i > 1) {
+  #     cond_cols <- nms[seq_len(i - 1)]
+  #     break
+  #   }
+  # }
+
   if (is.null(cond_cols)) {
-    stop("Could not find unique group variables...")
+    stop_nice("Could not find unique group variables...")
   }
 
   cond_cols
@@ -141,6 +187,9 @@ find_cond_cols <- function(x) {
 #   then the user must have sorted on that variable
 #   note: this will only detect first-order sorting...
 find_sort_cols <- function(x) {
+  if (ncol(x) == 0)
+    return(data_frame())
+
   sortable <- names(x)[sapply(x, is.atomic)]
 
   res <- lapply(sortable,
