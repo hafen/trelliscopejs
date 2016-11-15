@@ -32,7 +32,9 @@ Suggests:
     testthat,
     covr,
     gapminder,
-    housingData
+    housingData,
+    packagedocs
 RoxygenNote: 5.0.1
 URL: https://github.com/hafen/trelliscope2
 BugReports: https://github.com/hafen/trelliscope2/issues
+VignetteBuilder: packagedocs

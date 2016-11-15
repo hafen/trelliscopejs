@@ -7,3 +7,5 @@ _ignore
 *.sublime-*
 .DS_Store
 _test
+inst/doc
+_gh-pages

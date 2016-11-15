@@ -17,6 +17,7 @@ Wrapper function to specify a plot object for a panel for use in dplyr summarise
 \examples{
 \dontrun{
 library(rbokeh)
+library(dplyr)
 ggplot2::mpg \%>\%
   group_by(manufacturer, class) \%>\%
   summarise(

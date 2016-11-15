@@ -6,6 +6,7 @@
 #' @examples
 #' \dontrun{
 #' library(rbokeh)
+#' library(dplyr)
 #' ggplot2::mpg %>%
 #'   group_by(manufacturer, class) %>%
 #'   summarise(
@@ -25,13 +26,17 @@ panel <- function(x) {
 #' @param .f a function, formula, or atomic vector (see \code{\link[purrr]{map}} for details)
 #' @param ... additional arguments passed on to .f (see \code{\link[purrr]{map}} for details)
 #' @examples
-#' mpg %>%
+#' \dontrun{
+#' library(dplyr)
+#' library(tidyr)
+#' ggplot2::mpg %>%
 #'   group_by(manufacturer, class) %>%
 #'   nest() %>%
 #'   mutate(panel = panels(data,
 #'     ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
 #'         ly_points(cty, hwy, data = .x))) %>%
 #'   trelliscope(name = "city_vs_highway_mpg")
+#' }
 #' @export
 panels <- function(.x, .f, ...) {
   res <- map(.x, .f, ...)
