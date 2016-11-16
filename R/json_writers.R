@@ -138,7 +138,7 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
   if (!is.null(pb))
     pb$tick(tokens = list(what = "building display obj"))
 
-  dispobj <- list(
+  disp_obj <- list(
     name = name,
     group = group,
     desc = desc,
@@ -164,23 +164,24 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
   if (is.null(state$layout))
     state$layout <- list(nrow = 1, ncol = 1, arrange = "row")
   if (is.null(state$labels)) {
-    def_labels <- which(sapply(dispobj$cogInfo, function(x) x$defLabel)) # nolint
+    def_labels <- which(sapply(disp_obj$cogInfo, function(x) x$defLabel)) # nolint
     if (length(def_labels) > 0)
-      state$labels <- I(names(dispobj$cogInfo)[def_labels]) # nolint
+      state$labels <- I(names(disp_obj$cogInfo)[def_labels]) # nolint
   }
+
   if (is.null(state$sort)) {
-    def_labels <- which(sapply(dispobj$cogInfo, function(x) x$defLabel)) # nolint
-    if (length(def_labels) > 0) {
-      nms <- names(dispobj$cogInfo)[def_labels] # nolint
+    cond_vars <- which(sapply(disp_obj$cogInfo, function(x) x$group == "condVar")) # nolint
+    if (length(cond_vars) > 0) {
+      nms <- names(disp_obj$cogInfo)[cond_vars] # nolint
       state$sort <- lapply(seq_along(nms), function(ii)
         list(order = ii, name = nms[ii], dir = "asc"))
     }
   }
-  dispobj$state <- state
+  disp_obj$state <- state
 
   txt <- get_jsonp_text(jsonp, paste0("__loadDisplayObj__", id, "_", group, "_", name))
   cat(paste0(txt$st,
-    jsonlite::toJSON(dispobj, auto_unbox = TRUE), txt$nd),
+    jsonlite::toJSON(disp_obj, auto_unbox = TRUE), txt$nd),
     file = file.path(display_path,
       paste0("displayObj.", ifelse(jsonp, "jsonp", "json"))))
 
