@@ -32,7 +32,6 @@ Suggests:
     testthat,
     covr,
     gapminder,
-    rbokeh,
     housingData,
     packagedocs
 RoxygenNote: 5.0.1

@@ -42,21 +42,24 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
       "to trelliscope.data.frame")
 
   cond_cols <- find_cond_cols(x[atomic_cols], is_nested)
-  sort_cols <- find_sort_cols(x[setdiff(atomic_cols, cond_cols)])
 
   # if we are no longer sorted by a cond_col but are sorted by something else
   # and if sort state is not already specified, then set that as state
-  if (nrow(sort_cols) > 0) {
-    cond_not_sorted <- !sort_cols$name %in% cond_cols
-    other_sorted <- setdiff(sort_cols$name, cond_cols)
-    if (is.null(state$sort) && cond_not_sorted && length(other_sorted) > 0) {
-      if (is.null(state))
-        state <- list()
-      state$sort <- lapply(other_sorted, function(a) {
-        list(name = a, dir = sort_cols$dir[sort_cols$name == a])
-      })
-      if (is.null(state$labels)) {
-        state$labels <- c(cond_cols, other_sorted)
+  if (is.unsorted(x[cond_cols[1]])) {
+    sort_cols <- find_sort_cols(x[setdiff(atomic_cols, cond_cols)])
+
+    if (nrow(sort_cols) > 0) {
+      cond_not_sorted <- !sort_cols$name %in% cond_cols
+      other_sorted <- setdiff(sort_cols$name, cond_cols)
+      if (is.null(state$sort) && cond_not_sorted && length(other_sorted) > 0) {
+        if (is.null(state))
+          state <- list()
+        state$sort <- lapply(other_sorted, function(a) {
+          list(name = a, dir = sort_cols$dir[sort_cols$name == a])
+        })
+        if (is.null(state$labels)) {
+          state$labels <- c(cond_cols, other_sorted)
+        }
       }
     }
   }
