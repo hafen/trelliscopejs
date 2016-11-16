@@ -45,7 +45,7 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
 
   # if we are no longer sorted by a cond_col but are sorted by something else
   # and if sort state is not already specified, then set that as state
-  if (is.unsorted(x[cond_cols[1]])) {
+  if (is.unsorted(x[[cond_cols[1]]])) {
     sort_cols <- find_sort_cols(x[setdiff(atomic_cols, cond_cols)])
 
     if (nrow(sort_cols) > 0) {
