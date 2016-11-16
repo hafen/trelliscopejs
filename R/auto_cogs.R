@@ -89,18 +89,14 @@ auto_cogs <- function(data) {
   cog_desc <- as.list(tmp$desc)
   names(cog_desc) <- tmp$cogname
 
-  res <- structure(
-    purrr::map(cog_data, function(x) {
-      res <- data_frame(count = nrow(x))
-      for (ii in seq_along(cog_spec$unique$col))
-        res[[cog_spec$unique$cogname[ii]]] <- x[[cog_spec$unique$col[ii]]][1]
-      for (ii in seq_along(cog_spec$num$col))
-        res[[cog_spec$num$cogname[ii]]] <- mean(x[[cog_spec$num$col[ii]]])
-      res
-    }),
-    class = c("trelliscope_cogs", "list"),
-    cog_desc = cog_desc
-  )
+  res <- cogs(cog_data, function(x) {
+    res <- data_frame(count = nrow(x))
+    for (ii in seq_along(cog_spec$unique$col))
+      res[[cog_spec$unique$cogname[ii]]] <- x[[cog_spec$unique$col[ii]]][1]
+    for (ii in seq_along(cog_spec$num$col))
+      res[[cog_spec$num$cogname[ii]]] <- mean(x[[cog_spec$num$col[ii]]])
+    res
+  })
 
   if (data_is_df) {
     return(

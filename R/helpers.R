@@ -39,10 +39,27 @@ panel <- function(x) {
 #' }
 #' @export
 panels <- function(.x, .f, ...) {
-  res <- map(.x, .f, ...)
-  class(res) <- c("trelliscope_panels", class(res))
-  res
+  structure(
+    purrr::map(.x, .f, ...),
+    class = c("trelliscope_panels", "list")
+  )
 }
+
+#' Cogs Wrapper Function
+#' Wrapper function to specify a cognostics function to be applied to a list-column for use tidy group/nest/mutate/map-like situations
+#'
+#' @param .x a list or atomic vector (see \code{\link[purrr]{map}} for details)
+#' @param .f a function, formula, or atomic vector (see \code{\link[purrr]{map}} for details)
+#' @param ... additional arguments passed on to .f (see \code{\link[purrr]{map}} for details)
+
+#' @export
+cogs <- function(.x, .f, ...) {
+  structure(
+    purrr::map(.x, .f, ...),
+    class = c("trelliscope_cogs", "list")
+  )
+}
+
 
 #' Set labels for a data frame
 #'
