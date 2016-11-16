@@ -109,6 +109,38 @@ infer_cog_type <- function(val) {
   type
 }
 
+#' Href Cognostic
+#'
+#' Create href to be used as cognostics in a trelliscope display
+#'
+#' @param x URL to link to
+#' @param desc,group,default_label,default_active,filterable,sortable,log arguments passed to \code{\link{cog}}
+#'
+#' @seealso \code{\link{cog}}
+#' @examples
+#' \dontrun{
+#' library(dplyr)
+#' library(rbokeh)
+#' iris %>%
+#'   group_by(Species) %>%
+#'   summarise(
+#'     wiki_link = cog_href(paste0("https://en.wikipedia.org/wiki/Iris_",
+#'       tolower(Species))[1], default_label = TRUE,
+#'       desc = "link to species on wikipedia"),
+#'     panel = panel(figure(xlab = "Sepal Length", ylab = "Sepal Width") %>%
+#'       ly_points(Sepal.Length, Sepal.Width))) %>%
+#'   trelliscope(name = "iris_species", ncol = 3)
+#' }
+#' @export
+cog_href <- function(x, desc = "link", group = "common",
+  default_label = FALSE, default_active = FALSE, filterable = FALSE,
+  sortable = FALSE, log = FALSE) {
+
+  cog(x, type = "href", desc = desc, group = group, default_label = default_label,
+    default_active = default_active, filterable = filterable, sortable = sortable,
+    log = log)
+}
+
 #' Cast a data frame as a cognostics data frame
 #'
 #' @param x a data frame

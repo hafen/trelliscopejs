@@ -74,6 +74,17 @@ test_that("examples run without barfing", {
     trelliscope(name = "city_vs_highway_mpg")
   print(p)
 
+  p <- iris %>%
+    group_by(Species) %>%
+    summarise(
+      wiki_link = cog_href(paste0("https://en.wikipedia.org/wiki/Iris_",
+        tolower(Species))[1], default_label = TRUE,
+        desc = "link to species on wikipedia"),
+      panel = panel(figure(xlab = "Sepal Length", ylab = "Sepal Width") %>%
+        ly_points(Sepal.Length, Sepal.Width))) %>%
+    trelliscope(name = "iris_species", ncol = 3)
+  print(p)
+
   ## ggplot2
   ##---------------------------------------------------------
 
@@ -95,4 +106,5 @@ test_that("examples run without barfing", {
       state = list(sort = list(sort_spec("cty_mean"))), path = "_test") +
     ylim(7, 37) + theme_bw()
   print(p)
+
 })
