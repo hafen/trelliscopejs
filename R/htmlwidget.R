@@ -18,7 +18,7 @@ trelliscope_widget <- function(id, config_info, www_dir, latest_display,
     x,
     width = width,
     height = height,
-    package = "trelliscope2",
+    package = "trelliscopejs",
     sizingPolicy = htmlwidgets::sizingPolicy(padding = 0, browser.fill = TRUE,
       knitr.defaultWidth = 900, knitr.defaultHeight = 550, knitr.figure = FALSE,
       viewer.defaultWidth = "100%", viewer.defaultHeight = "100%", viewer.padding = 0,
@@ -149,7 +149,7 @@ trscope_html_print <- function(html, www_dir = NULL, background = "white",
 #' @export
 trelliscopeOutput <- function(outputId, width = "100%", height = "400px"){
   htmlwidgets::shinyWidgetOutput(outputId, "TrelliscopeJS", width, height,
-    package = "trelliscope2")
+    package = "trelliscopejs")
 }
 
 #' @rdname Trelliscope-shiny

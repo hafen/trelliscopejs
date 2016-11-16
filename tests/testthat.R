@@ -1,4 +1,4 @@
 library(testthat)
-library(trelliscope2)
+library(trelliscopejs)
 
-test_check("trelliscope2")
+test_check("trelliscopejs")

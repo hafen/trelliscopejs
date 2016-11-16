@@ -1,15 +1,15 @@
-## trelliscope2
+## trelliscopejs R Package
 
-[![Build Status](https://travis-ci.org/hafen/trelliscope2.svg?branch=master)](https://travis-ci.org/hafen/trelliscope2)
-[![codecov.io](https://codecov.io/github/hafen/trelliscope2/coverage.svg?branch=master)](https://codecov.io/github/hafen/trelliscope2?branch=master)
-[![CRAN](http://www.r-pkg.org/badges/version/trelliscope2)](https://cran.r-project.org/package=trelliscope2)
+[![Build Status](https://travis-ci.org/hafen/trelliscopejs.svg?branch=master)](https://travis-ci.org/hafen/trelliscopejs)
+[![codecov.io](https://codecov.io/github/hafen/trelliscopejs/coverage.svg?branch=master)](https://codecov.io/github/hafen/trelliscopejs?branch=master)
+[![CRAN](http://www.r-pkg.org/badges/version/trelliscopejs)](https://cran.r-project.org/package=trelliscopejs)
 
-Trelliscope is a scalable, flexible, interactive approach to visualizing data. trelliscope2 provides methods that make it easy to create a Trelliscope display specification for [TrelliscopeJS](https://github.com/hafen/trelliscopejs). High-level functions are provided for creating displays from within dplyr (via `summarise()`) or ggplot2 (via `facet_trelliscope()`) workflows. Low-level functions are also provided for creating new interfaces.
+Trelliscope is a scalable, flexible, interactive approach to visualizing data. trelliscopejs provides methods that make it easy to create a Trelliscope display specification for [TrelliscopeJS](https://github.com/hafen/trelliscopejs). High-level functions are provided for creating displays from within dplyr (via `summarise()`) or ggplot2 (via `facet_trelliscope()`) workflows. Low-level functions are also provided for creating new interfaces.
 
 ### Install
 
 ```r
-devtools::install_github("hafen/trelliscope2")
+devtools::install_github("hafen/trelliscopejs")
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ Also, see [here](http://hafen.github.io/trelliscopejs-demo/) for an example host
 Example:
 
 ```r
-library(trelliscope2)
+library(trelliscopejs)
 library(ggplot2)
 
 qplot(cty, hwy, data = mpg) +
@@ -35,7 +35,7 @@ qplot(cty, hwy, data = mpg) +
 Example:
 
 ```r
-library(trelliscope2)
+library(trelliscopejs)
 library(dplyr)
 library(rbokeh)
 

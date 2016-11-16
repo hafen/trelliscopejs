@@ -1,14 +1,14 @@
 utils::globalVariables(c(".", "x", "y", "label"))
 
-#' trelliscope2
+#' trelliscopejs
 #'
 #' Create interactive Trelliscope displays
 #'
-#' \url{http://hafen.github.io/trelliscope2/}
+#' \url{http://hafen.github.io/trelliscopejs/}
 #'
-#' @name trelliscope2-package
+#' @name trelliscopejs-package
 #' @examples
-#' help(package = trelliscope2)
+#' help(package = trelliscopejs)
 #' @docType package
 NULL
 

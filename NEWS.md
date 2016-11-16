@@ -1,4 +1,4 @@
-# trelliscope2 0.1.0
+# trelliscopejs 0.1.0
 
 * Initial package version
 

@@ -1,4 +1,4 @@
-Package: trelliscope2
+Package: trelliscopejs
 Title: Create Interactive Trelliscope Displays
 Version: 0.1.0
 Authors@R: c(
@@ -32,9 +32,10 @@ Suggests:
     testthat,
     covr,
     gapminder,
+    rbokeh,
     housingData,
     packagedocs
 RoxygenNote: 5.0.1
-URL: https://github.com/hafen/trelliscope2
-BugReports: https://github.com/hafen/trelliscope2/issues
+URL: https://github.com/hafen/trelliscopejs
+BugReports: https://github.com/hafen/trelliscopejs/issues
 VignetteBuilder: packagedocs
