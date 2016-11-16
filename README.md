@@ -4,7 +4,7 @@
 [![codecov.io](https://codecov.io/github/hafen/trelliscopejs/coverage.svg?branch=master)](https://codecov.io/github/hafen/trelliscopejs?branch=master)
 [![CRAN](http://www.r-pkg.org/badges/version/trelliscopejs)](https://cran.r-project.org/package=trelliscopejs)
 
-Trelliscope is a scalable, flexible, interactive approach to visualizing data. trelliscopejs provides methods that make it easy to create a Trelliscope display specification for [TrelliscopeJS](https://github.com/hafen/trelliscopejs). High-level functions are provided for creating displays from within dplyr (via `summarise()`) or ggplot2 (via `facet_trelliscope()`) workflows. Low-level functions are also provided for creating new interfaces.
+Trelliscope is a scalable, flexible, interactive approach to visualizing data. The trelliscopejs R package provides methods that make it easy to create a Trelliscope display specification for the Trelliscope JavaScript library [trelliscopejs-lib](https://github.com/hafen/trelliscopejs-lib). High-level functions are provided for creating displays from within dplyr (via `summarise()`) or ggplot2 (via `facet_trelliscope()`) workflows. Low-level functions are also provided for creating new interfaces.
 
 ### Install
 
