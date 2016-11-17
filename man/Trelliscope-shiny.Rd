@@ -17,7 +17,7 @@ renderTrelliscope(expr, env = parent.frame(), quoted = FALSE)
 \code{'400px'}, \code{'auto'}) or a number, which will be coerced to a
 string and have \code{'px'} appended.}
 
-\item{expr}{An expression that generates a TrelliscopeJS}
+\item{expr}{An expression that generates a trelliscopejs_widget}
 
 \item{env}{The environment in which to evaluate \code{expr}.}
 
@@ -25,7 +25,7 @@ string and have \code{'px'} appended.}
 is useful if you want to save an expression in a variable.}
 }
 \description{
-Output and render functions for using TrelliscopeJS within Shiny
+Output and render functions for using trelliscopejs_widget within Shiny
 applications and interactive Rmd documents.
 }
 

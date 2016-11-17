@@ -4,9 +4,13 @@ trelliscope_widget <- function(id, config_info, www_dir, latest_display,
   # TODO: warn if width or height are too small
 
   # forward options using x
-  x <- list(id = id, config_info = config_info, www_dir = www_dir,
-    latest_display = latest_display, self_contained = self_contained,
-    spa = spa, in_knitr = getOption("knitr.in.progress", FALSE))
+  x <- list(
+    id = id,
+    config_info = config_info,
+    self_contained = self_contained,
+    latest_display = latest_display,
+    spa = spa,
+    in_knitr = getOption("knitr.in.progress", FALSE))
 
   if (spa) {
     width <- height <- "100%"
@@ -14,7 +18,7 @@ trelliscope_widget <- function(id, config_info, www_dir, latest_display,
 
   # create widget
   wdgt <- htmlwidgets::createWidget(
-    name = "TrelliscopeJS",
+    name = "trelliscopejs_widget",
     x,
     width = width,
     height = height,
@@ -24,8 +28,13 @@ trelliscope_widget <- function(id, config_info, www_dir, latest_display,
       viewer.defaultWidth = "100%", viewer.defaultHeight = "100%", viewer.padding = 0,
       viewer.fill = TRUE,
       browser.defaultWidth = "100%", browser.defaultHeight = "100%", browser.padding = 0),
-    dependencies = dependencies,
     preRenderHook = prerender_selfcontained
+  )
+
+  # don't want these to get shipped in the html page
+  # but we do want them to persist so we can edit the object...
+  attr(wdgt, "trelliscope_pars") <- list(
+    www_dir = www_dir
   )
 
   return(wdgt)
@@ -33,7 +42,8 @@ trelliscope_widget <- function(id, config_info, www_dir, latest_display,
 
 prerender_selfcontained <- function(x) {
   if (x$x$self_contained) {
-    path <- file.path(x$x$www_dir, "appfiles")
+    www_dir <- attr(x, "trelliscope_pars")$www_dir
+    path <- file.path(www_dir, "appfiles")
     disp_path <- file.path(path, "displays", x$x$latest_display$group,
       x$x$latest_display$name)
     pfs <- list.files(file.path(disp_path, "json"), full.names = TRUE)
@@ -60,11 +70,18 @@ prerender_selfcontained <- function(x) {
   x
 }
 
+#' @importFrom knitr knit_print
+#' @export
+knit_print.facet_trelliscope <- function(x, ..., options = NULL) {
+  x <- print.facet_trelliscope(x)
+  knitr::knit_print(x, ..., options = options)
+}
+
 # nolint start
 
-# Override print.htmlwidget for TrelliscopeJS widgets so we can control the output location
+# Override print.htmlwidget for trelliscopejs_widget so we can control the output location
 #' @export
-print.TrelliscopeJS <- function(x, ..., view = interactive()) {
+print.trelliscopejs_widget <- function(x, ..., view = interactive()) {
 
   # hacky way to detect R Markdown Notebook
   print_fn <- try(get("print.htmlwidget"), silent = TRUE)
@@ -74,7 +91,7 @@ print.TrelliscopeJS <- function(x, ..., view = interactive()) {
 
   # if (x$x$self_contained) {
   #   # we want to use the
-  #   class(x) <- gsub("TrelliscopeJS", "TrelliscopeJS2", class(x))
+  #   class(x) <- gsub("trelliscopejs_widget", "trelliscopejs_widget2", class(x))
   #   return(print(x))
   # }
 
@@ -99,12 +116,14 @@ print.TrelliscopeJS <- function(x, ..., view = interactive()) {
     viewerFunc <- utils::browseURL
   }
 
-  # TODO: check if x$x$www_dir is in tempdir() or not and handle / warn appropriately
+  www_dir <- attr(x, "trelliscope_pars")$www_dir
+
+  # TODO: check if www_dir is in tempdir() or not and handle / warn appropriately
   # based on self_contained, etc.
 
   # call html_print with the viewer
   el_tags <- htmltools::as.tags(x, standalone = FALSE)
-  trscope_html_print(el_tags, www_dir = x$x$www_dir, viewer = if (view) viewerFunc)
+  trelliscope_html_print(el_tags, www_dir = www_dir, viewer = if (view) viewerFunc)
 
   # return value
   invisible(x)
@@ -112,7 +131,7 @@ print.TrelliscopeJS <- function(x, ..., view = interactive()) {
 
 # nolint end
 
-trscope_html_print <- function(html, www_dir = NULL, background = "white",
+trelliscope_html_print <- function(html, www_dir = NULL, background = "white",
   viewer = getOption("viewer", utils::browseURL)) {
   if (is.null(www_dir))
     www_dir <- tempfile("viewhtml")
@@ -132,14 +151,14 @@ trscope_html_print <- function(html, www_dir = NULL, background = "white",
 
 #' Shiny bindings for Trelliscope
 #'
-#' Output and render functions for using TrelliscopeJS within Shiny
+#' Output and render functions for using trelliscopejs_widget within Shiny
 #' applications and interactive Rmd documents.
 #'
 #' @param outputId output variable to read from
 #' @param width,height Must be a valid CSS unit (like \code{'100\%'},
 #'   \code{'400px'}, \code{'auto'}) or a number, which will be coerced to a
 #'   string and have \code{'px'} appended.
-#' @param expr An expression that generates a TrelliscopeJS
+#' @param expr An expression that generates a trelliscopejs_widget
 #' @param env The environment in which to evaluate \code{expr}.
 #' @param quoted Is \code{expr} a quoted expression (with \code{quote()})? This
 #'   is useful if you want to save an expression in a variable.
@@ -148,7 +167,7 @@ trscope_html_print <- function(html, www_dir = NULL, background = "white",
 #'
 #' @export
 trelliscopeOutput <- function(outputId, width = "100%", height = "400px"){
-  htmlwidgets::shinyWidgetOutput(outputId, "TrelliscopeJS", width, height,
+  htmlwidgets::shinyWidgetOutput(outputId, "trelliscopejs_widget", width, height,
     package = "trelliscopejs")
 }
 

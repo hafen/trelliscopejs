@@ -25,7 +25,8 @@ Imports:
     htmlwidgets,
     graphics,
     progress,
-    utils
+    utils,
+    knitr
 Suggests:
     rbokeh,
     Cairo,

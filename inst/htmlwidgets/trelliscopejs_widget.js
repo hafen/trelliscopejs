@@ -6,7 +6,7 @@ function px(x) {
 }
 
 HTMLWidgets.widget({
-  name: 'TrelliscopeJS',
+  name: 'trelliscopejs_widget',
   type: 'output',
   factory: function(el, width, height) {
     // define shared variables for this instance...

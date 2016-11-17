@@ -100,6 +100,8 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
     spa <- FALSE # results are inline with others
   }
 
+  orig_path <- path
+
   if (is.null(path) || self_contained) {
     if (in_knitr) {
       www_dir <- getwd()
@@ -110,6 +112,17 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
     www_dir <- normalizePath(path, mustWork = FALSE)
   }
   path <- file.path(www_dir, "appfiles")
+  if (!dir.exists(path))
+    dir.create(path, recursive = TRUE)
+  path <- normalizePath(path)
+
+  # if outside knitr, config.jsonp will always be available to index.html inside appfiles
+  config_path <- "appfiles/config.jsonp"
+  if (in_knitr) {
+    if (!grepl("^[A-Za-z0-9_]", orig_path))
+      stop_nice("Path for trelliscope output while inside knitr must be relative.")
+    config_path <- paste(orig_path, config_path, sep = "/")
+  }
 
   if (self_contained) {
     jsonp <- FALSE
@@ -125,6 +138,7 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
   list(
     path = path,
     www_dir = www_dir,
+    config_path = config_path,
     jsonp = jsonp,
     self_contained = self_contained,
     name = sanitize(name),
@@ -132,6 +146,7 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
     id = get_id(path),
     spa = spa,
     state = state,
+    in_knitr = in_knitr,
     thumb = thumb
   )
 }

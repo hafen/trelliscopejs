@@ -139,7 +139,7 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
     latest_display = list(name = params$name, group = params$group),
     self_contained = params$self_contained,
     dependencies = get_dependencies(panels[[1]]),
-    config_info = "appfiles/config.jsonp",
+    config_info = params$config_path,
     spa = params$spa
   )
 }
