@@ -322,8 +322,8 @@ d <- housing %>%
   group_by(county, state) %>%
   summarise(
     slope = cog(lm_coefs(time, medListPriceSqft)[2], desc = "list price slope"),
-    med_list = cog(mean(medListPriceSqft, na.rm = TRUE), desc = "median list price / sq ft"),
-    med_sold = cog(mean(medSoldPriceSqft, na.rm = TRUE), desc = "median sold price / sq ft"),
+    mean_list = cog(mean(medListPriceSqft, na.rm = TRUE), desc = "mean list price / sq ft"),
+    mean_sold = cog(mean(medSoldPriceSqft, na.rm = TRUE), desc = "mean sold price / sq ft"),
     n_obs = cog(length(which(!is.na(medListPriceSqft))),
        desc = "number of non-NA list prices"),
     zillow_link = cog_href(
