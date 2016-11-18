@@ -12,7 +12,6 @@ _ignore
 \.sublime\-
 \.Rapp\.history
 package.json
-inst/trelliscopeViewer/www/widgetassets/*
 rhipe-java*.log
 tools/
 cran-comments.md

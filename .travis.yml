@@ -1,8 +1,11 @@
-# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
-
 language: R
 sudo: false
 cache: packages
 
 after_success:
   - Rscript -e 'covr::codecov()'
+  - Rscript -e "packagedocs::deploy_travis()"
+
+env:
+  global:
+    secure: "PpC0ZIFw2TRK5NUnRp0aDwuVgnaT2/uKhQ+YmkIfq7O3c6HhxRIs19opdCvD3skrgkslmVY9QfNjr2Zw5Vz/FafZ8nnr5zd7UdrlX1oaHW4WJ1pTyi/5Hl83bG0PZMo2byKQ7j4c720yl7MmtTx8i9P7PKTxjVOaxqAPiMjamWw="
