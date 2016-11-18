@@ -14,9 +14,9 @@ devtools::install_github("hafen/trelliscopejs")
 
 ## Usage
 
-The examples below are minimal. Please see the package vignettes for more examples of what can be done.
+The examples below are minimal. Please see the [package vignettes](https://hafen.github.io/trelliscopejs) for more.
 
-Also, see [here](http://hafen.github.io/trelliscopejs-demo/) for an example hosted live.
+Also, see [here](http://hafen.github.io/trelliscopejs-demo/housing) for an example hosted live.
 
 #### Simple usage with ggplot
 
