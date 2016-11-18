@@ -1,0 +1,20 @@
+---
+title: "trelliscopejs Function Reference"
+author: "Ryan Hafen"
+copyright: "Ryan Hafen"
+output:
+  packagedocs::package_docs_rd:
+    toc: true
+    toc_collapse: false
+redirect: http://hafen.github.io/trelliscopejs/rd.html
+vignette: |
+  %\VignetteIndexEntry{trelliscopejs Package Reference}
+  %\VignetteEngine{packagedocs::redirect}
+navpills: |
+  <li><a href='index.html'>Docs</a></li>
+  <li class="active"><a href='rd.html'>Package Ref</a></li>
+  <li><a href='https://github.com/hafen/trelliscopejs'>Github <i class='fa fa-github'></i></a></li>
+---
+
+```{r auto-gen-child, child="auto-generated-rd.Rmd"}
+```
