@@ -552,8 +552,8 @@ It would be really cool to see other languages become trelliscopejs-lib interfac
 
 <script>
   (function() {
-    trelliscopeApp('ebbfa969', 'http://hafen.github.io/trelliscopejs-demo/mpg/appfiles/config.jsonp');
-    trelliscopeApp('32b2482a', 'http://hafen.github.io/trelliscopejs-demo/gapminder/appfiles/config.jsonp');
-    trelliscopeApp('8a43f2dd', 'http://hafen.github.io/trelliscopejs-demo/housing/appfiles/config.jsonp');
+    trelliscopeApp('ebbfa969', 'https://hafen.github.io/trelliscopejs-demo/mpg/appfiles/config.jsonp');
+    trelliscopeApp('32b2482a', 'https://hafen.github.io/trelliscopejs-demo/gapminder/appfiles/config.jsonp');
+    trelliscopeApp('8a43f2dd', 'https://hafen.github.io/trelliscopejs-demo/housing/appfiles/config.jsonp');
   })();
 </script>
