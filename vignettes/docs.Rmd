@@ -304,7 +304,7 @@ The data being plotted is fairly simple -- we see a usually steady increase in l
 
 ## Housing data
 
-While the power of small multiples often lies in making rapid comparisons across many panels, it can also be useful to study individual subsets of data over a large space of subsets. A good example of this is with data available in the "housingData" package.
+While the power of small multiples often lies in making rapid comparisons across many panels, it can also be useful to study individual subsets of data over a large space of subsets. A good example of this is with data available in the ["housingData"](https://github.com/hafen/housingData) package.
 
 This package has a dataset, "housing" that gives the monthly median list and sold price for residential homes by US county, provided by Zillow. Let's take a look at the median list price over time by county.
 
@@ -391,7 +391,7 @@ Even when not looking for anomalous or "strange" behavior in data, small multipl
 
 Even if we are not using small multiples to find visual features that stand out, they are useful because they help eliminate overplotting. A lot of data in a small space can be confusing for visualization consumers, and small multiples break that data up into pieces that are displayed independently in a grid, allowing for greater detail of the data being plotted in each grid cell, particularly when these cells can be paginated and displayed at a higher resolution.
 
-The ability to slice data into many plots also helps deal with higher dimensional data. Small multiples handle higher dimensions by using one or more of the variables to determine how to break the data up, and then for each subset plotting the data for one or two variables.  In most cases is *much* more effective than 3d visualization, and can scale to higher dimensions than 3. One needs to look no further than `library(lattice); example(xyplot)` to see this idea in action.
+The ability to slice data into many plots also helps deal with higher dimensional data. Small multiples handle higher dimensions by using one or more of the variables to determine how to break the data up, and then for each subset plotting the data for one or two variables.  In most cases this is *much* more effective than 3d visualization, and can scale to higher dimensions than 3. One needs to look no further than `library(lattice); example(xyplot)` to see this idea in action.
 
 <!--
 For example:
@@ -525,6 +525,8 @@ The biggest thing on the horizon and the one I'm most excited about is the idea 
 If you haven't noticed, axis scales are important when viewing a small multiple display. As stated [here](http://www.juiceanalytics.com/writing/better-know-visualization-small-multiples), "Small multiples should share the same measures, scales, size, and shape. Changing one of these factors undermines ability for people to re-use their understanding of the chart."
 
 Currently you have to manually specify axis limits with trelliscopejs, but we plan to soon add the ability to specify your axes as "same", "sliced", or "free".
+
+Also, axes take up a lot of screen real estate, and when all the axes are the same, we can save that space and open up more space for visual comparison by moving the axes to the margins of the grid. This will require the ability to decompose panels into content and axes and will take some work, but is an important priority.
 
 ### Grid placement sometimes matters
 
