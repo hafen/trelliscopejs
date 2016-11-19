@@ -8,6 +8,7 @@
 #' @param path the base directory of the trelliscope application
 #' @param height height in pixels of each panel
 #' @param width width in pixels of each panel
+#' @param augo_cog should auto cogs be computed (if possible)?
 #' @param state the initial state the display will open in
 #' @param nrow the number of rows of panels to display by default
 #' @param ncol the number of columns of panels to display by default
@@ -18,13 +19,13 @@
 #' @example man-roxygen/ex-trelliscope.R
 #' @export
 trelliscope <- function(x, name, group = "common", desc = "",
-  md_desc = "", path, height = 500, width = 500, state = NULL,
+  md_desc = "", path, height = 500, width = 500, auto_cog = TRUE, state = NULL,
   nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = TRUE)
   UseMethod("trelliscope")
 
 #' @export
 trelliscope.data.frame <- function(x, name, group = "common", desc = "",
-  md_desc = "", path = NULL, height = 500, width = 500, state = NULL,
+  md_desc = "", path = NULL, height = 500, width = 500, auto_cog = TRUE, state = NULL,
   nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = TRUE) {
 
   classes <- unlist(lapply(x, function(a) class(a)[1]))
@@ -65,7 +66,7 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
   }
 
   cogs <- list(as_cognostics(x[atomic_cols], cond_cols))
-  if (length(non_atomic_cols) > 0) {
+  if (length(non_atomic_cols) > 0 && auto_cog) {
     usable <- non_atomic_cols[sapply(x[non_atomic_cols], function(a) is.data.frame(a[[1]]))]
     needs_auto <- usable[sapply(x[usable], function(a) {
       any(sapply(a, nrow) > 1)

@@ -5,8 +5,8 @@
 \title{Create a Trelliscope Display}
 \usage{
 trelliscope(x, name, group = "common", desc = "", md_desc = "", path,
-  height = 500, width = 500, state = NULL, nrow = 1, ncol = 1,
-  jsonp = TRUE, self_contained = FALSE, thumb = TRUE)
+  height = 500, width = 500, auto_cog = TRUE, state = NULL, nrow = 1,
+  ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = TRUE)
 }
 \arguments{
 \item{x}{an object to create at trelliscope display for}
@@ -36,6 +36,8 @@ trelliscope(x, name, group = "common", desc = "", md_desc = "", path,
 \item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
 
 \item{thumb}{should a thumbnail be created?}
+
+\item{augo_cog}{should auto cogs be computed (if possible)?}
 }
 \description{
 Create a Trelliscope Display
