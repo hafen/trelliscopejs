@@ -302,6 +302,8 @@ If you'd like to interact with this display, try sorting primarily on life expec
 
 The data being plotted is fairly simple -- we see a usually steady increase in life expectancy over time, with varying mean by country. However, the eye is able to quickly catch deviations from the normal pattern such as the dips in Rwanda and Cambodia or the peaks in life expectancy in several African countries in the late 80s / early 90s with life expectancy decreasing after. 142 countries is almost small enough that you might stick all of them on one static trellis display, but the added functionality of filtering and sorting helps navigate the displays in an interactive query-driven manner.
 
+<!-- small multiples vs. animation.... While animation can make general impressions about things going on in the data, it is very difficult to quantitatively capture what is really going on over time because you can't compare one frame to another. -->
+
 ## Housing data
 
 While the power of small multiples often lies in making rapid comparisons across many panels, it can also be useful to study individual subsets of data over a large space of subsets. A good example of this is with data available in the ["housingData"](https://github.com/hafen/housingData) package.
@@ -459,7 +461,7 @@ In addition to exploratory displays of data as apps, Trelliscope displays can al
 
 trelliscopejs is an [htmlwidget](http://www.htmlwidgets.org/) interface to the [trelliscopejs-lib](https://www.npmjs.com/package/trelliscopejs-lib) JavaScript library. While this is a (probably) rare example of an htmlwidget where both the JavaScript and R libraries are entirely written and maintained by the same entity, trelliscopejs-lib is designed to be language-agnostic, meaning that for a new language to provide a binding to trelliscopejs-lib, it simply needs to provide a JSON specification that trelliscopejs-lib knows how to handle. The schema for this spec is settling in, but is still subject to change. More documentation will be provided as demand necessitates.
 
-For those who are interested, trelliscopejs-lib is written using [React](https://facebook.github.io/react/), [redux](http://redux.js.org/), and [Webpack](https://webpack.github.io/). Other major components include [material-ui](http://www.material-ui.com/#/) and [crossfilter](https://www.npmjs.com/package/crossfilter2).
+For those who are interested, trelliscopejs-lib is written using [React](https://facebook.github.io/react/), [redux](http://redux.js.org/), and [Webpack](https://webpack.github.io/). Other major components include [material-ui](http://www.material-ui.com/#/) and [crossfilter](https://www.npmjs.com/package/crossfilter2), and [d3](https://d3js.org/).
 
 The library is available on [npm](https://www.npmjs.com/package/trelliscopejs-lib) and therefore over CDN using [unpkg](http://unpkg.com/). All dependencies, fonts, css, etc. are bundled into the library and it weighs in at a little over 1MB.
 
