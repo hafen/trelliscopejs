@@ -25,6 +25,8 @@ trelliscope(x, name, group = "common", desc = "", md_desc = "", path,
 
 \item{width}{width in pixels of each panel}
 
+\item{auto_cog}{should auto cogs be computed (if possible)?}
+
 \item{state}{the initial state the display will open in}
 
 \item{nrow}{the number of rows of panels to display by default}
@@ -36,8 +38,6 @@ trelliscope(x, name, group = "common", desc = "", md_desc = "", path,
 \item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
 
 \item{thumb}{should a thumbnail be created?}
-
-\item{augo_cog}{should auto cogs be computed (if possible)?}
 }
 \description{
 Create a Trelliscope Display

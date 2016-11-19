@@ -8,7 +8,7 @@
 #' @param path the base directory of the trelliscope application
 #' @param height height in pixels of each panel
 #' @param width width in pixels of each panel
-#' @param augo_cog should auto cogs be computed (if possible)?
+#' @param auto_cog should auto cogs be computed (if possible)?
 #' @param state the initial state the display will open in
 #' @param nrow the number of rows of panels to display by default
 #' @param ncol the number of columns of panels to display by default
