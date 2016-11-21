@@ -66,18 +66,21 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
   }
 
   cogs <- list(as_cognostics(x[atomic_cols], cond_cols))
-  if (length(non_atomic_cols) > 0 && auto_cog) {
-    usable <- non_atomic_cols[sapply(x[non_atomic_cols], function(a) is.data.frame(a[[1]]))]
+  if (length(non_atomic_cols) > 0) {
+    usable <- non_atomic_cols[sapply(x[non_atomic_cols],
+      function(a) is.data.frame(a[[1]]))]
     needs_auto <- usable[sapply(x[usable], function(a) {
       any(sapply(a, nrow) > 1)
     })]
-    for (a in needs_auto) {
-      cogs[[length(cogs) + 1]] <- x[c(cond_cols, a)] %>%
-        auto_cogs() %>%
-        select(-one_of(a)) %>%
-        unnest() %>%
-        as_cognostics(cond_cols) %>%
-        select(-one_of(c(cond_cols, "panelKey")))
+    if (auto_cog) {
+      for (a in needs_auto) {
+        cogs[[length(cogs) + 1]] <- x[c(cond_cols, a)] %>%
+          auto_cogs() %>%
+          select(-one_of(a)) %>%
+          unnest() %>%
+          as_cognostics(cond_cols) %>%
+          select(-one_of(c(cond_cols, "panelKey")))
+      }
     }
     no_needs_auto <- setdiff(usable, needs_auto)
     for (a in no_needs_auto) {
