@@ -19,6 +19,16 @@ panel <- function(x) {
   structure(list(x), class = "trelliscope_panels")
 }
 
+#' Cast a vector of URLs pointing to images as an image panel source
+#'
+#' @param x a vector of URLs pointing to images
+#' @export
+img_panel <- function(x) {
+  cog(x, desc = "panel image source URL", type = "panelSrc",
+    filterable = FALSE, sortable = FALSE)
+}
+
+
 #' Panels Wrapper Function
 #' Wrapper function to specify a plot command to be applied to a list-column for use tidy group/nest/mutate/map-like situations
 #'

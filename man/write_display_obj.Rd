@@ -6,7 +6,8 @@
 \usage{
 write_display_obj(cogdf, panel_example, base_path, id, name, group = "common",
   desc = "", height = 500, width = 500, md_desc = "", state = NULL,
-  jsonp = TRUE, self_contained = FALSE, thumb = TRUE, pb = NULL)
+  jsonp = TRUE, panel_img_col = NULL, self_contained = FALSE,
+  thumb = TRUE, pb = NULL)
 }
 \arguments{
 \item{cogdf}{a data frame of cognostics, prepared with \code{\link{as_cognostics}}}
@@ -32,6 +33,8 @@ write_display_obj(cogdf, panel_example, base_path, id, name, group = "common",
 \item{state}{the initial state the display will open in}
 
 \item{jsonp}{should json for display object be jsonp (TRUE) or json (FALSE)?}
+
+\item{panel_img_col}{which column (if any) is a panel image column?}
 
 \item{self_contained}{should the Trelliscope display be a self-contained html document?}
 

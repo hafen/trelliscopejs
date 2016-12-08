@@ -30,9 +30,17 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
 
   classes <- unlist(lapply(x, function(a) class(a)[1]))
 
+  panel_img_col <- names(which(unlist(lapply(x, function(a) {
+    tp <- attr(a, "cog_attrs")$type
+    if (is.null(tp))
+      return(FALSE)
+    if (tp == "panelSrc")
+      return(TRUE)
+  }))))
   panel_col <- names(which(classes == "trelliscope_panels"))
-  if (length(panel_col) != 1)
-    stop_nice("A column containing the panel to be plotted must be specified using panel().")
+  if (length(panel_col) != 1 && length(panel_img_col) != 1)
+    stop_nice("A column containing the panel to be plotted must be specified",
+      "using panel() or img_panel().")
 
   atomic_cols <- names(x)[sapply(x, is.atomic)]
   non_atomic_cols <- setdiff(names(x), c(atomic_cols, panel_col))
@@ -100,26 +108,32 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
     sanitize()
   x$panelKey <- keys # nolint
 
-  panels <- x[[panel_col]]
-  names(panels) <- keys
-
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",
     total = 5 + length(panels), width = getOption("width") - 8)
   pb$tick(0, tokens = list(what = "calculating         "))
 
-  write_panels(
-    panels,
-    base_path = params$path,
-    name = params$name,
-    group = params$group,
-    jsonp = params$jsonp,
-    pb = pb
-  )
+  if (length(panel_img_col) == 0) {
+    panels <- x[[panel_col]]
+    names(panels) <- keys
+
+    write_panels(
+      panels,
+      base_path = params$path,
+      name = params$name,
+      group = params$group,
+      jsonp = params$jsonp,
+      pb = pb
+    )
+  } else {
+    panels <- list(structure(list(), class = "img_panel"))
+    pb$tick(tokens = list(what = "writing panels      "))
+  }
 
   write_display_obj(
     cog_df,
     panel_example = panels[[1]],
+    panel_img_col = panel_img_col,
     base_path = params$path,
     id = params$id,
     name = params$name,

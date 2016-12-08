@@ -93,7 +93,13 @@ write_panel <- function(plot_object, key, base_path, name, group = "common",
 write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp = TRUE) {
   display_path <- file.path(base_path, "displays", group, name)
   txt <- get_jsonp_text(jsonp, paste0("__loadCogData__", id, "_", group, "_", name))
-  cat(paste0(txt$st, jsonlite::toJSON(cogdf), txt$nd),
+  jsn <- jsonlite::toJSON(cogdf, pretty = TRUE)
+  chk <- jsonlite::validate(jsn)
+  if (!chk)
+    stop_nice("There are issues with the cognostics data that are causing",
+      "invalid json to be generated:\n", attr(chk, "err"))
+
+  cat(paste0(txt$st, jsn, txt$nd),
     file = file.path(display_path,
       paste0("cogData.", ifelse(jsonp, "jsonp", "json"))))
 }
@@ -112,6 +118,7 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @param md_desc optional string of markdown that will be shown in the viewer for additional context about the display
 #' @param state the initial state the display will open in
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
+#' @param panel_img_col which column (if any) is a panel image column?
 #' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param thumb should a thumbnail be created?
 #' @param pb optional progress bar object to pass in and use to report progress
@@ -119,7 +126,7 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @export
 write_display_obj <- function(cogdf, panel_example, base_path, id, name, group = "common",
   desc = "", height = 500, width = 500, md_desc = "", state = NULL, jsonp = TRUE,
-  self_contained = FALSE, thumb = TRUE, pb = NULL) {
+  panel_img_col = NULL, self_contained = FALSE, thumb = TRUE, pb = NULL) {
 
   display_path <- file.path(base_path, "displays", group, name)
   panel_path <- file.path(display_path, ifelse(jsonp, "jsonp", "json"))
@@ -138,6 +145,18 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
   if (!is.null(pb))
     pb$tick(tokens = list(what = "building display obj"))
 
+  panelInterface <- list()
+  if (inherits(panel_example, "htmlwidget")) {
+    panelInterface$type <- ifelse(inherits(panel_example, "htmlwidget"),
+      "htmlwidget", "image")
+    panelInterface$deps <- get_and_write_widget_deps(panel_example, base_path, self_contained)
+  } else if (inherits(panel_example, "img_panel")) {
+    panelInterface$type <- "image_src"
+    panelInterface$panelCol <- panel_img_col
+  } else {
+    panelInterface$type <- "image"
+  }
+
   disp_obj <- list(
     name = name,
     group = group,
@@ -149,10 +168,7 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
     width = width,
     keySig = digest::digest(sort(cogdf$panelKey)), # nolint
     cogInterface = list(name = name, group = group, type = "JSON"),
-    panelInterface = list(
-      type = ifelse(inherits(panel_example, "htmlwidget"), "htmlwidget", "image"),
-      deps = get_and_write_widget_deps(panel_example, base_path, self_contained)
-    ),
+    panelInterface = panelInterface,
     cogInfo = get_cog_info(cogdf),
     cogDistns = get_cog_distributions(cogdf)
   )
@@ -178,6 +194,9 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
     }
   }
   disp_obj$state <- state
+
+  if (!dir.exists(display_path))
+    dir.create(display_path, recursive = TRUE)
 
   txt <- get_jsonp_text(jsonp, paste0("__loadDisplayObj__", id, "_", group, "_", name))
   cat(paste0(txt$st,
