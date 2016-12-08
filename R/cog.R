@@ -38,16 +38,17 @@ cog <- function(val = NULL, desc = "", group = "common",
   filterable = TRUE, sortable = TRUE, log = NULL) {
 
   cog_types <- list(
-    key     = as.character,
-    integer = as.integer,
-    numeric = as.numeric,
-    factor  = as.character,
-    date    = as.Date,
-    time    = as.POSIXct,
-    # geo     = as.cogGeo,
-    # rel     = as.cogRel,
-    # hier    = as.cogHier,
-    href    = as.character
+    key      = as.character,
+    integer  = as.integer,
+    numeric  = as.numeric,
+    factor   = as.character,
+    date     = as.Date,
+    time     = as.POSIXct,
+    panelSrc = as.character,
+    # geo      = as.cogGeo,
+    # rel      = as.cogRel,
+    # hier     = as.cogHier,
+    href     = as.character
   )
 
   types <- names(cog_types)
@@ -180,7 +181,11 @@ as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL) {
       desc <- cog_desc[[nms[idx]]]
       if (!is.character(desc))
         desc <- nms[idx]
-      x[[idx]] <- cog(x[[idx]], desc = desc)
+      if (all(grepl("https*://", x[[idx]]))) {
+        x[[idx]] <- cog_href(x[[idx]], desc = paste(desc, "(link)"))
+      } else {
+        x[[idx]] <- cog(x[[idx]], desc = desc)
+      }
     }
   }
 
