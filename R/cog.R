@@ -148,27 +148,34 @@ cog_href <- function(x, desc = "link", group = "common",
 #' @param cond_cols the column name(s) that comprise the conditioning variables
 #' @param key_col the column name that indicates the panel key
 #' @param cog_desc an optional named list of descriptions for the cognostics columns
+#' @param needs_key does the result need to have a "key" column?
+#' @param needs_cond does the result need to have conditioning variable columns?
 #' @export
-as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL) {
+as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
+  needs_key = TRUE, needs_cond = TRUE) {
   # make each column a true cognostic so things are consistent downstream
 
-  if (is.null(key_col))
-    key_col <- "panelKey"
-  if (! key_col %in% names(x)) {
-    x$panelKey <- cog(sanitize( # nolint
-      apply(x[cond_cols], 1, paste, collapse = "_")),
-      desc = "panel key", type = "key", group = "panelKey",
-      default_active = TRUE, filterable = FALSE)
+  if (needs_key) {
+    if (is.null(key_col))
+      key_col <- "panelKey"
+    if (! key_col %in% names(x)) {
+      x$panelKey <- cog(sanitize( # nolint
+        apply(x[cond_cols], 1, paste, collapse = "_")),
+        desc = "panel key", type = "key", group = "panelKey",
+        default_active = TRUE, filterable = FALSE)
+    }
   }
 
-  if (! all(cond_cols %in% names(x)))
-    stop_nice("The cognostics data frame must have all specified cond_cols:",
-      paste(cond_cols, collapse = ", "))
+  if (needs_cond) {
+    if (! all(cond_cols %in% names(x)))
+      stop_nice("The cognostics data frame must have all specified cond_cols:",
+        paste(cond_cols, collapse = ", "))
 
-  for (cl in cond_cols) {
-    x[[cl]] <- cog(x[[cl]], desc = "conditioning variable",
-      type = ifelse(is.numeric(x[[cl]]), "numeric", "factor"),
-      group = "condVar", default_label = TRUE)
+    for (cl in cond_cols) {
+      x[[cl]] <- cog(x[[cl]], desc = "conditioning variable",
+        type = ifelse(is.numeric(x[[cl]]), "numeric", "factor"),
+        group = "condVar", default_label = TRUE)
+    }
   }
 
   # TODO: make sure cond_cols are unique and key_col is unique
