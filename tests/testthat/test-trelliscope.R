@@ -107,4 +107,19 @@ test_that("examples run without barfing", {
     ylim(7, 37) + theme_bw()
   print(p)
 
+  ## cogs
+  ##---------------------------------------------------------
+
+  p <- ggplot2::mpg %>%
+    group_by(manufacturer, class) %>%
+    nest() %>%
+    mutate(
+      additional_cogs = cogs(data,
+        ~ data_frame(
+          max_city_mpg = cog(max(.x$cty), desc = "Max city mpg"),
+          min_city_mpg = cog(min(.x$cty), desc = "Min city mpg"))),
+      panel = panels(data, ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
+        ly_points(cty, hwy, data = .x))) %>%
+    trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
+  print(p)
 })

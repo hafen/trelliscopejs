@@ -18,4 +18,21 @@ cogs(.x, .f, ...)
 Cogs Wrapper Function
 Wrapper function to specify a cognostics function to be applied to a list-column for use tidy group/nest/mutate/map-like situations
 }
+\examples{
+\dontrun{
+library(dplyr)
+library(tidyr)
+ggplot2::mpg \%>\%
+  group_by(manufacturer, class) \%>\%
+  nest() \%>\%
+  mutate(
+    additional_cogs = cogs(data,
+      ~ data_frame(
+        max_city_mpg = cog(max(.x$cty), desc = "Max city mpg"),
+        min_city_mpg = cog(min(.x$cty), desc = "Min city mpg"))),
+    panel = panels(data, ~ figure(xlab = "City mpg", ylab = "Highway mpg") \%>\%
+      ly_points(cty, hwy, data = .x))) \%>\%
+  trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
+}
+}
 
