@@ -93,7 +93,7 @@ write_panel <- function(plot_object, key, base_path, name, group = "common",
 write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp = TRUE) {
   display_path <- file.path(base_path, "displays", group, name)
   txt <- get_jsonp_text(jsonp, paste0("__loadCogData__", id, "_", group, "_", name))
-  jsn <- jsonlite::toJSON(cogdf, pretty = TRUE)
+  jsn <- jsonlite::toJSON(cogdf)
   chk <- jsonlite::validate(jsn)
   if (!chk)
     stop_nice("There are issues with the cognostics data that are causing",
@@ -236,6 +236,7 @@ prepare_display <- function(base_path, id, self_contained = FALSE, jsonp = TRUE,
   update_display_list(base_path, jsonp = jsonp)
   if (!is.null(pb))
     pb$tick(tokens = list(what = "writing app config  "))
+
   write_config(base_path, id = id, self_contained = self_contained, jsonp = jsonp)
 }
 
