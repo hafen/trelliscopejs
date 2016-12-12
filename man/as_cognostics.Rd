@@ -4,7 +4,8 @@
 \alias{as_cognostics}
 \title{Cast a data frame as a cognostics data frame}
 \usage{
-as_cognostics(x, cond_cols, key_col = NULL, cog_desc = NULL)
+as_cognostics(x, cond_cols, key_col = NULL, cog_desc = NULL,
+  needs_key = TRUE, needs_cond = TRUE)
 }
 \arguments{
 \item{x}{a data frame}
@@ -14,6 +15,10 @@ as_cognostics(x, cond_cols, key_col = NULL, cog_desc = NULL)
 \item{key_col}{the column name that indicates the panel key}
 
 \item{cog_desc}{an optional named list of descriptions for the cognostics columns}
+
+\item{needs_key}{does the result need to have a "key" column?}
+
+\item{needs_cond}{does the result need to have conditioning variable columns?}
 }
 \description{
 Cast a data frame as a cognostics data frame
