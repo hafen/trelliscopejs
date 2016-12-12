@@ -60,7 +60,8 @@ prerender_selfcontained <- function(x) {
       ", \"displayObj\": ",
       readLines(file.path(disp_path, "displayObj.json"), warn = FALSE),
       ", \"cogData\": ",
-      readLines(file.path(disp_path, "cogData.json"), warn = FALSE),
+      paste(readLines(file.path(disp_path, "cogData.json"), warn = FALSE),
+        collapse = ""),
       ", \"panels\": {",
       paste("\"", names(panels), "\": ", panels, sep = "", collapse = ", "),
       "}}")
