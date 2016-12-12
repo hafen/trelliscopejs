@@ -82,20 +82,24 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
     })]
     if (auto_cog) {
       for (a in needs_auto) {
-        cogs[[length(cogs) + 1]] <- x[c(cond_cols, a)] %>%
+        cogs[[length(cogs) + 1]] <- x[a] %>%
           auto_cogs() %>%
           select(-one_of(a)) %>%
           unnest() %>%
-          as_cognostics(cond_cols) %>%
-          select(-one_of(c(cond_cols, "panelKey")))
+          as_cognostics(needs_key = FALSE, needs_cond = FALSE)
       }
     }
     no_needs_auto <- setdiff(usable, needs_auto)
     for (a in no_needs_auto) {
-      cogs[[length(cogs) + 1]] <- x[c(cond_cols, a)] %>%
-        unnest() %>%
-        as_cognostics(cond_cols) %>%
-        select(-one_of(c(cond_cols, "panelKey")))
+      one_row_attrs <- lapply(x[a][[1]][[1]], attributes)
+      tmp <- x[a] %>%
+        unnest()
+      for (nm in names(tmp)) {
+        cur_attrs <- one_row_attrs[[nm]]
+        attributes(tmp[[nm]]) <- cur_attrs
+      }
+      cogs[[length(cogs) + 1]] <- tmp %>%
+        as_cognostics(needs_key = FALSE, needs_cond = FALSE)
     }
   }
 
