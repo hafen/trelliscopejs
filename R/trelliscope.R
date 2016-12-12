@@ -108,15 +108,21 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
     sanitize()
   x$panelKey <- keys # nolint
 
+  if (length(panel_img_col) == 0) {
+    panels <- x[[panel_col]]
+    names(panels) <- keys
+  } else {
+    # don't need to write panels because they are supplied with img_panel
+    panels <- list(structure(list(), class = "img_panel"))
+  }
+
+  # need to start progress bar before writing panels
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",
     total = 5 + length(panels), width = getOption("width") - 8)
   pb$tick(0, tokens = list(what = "calculating         "))
 
   if (length(panel_img_col) == 0) {
-    panels <- x[[panel_col]]
-    names(panels) <- keys
-
     write_panels(
       panels,
       base_path = params$path,
@@ -126,7 +132,6 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
       pb = pb
     )
   } else {
-    panels <- list(structure(list(), class = "img_panel"))
     pb$tick(tokens = list(what = "writing panels      "))
   }
 
