@@ -15,12 +15,13 @@ test_that("examples run without barfing", {
         figure(xlab = "City mpg", ylab = "Highway mpg") %>%
           ly_points(cty, hwy)))
 
-  p <- d %>% trelliscope(name = "city_vs_highway_mpg")
+  p <- d %>% trelliscope(name = "city_vs_highway_mpg", thumb = FALSE)
   print(p)
 
   # if you want to use in RStudio Viewer or RMarkdown Notebook, use self_containedd
   # (this will hopefully change, and you should avoid self_contained whenever possible)
-  d %>% trelliscope(name = "city_vs_highway_mpg", self_contained = TRUE, thumb = FALSE)
+  p <- d %>% trelliscope(name = "city_vs_highway_mpg",
+    self_contained = TRUE, thumb = FALSE)
   print(p)
 
   # set default layout
@@ -71,7 +72,7 @@ test_that("examples run without barfing", {
     mutate(panel = panels(data,
       ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
           ly_points(cty, hwy, data = .x))) %>%
-    trelliscope(name = "city_vs_highway_mpg")
+    trelliscope(name = "city_vs_highway_mpg", thumb = FALSE)
   print(p)
 
   p <- iris %>%
@@ -82,7 +83,7 @@ test_that("examples run without barfing", {
         desc = "link to species on wikipedia"),
       panel = panel(figure(xlab = "Sepal Length", ylab = "Sepal Width") %>%
         ly_points(Sepal.Length, Sepal.Width))) %>%
-    trelliscope(name = "iris_species", ncol = 3)
+    trelliscope(name = "iris_species", ncol = 3, thumb = FALSE)
   print(p)
 
   ## ggplot2
@@ -98,7 +99,7 @@ test_that("examples run without barfing", {
 
   p <- qplot(cty, hwy, data = mpg) +
     xlim(7, 37) + ylim(9, 47) + theme_bw() +
-    facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4, thumb = FALSE)
+    facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4)
   print(p)
 
   p <- qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
@@ -120,6 +121,6 @@ test_that("examples run without barfing", {
           min_city_mpg = cog(min(.x$cty), desc = "Min city mpg"))),
       panel = panels(data, ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
         ly_points(cty, hwy, data = .x))) %>%
-    trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
+    trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2, thumb = FALSE)
   print(p)
 })
