@@ -16,7 +16,7 @@ navpills: |
   <li><a href='https://github.com/hafen/trelliscopejs'>Github <i class='fa fa-github'></i></a></li>
 ---
 
-<script src="https://unpkg.com/trelliscopejs-lib@0.1.4/dist/trelliscope.min.js"></script>
+<script src="https://unpkg.com/trelliscopejs-lib@0.1.7/dist/trelliscope.min.js"></script>
 
 ```{r global_options, include=FALSE}
 # R output pre blocks are styled by default to indicate output
