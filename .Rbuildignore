@@ -19,3 +19,5 @@ cran-comments.md
 _test/
 ^codecov\.yml$
 ^_gh-pages$
+^.*\.Rproj$
+^\.Rproj\.user$

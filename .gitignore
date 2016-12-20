@@ -9,3 +9,4 @@ _ignore
 _test
 inst/doc
 _gh-pages
+.Rproj.user
