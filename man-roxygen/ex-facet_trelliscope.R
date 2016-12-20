@@ -13,6 +13,10 @@ qplot(cty, hwy, data = mpg) +
   xlim(7, 37) + ylim(9, 47) + theme_bw() +
   facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4)
 
+qplot(cty, hwy, data = mpg) +
+  xlim(7, 37) + ylim(9, 47) + theme_bw() +
+  facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4, as_plotly = TRUE)
+
 qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
   facet_trelliscope(~ class, ncol = 7, height = 800, width = 200,
     state = list(sort = list(sort_spec("cty_mean")))) +

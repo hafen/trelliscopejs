@@ -14,6 +14,8 @@ utils::globalVariables(".")
 #' @param nrow the number of rows of panels to display by default
 #' @param ncol the number of columns of panels to display by default
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
+#' @param as_plotly should the panels be written as plotly objects?
+#' @param plotly_args optinal named list of arguments to send to \code{ggplotly}
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
@@ -22,7 +24,9 @@ utils::globalVariables(".")
 #' @importFrom ggplot2 facet_wrap
 facet_trelliscope <- function(..., nrow = 1, ncol = 1, name = NULL, group = "common",
   desc = "", md_desc = "", path = NULL, height = 500, width = 500,
-  state = NULL, jsonp = TRUE, self_contained = FALSE, thumb = TRUE) {
+  state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
+  self_contained = FALSE, thumb = TRUE) {
+
   ret <- list(
     name = name,
     group = group,
@@ -37,6 +41,8 @@ facet_trelliscope <- function(..., nrow = 1, ncol = 1, name = NULL, group = "com
     nrow = nrow,
     ncol = ncol,
     thumb = thumb,
+    as_plotly = as_plotly,
+    plotly_args = plotly_args,
     facet_wrap = ggplot2::facet_wrap(...)
   )
 
@@ -55,7 +61,7 @@ facet_trelliscope <- function(..., nrow = 1, ncol = 1, name = NULL, group = "com
     e1 <- e1 %+% (e2$facet_wrap)
     attr(e1, "trelliscope") <- e2[c("name", "group", "desc", "md_desc", "height",
       "width", "state", "jsonp", "self_contained", "path", "state", "nrow", "ncol",
-      "thumb")]
+      "thumb", "as_plotly", "plotly_args")]
     class(e1) <- c("facet_trelliscope", class(e1))
     return(e1)
     # return(print(e1))
@@ -72,6 +78,7 @@ facet_trelliscope <- function(..., nrow = 1, ncol = 1, name = NULL, group = "com
 #' @import dplyr
 #' @importFrom stats as.formula
 #' @importFrom tidyr nest nest_ unnest
+#' @importFrom plotly ggplotly
 #' @export
 print.facet_trelliscope <- function(x, ...) {
 
@@ -99,14 +106,18 @@ print.facet_trelliscope <- function(x, ...) {
   cog_df <- as_cognostics(cog_df, cond_cols = facet_cols, cog_desc = cog_desc)
 
   # wrapper function that swaps out the data with a subset and removes the facet
-  make_plot_obj <- function(dt) {
+  make_plot_obj <- function(dt, as_plotly = FALSE, plotly_args = NULL) {
     q <- p
     q$data <- dt
     q$facet <- ggplot2::FacetNull
+    if (as_plotly)
+      q <- do.call(plotly::ggplotly, c(list(p = q), plotly_args))
     q
   }
+
   panels <- (data %>%
-    purrr::by_row(~ make_plot_obj(unnest(.x[c(facet_cols, "data")])),
+    purrr::by_row(~ make_plot_obj(unnest(.x[c(facet_cols, "data")]),
+      as_plotly = attrs$as_plotly, plotly_args = attrs$plotly_args),
       .labels = FALSE))[[1]]
   names(panels) <- cog_df$panelKey # nolint
 

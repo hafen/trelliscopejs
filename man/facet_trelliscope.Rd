@@ -7,7 +7,8 @@
 facet_trelliscope(..., nrow = 1, ncol = 1, name = NULL,
   group = "common", desc = "", md_desc = "", path = NULL,
   height = 500, width = 500, state = NULL, jsonp = TRUE,
-  self_contained = FALSE, thumb = TRUE)
+  as_plotly = FALSE, plotly_args = NULL, self_contained = FALSE,
+  thumb = TRUE)
 }
 \arguments{
 \item{...}{all parameters passed onto \code{ggplot2::\link[ggplot2]{facet_wrap}}}
@@ -33,6 +34,10 @@ facet_trelliscope(..., nrow = 1, ncol = 1, name = NULL,
 \item{state}{the initial state the display will open in}
 
 \item{jsonp}{should json for display object be jsonp (TRUE) or json (FALSE)?}
+
+\item{as_plotly}{should the panels be written as plotly objects?}
+
+\item{plotly_args}{optinal named list of arguments to send to \code{ggplotly}}
 
 \item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
 
