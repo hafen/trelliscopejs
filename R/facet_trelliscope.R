@@ -110,8 +110,12 @@ print.facet_trelliscope <- function(x, ...) {
     q <- p
     q$data <- dt
     q$facet <- ggplot2::FacetNull
-    if (as_plotly)
-      q <- do.call(plotly::ggplotly, c(list(p = q), plotly_args))
+    if (as_plotly) {
+      # The plotly 'collaborate' button utilizes htmlwidgets::JS() to declare 
+      # a function definition as a string (from R). Turn it off to avoid errors.
+      f <- function(p, ...) plotly::config(plotly::ggplotly(p, ...), collaborate = FALSE)
+      q <- do.call(f, c(list(p = q), plotly_args))
+    }
     q
   }
 
