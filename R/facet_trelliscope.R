@@ -1,4 +1,4 @@
-utils::globalVariables(".")
+utils::globalVariables(c(".", "ggplotly"))
 
 #' Facet Trelliscope
 #'
@@ -26,6 +26,12 @@ facet_trelliscope <- function(..., nrow = 1, ncol = 1, name = NULL, group = "com
   desc = "", md_desc = "", path = NULL, height = 500, width = 500,
   state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
   self_contained = FALSE, thumb = TRUE) {
+
+  if (as_plotly) {
+    if (!requireNamespace("plotly", quietly = TRUE))
+      stop("Package 'plotly' is needed for as_plotly = TRUE Please install it.",
+        call. = FALSE)
+  }
 
   ret <- list(
     name = name,
@@ -78,7 +84,6 @@ facet_trelliscope <- function(..., nrow = 1, ncol = 1, name = NULL, group = "com
 #' @import dplyr
 #' @importFrom stats as.formula
 #' @importFrom tidyr nest nest_ unnest
-#' @importFrom plotly ggplotly
 #' @export
 print.facet_trelliscope <- function(x, ...) {
 
@@ -111,7 +116,7 @@ print.facet_trelliscope <- function(x, ...) {
     q$data <- dt
     q$facet <- ggplot2::FacetNull
     if (as_plotly)
-      q <- do.call(plotly::ggplotly, c(list(p = q), plotly_args))
+      q <- do.call(ggplotly, c(list(p = q), plotly_args))
     q
   }
 

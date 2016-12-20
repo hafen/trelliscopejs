@@ -13,6 +13,8 @@ qplot(cty, hwy, data = mpg) +
   xlim(7, 37) + ylim(9, 47) + theme_bw() +
   facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4)
 
+# using plotly
+library(plotly)
 qplot(cty, hwy, data = mpg) +
   xlim(7, 37) + ylim(9, 47) + theme_bw() +
   facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4, as_plotly = TRUE)

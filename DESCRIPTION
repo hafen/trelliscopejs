@@ -26,10 +26,10 @@ Imports:
     graphics,
     progress,
     utils,
-    plotly,
     knitr
 Suggests:
     rbokeh,
+    plotly,
     Cairo,
     testthat,
     covr,
