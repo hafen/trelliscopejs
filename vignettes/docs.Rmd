@@ -64,7 +64,7 @@ For ggplot2 users, the easiest way to get quick results with trelliscopejs is wi
 To illustrate, let's look at some fuel economy data from the `mpg` dataset available in the ggplot2 package:
 
 
-```{r}
+```{r, message=FALSE}
 library(trelliscopejs)
 library(ggplot2)
 library(dplyr)
