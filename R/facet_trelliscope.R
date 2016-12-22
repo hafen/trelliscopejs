@@ -20,7 +20,7 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param thumb should a thumbnail be created?
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 #' @export
-#' @example man-roxygen/ex-trelliscope.R
+#' @example man-roxygen/ex-facet_trelliscope.R
 #' @importFrom ggplot2 facet_wrap
 facet_trelliscope <- function(..., nrow = 1, ncol = 1, name = NULL, group = "common",
   desc = "", md_desc = "", path = NULL, height = 500, width = 500,
