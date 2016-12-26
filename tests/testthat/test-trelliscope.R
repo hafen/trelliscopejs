@@ -5,6 +5,7 @@ test_that("examples run without barfing", {
   library(dplyr)
   library(rbokeh)
   library(ggplot2)
+  library(tidyr)
 
   # dplyr + rbokeh
   d <- mpg %>%
