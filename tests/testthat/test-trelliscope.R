@@ -19,6 +19,10 @@ test_that("examples run without barfing", {
   p <- d %>% trelliscope(name = "city_vs_highway_mpg", thumb = FALSE)
   print(p)
 
+  # should give an error in the browser unless you launch with servr or something like it
+  p <- d %>% trelliscope(name = "city_vs_highway_mpg", thumb = FALSE, jsonp = FALSE)
+  print(p)
+
   # if you want to use in RStudio Viewer or RMarkdown Notebook, use self_containedd
   # (this will hopefully change, and you should avoid self_contained whenever possible)
   p <- d %>% trelliscope(name = "city_vs_highway_mpg",
