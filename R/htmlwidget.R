@@ -1,5 +1,6 @@
 trelliscope_widget <- function(id, config_info, www_dir, latest_display,
-  dependencies = NULL, self_contained, spa = TRUE, width = NULL, height = NULL) {
+  dependencies = NULL, self_contained, spa = TRUE, width = NULL, height = NULL,
+  sc_deps = NULL) {
 
   # TODO: warn if width or height are too small
 
@@ -16,12 +17,19 @@ trelliscope_widget <- function(id, config_info, www_dir, latest_display,
     width <- height <- "100%"
   }
 
+  deps <- NULL
+  if (self_contained && is.list(sc_deps) && length(sc_deps) > 1) {
+    dnms <- sapply(sc_deps, function(x) x$name)
+    deps <- sc_deps[dnms != "htmlwidgets"]
+  }
+
   # create widget
   wdgt <- htmlwidgets::createWidget(
     name = "trelliscopejs_widget",
     x,
     width = width,
     height = height,
+    dependencies = deps,
     package = "trelliscopejs",
     sizingPolicy = htmlwidgets::sizingPolicy(padding = 0, browser.fill = TRUE,
       knitr.defaultWidth = 900, knitr.defaultHeight = 550, knitr.figure = FALSE,
@@ -83,7 +91,6 @@ knit_print.facet_trelliscope <- function(x, ..., options = NULL) {
 # Override print.htmlwidget for trelliscopejs_widget so we can control the output location
 #' @export
 print.trelliscopejs_widget <- function(x, ..., view = interactive()) {
-
   # hacky way to detect R Markdown Notebook
   print_fn <- try(get("print.htmlwidget"), silent = TRUE)
   if (!inherits(print_fn, "try-error")) {
@@ -134,13 +141,15 @@ print.trelliscopejs_widget <- function(x, ..., view = interactive()) {
 
 trelliscope_html_print <- function(html, www_dir = NULL, background = "white",
   viewer = getOption("viewer", utils::browseURL)) {
+
   if (is.null(www_dir))
     www_dir <- tempfile("viewhtml")
   if (!dir.exists(www_dir))
     dir.create(www_dir)
   www_dir <- normalizePath(www_dir)
   index_html <- file.path(www_dir, "index.html")
-  save_html(html, file = index_html, background = background,
+
+  htmltools::save_html(html, file = index_html, background = background,
     libdir = "lib")
   if (!is.null(viewer))
     viewer(index_html)

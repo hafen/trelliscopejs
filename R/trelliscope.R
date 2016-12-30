@@ -167,7 +167,8 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
     self_contained = params$self_contained,
     dependencies = get_dependencies(panels[[1]]),
     config_info = params$config_path,
-    spa = params$spa
+    spa = params$spa,
+    sc_deps = get_dependencies(panels[[1]])
   )
 }
 
