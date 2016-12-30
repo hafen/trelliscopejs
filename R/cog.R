@@ -45,6 +45,7 @@ cog <- function(val = NULL, desc = "", group = "common",
     date     = as.Date,
     time     = as.POSIXct,
     panelSrc = as.character,
+    # color    = as.character,
     # geo      = as.cogGeo,
     # rel      = as.cogRel,
     # hier     = as.cogHier,
@@ -61,6 +62,9 @@ cog <- function(val = NULL, desc = "", group = "common",
     if (inherits(val, "try-error"))
       val <- NA
   } else {
+    # TODO: if type is not specified, set type to NA and wait until final
+    # call to as_cognostics() to infer the type (to make sure we have them all)
+
     # try to infer type
     if (is.factor(val))
       val <- as.character(val)
