@@ -1,5 +1,17 @@
-# trelliscopejs 0.1.2
+# trelliscopejs 0.1
 
+- Update to trelliscopejs-lib 0.1.12 (0.1.4)
+- Make sure correct config.json(p) is used and knitr handling is done right (0.1.4)
+- Add all dependencies to htmlwidget when `self_contained` is `TRUE` (0.1.4)
+- Add test for jsonp = FALSE (0.1.4)
+- Add tidyr to test script (0.1.4)
+- Fix facet_trelliscope docs to point to the right place (0.1.4)
+- Don't import plotly explicitly since it's optional (0.1.4)
+- Experimental initial support for ggplotly with facet_trelliscope (0.1.4)
+- Update tests (0.1.3)
+- Make as_cognostics not always require key and cond_cols (0.1.3)
+- Fix issue where cog data is written to 'pretty' json when it shouldn't be (0.1.3)
+- Fix bug in self_contained where cogs aren't parsed correctly (0.1.3)
 - Make as_cognostics not always require key and cond_cols
 - Fix issue where cog data is written to 'pretty' json when it shouldn't be
 - Fix bug in self_contained where cogs aren't parsed correctly
