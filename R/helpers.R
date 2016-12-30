@@ -142,8 +142,8 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
   path <- normalizePath(path)
 
   # if outside knitr, config.jsonp will always be available to index.html inside appfiles
-  config_path <- "appfiles/config.jsonp"
-  if (in_knitr) {
+  config_path <- paste0("appfiles/config.json", ifelse(jsonp, "p", ""))
+  if (in_knitr && !self_contained) {
     if (!grepl("^[A-Za-z0-9_]", orig_path))
       stop_nice("Path for trelliscope output while inside knitr must be relative.")
     config_path <- paste(orig_path, config_path, sep = "/")
