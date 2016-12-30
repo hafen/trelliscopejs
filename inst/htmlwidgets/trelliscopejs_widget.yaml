@@ -1,6 +1,6 @@
 dependencies:
 - name: trelliscopejs_widget
-  version: 0.1.9
+  version: 0.1.12
   src: htmlwidgets/lib/trelliscopejs_widget
   script:
     - trelliscope.min.js

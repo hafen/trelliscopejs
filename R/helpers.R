@@ -121,13 +121,12 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
 
   in_knitr <- getOption("knitr.in.progress", FALSE)
 
-  if (in_knitr) {
+  if (in_knitr)
     spa <- FALSE # results are inline with others
-  }
 
   orig_path <- path
 
-  if (is.null(path) || self_contained) {
+  if (is.null(path)) {
     if (in_knitr) {
       www_dir <- getwd()
     } else {
