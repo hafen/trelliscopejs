@@ -22,6 +22,8 @@ test_that("examples run without barfing", {
   # should give an error in the browser unless you launch with servr or something like it
   p <- d %>% trelliscope(name = "city_vs_highway_mpg", thumb = FALSE, jsonp = FALSE)
   print(p)
+  # instead do something like:
+  # servr::httd(attr(p, "trelliscope_pars")$www_dir)
 
   # if you want to use in RStudio Viewer or RMarkdown Notebook, use self_containedd
   # (this will hopefully change, and you should avoid self_contained whenever possible)
