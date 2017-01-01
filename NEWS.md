@@ -1,5 +1,7 @@
 # trelliscopejs 0.1
 
+- Update to trelliscopejs-lib 0.1.14 (0.1.5)
+- Fix issue with total panels not always being stored correctly (0.1.5)
 - Update to trelliscopejs-lib 0.1.12 (0.1.4)
 - Make sure correct config.json(p) is used and knitr handling is done right (0.1.4)
 - Add all dependencies to htmlwidget when `self_contained` is `TRUE` (0.1.4)
