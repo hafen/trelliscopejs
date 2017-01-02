@@ -1,5 +1,135 @@
 utils::globalVariables(c(".", "ggplotly"))
 
+plot_gtable <- function(p) {
+  ggplot_gtable(ggplot_build(p))
+}
+
+str_detect <- function(x, pattern) {
+  grepl(pattern, x)
+}
+
+
+if (FALSE) {
+  library(ggplot2)
+  p <- qplot(displ, hwy, data = mpg) + facet_grid(year ~ drv)
+
+  a <- extract_axis_left(p)
+  b <- extract_axis_bottom(p)
+  d <- extract_plot_content(p)
+
+  pg = plot_gtable(p)
+  a <- extract_axis_left(pg = pg)
+  b <- extract_axis_bottom(pg = pg)
+  d <- extract_plot_content(pg = pg)
+
+  # width of left axis
+  axis_left_width(a)
+
+  # height of bottom axis
+  axis_bottom_height(b)
+
+  # width of plot content
+  grid::convertWidth(sum(grid::convertWidth(a$widths, unitTo = "cm")), unitTo = "cm")
+  # WRONG!
+  gtabe::gtable_show_layout(d)
+
+
+  # height of left must be supplied
+  # width of bottom must be supplied
+  # height,width of plot content must be supplied
+}
+
+
+axis_left_width <- function(pg, unitTo = "cm") {
+  grid::convertWidth(sum(grid::convertWidth(pg$widths, unitTo = unitTo)), unitTo = unitTo)
+}
+axis_bottom_height <- function(pg) {
+  grid::convertHeight(sum(grid::convertHeight(pg$heights, unitTo = unitTo)), unitTo = unitTo)
+}
+
+
+
+extract_axis_left <- function(p, pg = plot_gtable(p), include_strips = TRUE) {
+  layout <- pg$layout
+  layout_name <- layout$name
+
+  # axis layout info
+  al <- layout[str_detect(layout_name, "axis-l|ylab-l"), ]
+
+  if (isTRUE(include_strips)) {
+    alx <- layout[str_detect(layout_name, "axis-l|strip-t|ylab-l"), ]
+  } else {
+    alx <- al
+  }
+
+  # get only the axis left objects (and maybe strip top spacer)
+  axis_panel <- pg[min(alx$b):max(alx$t), min(al$l)]
+
+  # # force to align left
+  # axis_panel <- gtable::gtable_add_cols(axis_panel, grid::unit(1, "null"), 0)
+
+  axis_panel
+
+}
+extract_axis_bottom <- function(p, pg = plot_gtable(p), include_strips = TRUE) {
+  layout <- pg$layout
+  layout_name <- layout$name
+
+  # axis layout info
+  al <- layout[str_detect(layout_name, "axis-b|xlab-b"), ]
+
+  if (isTRUE(include_strips)) {
+    alx <- layout[str_detect(layout_name, "axis-b|strip-r|xlab-b"), ]
+  } else {
+    alx <- al
+  }
+  # get only the axis left objects (and maybe strip top spacer)
+  axis_panel <- pg[min(al$b):max(al$t), min(alx$l):max(alx$r)]
+
+  # # force to align top
+  # axis_panel <- gtable::gtable_add_rows(
+  #   axis_panel,
+  #   grid::unit(1, "null"),
+  #   max(axis_panel$layout$b) + 1 # make it the bottom row
+  # )
+
+  axis_panel
+}
+
+
+extract_plot_content <- function(p, pg = plot_gtable(p), include_strips = TRUE) {
+
+  # ask about strips
+  layout_names <- c("panel")
+  strip_right_name <- "strip-r"
+  strip_top_name <- "strip-t"
+
+  all_layout_names <- c(layout_names, strip_right_name, strip_top_name)
+
+  if (isTRUE(include_strips)) {
+    layout_names <- all_layout_names
+  }
+
+  # get correct panel (and strips)
+  layout_rows <- str_detect(pg$layout$name, paste(layout_names, collapse = "|"))
+
+  layout_info <- pg$layout[layout_rows, ]
+  top_bottom <- layout_info[, c("t", "b")]
+  left_right <- layout_info[, c("l", "r")]
+
+  plot_panel <- pg[
+    min(top_bottom):max(top_bottom),
+    min(left_right):max(left_right)
+  ]
+
+  plot_panel
+}
+
+
+
+
+
+
 #' Facet Trelliscope
 #'
 #' @param ... all parameters passed onto \code{ggplot2::\link[ggplot2]{facet_wrap}}
