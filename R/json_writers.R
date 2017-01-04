@@ -60,15 +60,34 @@ write_panel <- function(plot_object, key, base_path, name, group = "common",
     }
   }
 
-  if (inherits(plot_object, c("trellis", "ggplot"))) {
-    ff <- tempfile()
-    make_png(p = plot_object, file = ff,
-      width = width, height = height)
-    dat <- paste0("\"", encode_png(ff), "\"")
-    txt <- get_jsonp_text(jsonp, paste0("__panel__._", key))
-    cat(paste0(txt$st, dat, txt$nd),
-      file = file.path(panel_path,
-        paste0(key, ifelse(jsonp, ".jsonp", ".json"))))
+  if (inherits(plot_object, "ggplot")) {
+
+    pg <- plot_gtable(plot_object)
+    left_axis <- extract_axis_left(pg = pg)
+    bottom_axis <- extract_axis_bottom(pg = pg)
+    plot_content <- extract_plot_content(pg = pg)
+
+
+    write_ggplot2_component(
+      plot_content, width = width, height = height, key = paste0(key, "_plot"),
+      jsonp, panel_path
+    )
+    write_ggplot2_component(
+      left_axis,
+      width = axis_left_width(left_axis),
+      height = height, key = paste0(key, "_axis_left"),
+      jsonp, panel_path
+    )
+    write_ggplot2_component(
+      bottom_axis, width = width,
+      height = axis_bottom_height(bottom_axis),
+      key = paste0(key, "_axis_bottom"),
+      jsonp, panel_path
+    )
+
+  } else if (inherits(plot_object, c("trellis"))) {
+    write_ggplot2_component(plot_object, width, height, key, jsonp, panel_path)
+
   } else if (inherits(plot_object, "htmlwidget")) {
     p <- htmltools::as.tags(plot_object)
     txt <- get_jsonp_text(jsonp, paste0("__panel__._", key))
@@ -78,6 +97,30 @@ write_panel <- function(plot_object, key, base_path, name, group = "common",
   } else {
     message("panel not written - must be trellis, ggplot, or htmlwidget object")
   }
+}
+
+unit_to_px <- function(x, res) {
+  ret <- unclass(grid::convertWidth(x, unitTo = "cm")) * res / 2.54
+  attr(ret, "unit") <- NULL
+  attr(ret, "valid.unit") <- NULL
+  ret
+}
+
+write_ggplot2_component <- function(
+  plot_component, width, height, key, jsonp, panel_path,
+  file = tempfile()
+) {
+
+  # ff <- tempfile()
+  dir.create(file.path(".", "_ignore", "_pics"), showWarnings = FALSE, recursive = TRUE)
+  ff <- file.path(".", "_ignore", "_pics", paste0(key, ".png"))
+  make_png(p = plot_component, file = ff,
+    width = width, height = height)
+  dat <- paste0("\"", encode_png(ff), "\"")
+  txt <- get_jsonp_text(jsonp, paste0("__panel__._", key))
+  cat(paste0(txt$st, dat, txt$nd),
+    file = file.path(panel_path,
+      paste0(key, ifelse(jsonp, ".jsonp", ".json"))))
 }
 
 #' Write cognostics data for a display in a Trelliscope app
