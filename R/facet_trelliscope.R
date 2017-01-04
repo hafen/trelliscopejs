@@ -43,7 +43,7 @@ if (FALSE) {
 axis_left_width <- function(pg, unitTo = "cm") {
   grid::convertWidth(sum(grid::convertWidth(pg$widths, unitTo = unitTo)), unitTo = unitTo)
 }
-axis_bottom_height <- function(pg) {
+axis_bottom_height <- function(pg, unitTo = "cm") {
   grid::convertHeight(sum(grid::convertHeight(pg$heights, unitTo = unitTo)), unitTo = unitTo)
 }
 
@@ -124,6 +124,7 @@ extract_plot_content <- function(p, pg = plot_gtable(p), include_strips = TRUE) 
 
   plot_panel
 }
+
 
 
 
