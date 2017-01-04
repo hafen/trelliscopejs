@@ -37,6 +37,14 @@ if (FALSE) {
   # height of left must be supplied
   # width of bottom must be supplied
   # height,width of plot content must be supplied
+
+  
+  qplot(displ, hwy, data = mpg) +
+    scale_y_continuous(limits = range(mpg$hwy)) +
+    scale_x_continuous(limits = range(mpg$displ)) +
+    facet_trelliscope(~ drv, ncol = 3, nrow = 1)
+
+
 }
 
 
