@@ -63,7 +63,7 @@ extract_axis_left <- function(p, pg = plot_gtable(p), include_strips = TRUE) {
   }
 
   # get only the axis left objects (and maybe strip top spacer)
-  axis_panel <- pg[min(alx$b):max(alx$t), min(al$l)]
+  axis_panel <- pg[min(alx$b):max(alx$t), min(al$l):max(al$r)]
 
   # # force to align left
   # axis_panel <- gtable::gtable_add_cols(axis_panel, grid::unit(1, "null"), 0)
