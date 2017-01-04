@@ -16,8 +16,8 @@ HTMLWidgets.widget({
         dv.id = x.id;
         var fullSize = width === window.innerWidth && height === window.innerHeight;
         if (!x.spa) {
-          dv.style.width = `${px(width)}`;
-          dv.style.height = `${px(height)}`;
+          dv.style.width = px(width);
+          dv.style.height = px(height);
           dv.className = 'trelliscope-not-spa';
         } else if (el.parentNode.id === 'htmlwidget_container') {
           el.parentNode.style.width = '100%';
@@ -31,7 +31,7 @@ HTMLWidgets.widget({
         }
 
         var scrpt = document.createElement('script');
-        scrpt.text= `(function() { trelliscopeApp('${x.id}', ${x.config_info}); })();`;
+        scrpt.text= "(function() { trelliscopeApp('" + x.id + "', " + x.config_info + "); })();";
         el.appendChild(scrpt);
       },
       resize: function(width, height) {
