@@ -177,8 +177,9 @@ trelliscope.data.frame <- function(x, name, group = "common", desc = "",
 #   we know grouped variables show up first
 #   so iterate through until their combination is unique
 find_cond_cols <- function(x, is_nested) {
-  if (is_nested)
-    return(names(x))
+
+  # if (is_nested)
+  #   return(names(x))
 
   nn <- nrow(x)
   nms <- names(x)
