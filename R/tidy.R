@@ -60,9 +60,21 @@ panels <- function(.x, .f, ...) {
 #'
 #' @param .d A data frame.
 #' @param ..f A function to apply to each row. It should return a valid panel object (such as a ggplot2 / lattice / htmlwidget object).
-#' @param ... Additional arguments passed on to ..f.
+#' @param .to Name of output column (defaults to "panel").
 #' @examples
 #' \dontrun{
+#' library(tidyr)
+#' library(purrr)
+#' library(rbokeh)
+#' iris %>%
+#'   nest(-Species) %>%
+#'   mutate(mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x))) %>%
+#'   panels_by_row(function(x) {
+#'     figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
+#'       ly_points(x$data[[1]]$Sepal.Width, x$data[[1]]$Sepal.Length) %>%
+#'       ly_abline(x$mod[[1]])
+#'   }) %>%
+#'   trelliscope(name = "iris")
 #' }
 #' @export
 panels_by_row <- function(.d, ..f, .to = "panel") {

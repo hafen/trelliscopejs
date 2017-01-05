@@ -12,7 +12,7 @@ panels_by_row(.d, ..f, .to = "panel")
 
 \item{..f}{A function to apply to each row. It should return a valid panel object (such as a ggplot2 / lattice / htmlwidget object).}
 
-\item{...}{Additional arguments passed on to ..f.}
+\item{.to}{Name of output column (defaults to "panel").}
 }
 \description{
 Panels Wrapper Function
@@ -20,6 +20,18 @@ Wrapper function to specify a plot command to be applied to a list-column for us
 }
 \examples{
 \dontrun{
+library(tidyr)
+library(purrr)
+library(rbokeh)
+iris \%>\%
+  nest(-Species) \%>\%
+  mutate(mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x))) \%>\%
+  panels_by_row(function(x) {
+    figure(xlab = "Sepal.Width", ylab = "Sepal.Length") \%>\%
+      ly_points(x$data[[1]]$Sepal.Width, x$data[[1]]$Sepal.Length) \%>\%
+      ly_abline(x$mod[[1]])
+  }) \%>\%
+  trelliscope(name = "iris")
 }
 }
 

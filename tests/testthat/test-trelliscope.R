@@ -6,6 +6,7 @@ test_that("examples run without barfing", {
   library(rbokeh)
   library(ggplot2)
   library(tidyr)
+  library(purrr)
 
   # dplyr + rbokeh
   d <- mpg %>%
@@ -129,5 +130,18 @@ test_that("examples run without barfing", {
       panel = panels(data, ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
         ly_points(cty, hwy, data = .x))) %>%
     trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2, thumb = FALSE)
+  print(p)
+
+  ## other tidyverse functions
+
+  p <- iris %>%
+    nest(-Species) %>%
+    mutate(mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x))) %>%
+    panels_by_row(function(x) {
+      figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
+        ly_points(x$data[[1]]$Sepal.Width, x$data[[1]]$Sepal.Length) %>%
+        ly_abline(x$mod[[1]])
+    }) %>%
+    trelliscope(name = "iris")
   print(p)
 })
