@@ -4,18 +4,18 @@
 \alias{facet_trelliscope}
 \title{Facet Trelliscope}
 \usage{
-facet_trelliscope(..., nrow = 1, ncol = 1, name = NULL,
-  group = "common", desc = "", md_desc = "", path = NULL,
+facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
+  name = NULL, group = "common", desc = "", md_desc = "", path = NULL,
   height = 500, width = 500, state = NULL, jsonp = TRUE,
   as_plotly = FALSE, plotly_args = NULL, self_contained = FALSE,
   thumb = TRUE)
 }
 \arguments{
-\item{...}{all parameters passed onto \code{ggplot2::\link[ggplot2]{facet_wrap}}}
-
 \item{nrow}{the number of rows of panels to display by default}
 
 \item{ncol}{the number of columns of panels to display by default}
+
+\item{scales}{should Scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.}
 
 \item{name}{name of the display}
 
@@ -42,6 +42,8 @@ facet_trelliscope(..., nrow = 1, ncol = 1, name = NULL,
 \item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
 
 \item{thumb}{should a thumbnail be created?}
+
+\item{...}{all parameters passed onto \code{ggplot2::\link[ggplot2]{facet_wrap}}}
 }
 \description{
 Facet Trelliscope

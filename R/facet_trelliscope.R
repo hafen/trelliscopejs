@@ -1,5 +1,39 @@
 utils::globalVariables(c(".", "ggplotly"))
 
+
+upgrade_scales_param <- function(scales) {
+  if (length(scales) > 2) {
+    stop("scales must not be longer than length 2")
+  }
+  if (is.na(scales) || is.null(scales) || length(scales) == 0) {
+    stop("scales must be a character vector of size 1 or 2")
+  }
+
+  if (length(scales) == 1) {
+    scales <- switch(scales,
+      "same" = c("same", "same"),
+      "free" = c("free", "free"),
+      "free_x" = c("free", "same"),
+      "free_y" = c("same", "free"),
+      "sliced" = c("sliced", "sliced"),
+      "sliced_x" = c("sliced", "same"),
+      "sliced_y" = c("same", "sliced"),
+      stop(
+        "if scales is of length 1, it may only be one of the following values: ",
+        "c('same', 'free', 'free_x', 'free_y', 'sliced', 'sliced_x', 'sliced_y')"
+      )
+    )
+  }
+
+  if (!all(scales %in% c("same", "free", "sliced"))) {
+    stop("a length 2 scales parameter can only be made of 'same', 'free', or 'sliced' values")
+  }
+
+  scales
+
+}
+
+
 #' Facet Trelliscope
 #'
 #' @param ... all parameters passed onto \code{ggplot2::\link[ggplot2]{facet_wrap}}
@@ -13,6 +47,7 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param state the initial state the display will open in
 #' @param nrow the number of rows of panels to display by default
 #' @param ncol the number of columns of panels to display by default
+#' @param scales should Scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
 #' @param as_plotly should the panels be written as plotly objects?
 #' @param plotly_args optinal named list of arguments to send to \code{ggplotly}
@@ -50,6 +85,7 @@ facet_trelliscope <- function(
     self_contained = self_contained,
     nrow = nrow,
     ncol = ncol,
+    scales = upgrade_scales_param(scales),
     thumb = thumb,
     as_plotly = as_plotly,
     plotly_args = plotly_args
@@ -67,10 +103,10 @@ facet_trelliscope <- function(
 `+.gg` <- function (e1, e2) {
   if (inherits(e2, "facet_trelliscope")) {
 
-    e1 <- e1 %+% (e2$facet_wrap)
-    attr(e1, "trelliscope") <- e2[c("name", "group", "desc", "md_desc", "height",
-      "width", "state", "jsonp", "self_contained", "path", "state", "nrow", "ncol",
-      "thumb", "as_plotly", "plotly_args")]
+    # e1 <- e1 %+% (e2$facet_wrap)
+    attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group", "desc", "md_desc",
+      "height", "width", "state", "jsonp", "self_contained", "path", "state", "nrow", "ncol",
+      "scales", "thumb", "as_plotly", "plotly_args")]
     class(e1) <- c("facet_trelliscope", class(e1))
     return(e1)
     # return(print(e1))
@@ -98,10 +134,11 @@ print.facet_trelliscope <- function(x, ...) {
   class(p) <- setdiff(class(p), "facet_trelliscope")
 
   data <- as_data_frame(p$data)
-  facet_params <- p$facet$params
+
+  scales_info <- list(x_type = attrs$scales[1], y_type = attrs$scales[2])
 
   # character vect of facet columns
-  facet_cols <- unlist(lapply(facet_params$facets, as.character))
+  facet_cols <- unlist(lapply(attrs$facet_cols, as.character))
 
   # group by all the facets
   data <- data %>%
@@ -112,6 +149,10 @@ print.facet_trelliscope <- function(x, ...) {
 
   cog_df <- data %>% select(-one_of("data")) %>% tidyr::unnest()
   cog_df <- as_cognostics(cog_df, cond_cols = facet_cols, cog_desc = cog_desc)
+
+  # get ranges of all data
+  scales_info$x_info <- get_scale_range_obj(p$mapping$x, data$data, scales_info$x_type)
+  scales_info$y_info <- get_scale_range_obj(p$mapping$y, data$data, scales_info$y_type)
 
   # wrapper function that swaps out the data with a subset and removes the facet
   make_plot_obj <- function(dt, as_plotly = FALSE, plotly_args = NULL) {
@@ -186,4 +227,97 @@ print.facet_trelliscope <- function(x, ...) {
   }
 
   print(res)
+}
+
+
+
+
+
+
+
+get_scale_range_obj <- function(mapping_val, data_col, scale_type) {
+  ret <- list(scale_type = scale_type)
+
+  if (
+    is.numeric(eval(mapping_val, envir = data_col[[1]]))
+  ) {
+    ret$data_type <- "continuous"
+
+    range_list <- purrr::map(data_col, ~ range(eval(mapping_val, envir = .), na.rm = TRUE))
+
+    if (scale_type == "same") {
+      ret$range <- range(unlist(range_list), na.rm = TRUE)
+
+    } else if (scale_type == "sliced") {
+      range_vals <- unlist(lapply(range_list, diff))
+      ret$width <- max(range_vals)
+
+    }
+
+  } else {
+    ret$data_type <- "discrete"
+
+    stop("discrete not implemented")
+  }
+
+  return(ret)
+
+
+}
+
+
+
+add_trelliscope_scales <- function(p, scales_info) {
+  p %>%
+    add_trelliscope_scale("x", scales_info$x_info) %>%
+    add_trelliscope_scale("y", scales_info$y_info)
+}
+
+
+# the goal is to add a scale if a scale doesn't already exist.
+# if a scale exists, we should NOT overwrite it.
+add_trelliscope_scale <- function(p, axis_name, scale_info) {
+  axis_scales <- p$scales$get_scales(axis_name)
+  if (!is.null(axis_scales$limits)) {
+    # return if there already is a limit set for this axis
+    return(p)
+  }
+
+  if (scale_info$data_type == "continuous") {
+    scale_type <- scale_info$scale_type
+    scale_fn <- switch(axis_name,
+      "x" = scale_x_continuous,
+      "y" = scale_y_continuous,
+    )
+
+    if (scale_type == "free") {
+      # do nothing
+      p <- p + scale_fn(limits = c(NA, NA)) # "Use NA to refer to the existing minimum or maximum."
+
+    } else if (scale_type == "same") {
+      p <- p + scale_fn(limits = scale_info$range)
+
+    } else if (scale_type == "sliced") {
+      eval(p$mapping[[axis_name]], envir = p$data) %>%
+        range(na.rm = TRUE) ->
+      dt_range
+
+      mid_range_val <- mean(dt_range)
+
+      width <- scale_info$width
+      limits <- c(mid_range_val - 1/2 * width, mid_range_val + 1/2 * width)
+
+      if (!isTRUE(all.equal(dt_range, limits))) {
+        # this if check is done to avoid silly R floating point rounding errors
+        # this situation should only happen twice. one for each axis
+        p <- p + scale_fn(limits = limits)
+      }
+
+    }
+
+  } else if (scale_info$data_type == "discrete") {
+    stop("not implemented")
+  }
+
+  p
 }
