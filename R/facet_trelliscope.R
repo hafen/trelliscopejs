@@ -22,7 +22,9 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @export
 #' @example man-roxygen/ex-facet_trelliscope.R
 #' @importFrom ggplot2 facet_wrap
-facet_trelliscope <- function(..., nrow = 1, ncol = 1, name = NULL, group = "common",
+facet_trelliscope <- function(
+  facets,
+  nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
   desc = "", md_desc = "", path = NULL, height = 500, width = 500,
   state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
   self_contained = FALSE, thumb = TRUE) {
@@ -34,6 +36,8 @@ facet_trelliscope <- function(..., nrow = 1, ncol = 1, name = NULL, group = "com
   }
 
   ret <- list(
+    facets = facets,
+    facet_cols = facet_wrap(facets)$params$facets,
     name = name,
     group = group,
     desc = desc,
@@ -48,8 +52,7 @@ facet_trelliscope <- function(..., nrow = 1, ncol = 1, name = NULL, group = "com
     ncol = ncol,
     thumb = thumb,
     as_plotly = as_plotly,
-    plotly_args = plotly_args,
-    facet_wrap = ggplot2::facet_wrap(...)
+    plotly_args = plotly_args
   )
 
   class(ret) <- "facet_trelliscope"
@@ -114,7 +117,7 @@ print.facet_trelliscope <- function(x, ...) {
   make_plot_obj <- function(dt, as_plotly = FALSE, plotly_args = NULL) {
     q <- p
     q$data <- dt
-    q$facet <- ggplot2::FacetNull
+    q <- add_trelliscope_scales(q, scales_info)
     if (as_plotly)
       q <- do.call(ggplotly, c(list(p = q), plotly_args))
     q
