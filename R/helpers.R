@@ -1,3 +1,31 @@
+#' Panel Wrapper Function
+#' Wrapper function to specify a plot object for a panel for use in dplyr summarise()
+#'
+#' @param x a plot object
+#' @examples
+#' \dontrun{
+#' library(rbokeh)
+#' library(dplyr)
+#' ggplot2::mpg %>%
+#'   group_by(manufacturer, class) %>%
+#'   summarise(
+#'     panel = panel(
+#'       figure(xlab = "City mpg", ylab = "Highway mpg") %>%
+#'         ly_points(cty, hwy)))
+#' }
+#' @export
+panel <- function(x) {
+  structure(list(x), class = "trelliscope_panels")
+}
+
+#' Cast a vector of URLs pointing to images as an image panel source
+#'
+#' @param x a vector of URLs pointing to images
+#' @export
+img_panel <- function(x) {
+  cog(x, desc = "panel image source URL", type = "panelSrc",
+    filterable = FALSE, sortable = FALSE)
+}
 
 #' Set labels for a data frame
 #'

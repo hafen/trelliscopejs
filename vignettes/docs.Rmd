@@ -218,7 +218,7 @@ library(tidyr)
 d <- mpg %>%
   group_by(manufacturer, class) %>%
   nest() %>%
-  mutate(panel = panels(data,
+  mutate(panel = map_plot(data,
     ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
         ly_points(cty, hwy, data = .x)))
 d
@@ -226,7 +226,7 @@ d
 
 This output looks similar to the output we created using `summarise()`, but we have been able to preserve the original data for each group, allowing us more flexibility in passing the data to other functions that might compute additional summary cognostics to be used in our display.
 
-Here, a function `r rdl(panels())` is a wrapper for purrr's `map()` function that applies the map and tags the resulting column so that when we create our trelliscope display it will know which column to use for the plot. This is similar to `r rdl(panel())` but suitable for application to an entire list-column as in the case of `nest() %>% mutate()` rather than to each individual group as in the case of `summarise()`.
+Here, a function `r rdl(map_plot())` is a wrapper for purrr's `map()` function that applies the map and tags the resulting column so that when we create our trelliscope display it will know which column to use for the plot. This is similar to `r rdl(panel())` but suitable for application to an entire list-column as in the case of `nest() %>% mutate()` rather than to each individual group as in the case of `summarise()`.
 
 We can now pipe this into a call to `trelliscope()`:
 
@@ -277,7 +277,7 @@ library(gapminder)
 gapminder %>%
   group_by(country, continent) %>%
   nest() %>%
-  mutate(panel = panels(data,
+  mutate(panel = map_plot(data,
     ~ figure(ylim = c(10, 95), toolbar = NULL, width = 300) %>%
         ly_points(year, lifeExp, hover = .x, data = .x) %>%
         theme_axis("x", major_label_orientation = 45))) %>%

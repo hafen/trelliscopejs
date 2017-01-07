@@ -77,7 +77,7 @@ test_that("examples run without barfing", {
   p <- mpg %>%
     group_by(manufacturer, class) %>%
     nest() %>%
-    mutate(panel = panels(data,
+    mutate(panel = map_plot(data,
       ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
           ly_points(cty, hwy, data = .x))) %>%
     trelliscope(name = "city_vs_highway_mpg", thumb = FALSE)
@@ -123,11 +123,11 @@ test_that("examples run without barfing", {
     group_by(manufacturer, class) %>%
     nest() %>%
     mutate(
-      additional_cogs = cogs(data,
+      additional_cogs = map_cog(data,
         ~ data_frame(
-          max_city_mpg = cog(max(.x$cty), desc = "Max city mpg"),
-          min_city_mpg = cog(min(.x$cty), desc = "Min city mpg"))),
-      panel = panels(data, ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
+            max_city_mpg = cog(max(.x$cty), desc = "Max city mpg"),
+            min_city_mpg = cog(min(.x$cty), desc = "Min city mpg"))),
+      panel = map_plot(data, ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
         ly_points(cty, hwy, data = .x))) %>%
     trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2, thumb = FALSE)
   print(p)
@@ -137,11 +137,42 @@ test_that("examples run without barfing", {
   p <- iris %>%
     nest(-Species) %>%
     mutate(mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x))) %>%
-    panels_by_row(function(x) {
+    by_row_plot(function(x) {
       figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
         ly_points(x$data[[1]]$Sepal.Width, x$data[[1]]$Sepal.Length) %>%
         ly_abline(x$mod[[1]])
     }) %>%
-    trelliscope(name = "iris")
+    trelliscope(name = "iris", thumb = FALSE)
   print(p)
+
+  p <- iris %>%
+    nest(-Species) %>%
+    mutate(
+      mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
+      cogs = map2_cog(data, mod, function(data, mod) {
+        data_frame(max_sl = max(data$Sepal.Length), slope = coef(mod)[2])
+      }),
+      panel = map2_plot(data, mod, function(data, mod) {
+        figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
+          ly_points(data$Sepal.Width, data$Sepal.Length) %>%
+          ly_abline(mod)
+      })) %>%
+    trelliscope(name = "iris", thumb = FALSE)
+  print(p)
+
+  p <- iris %>%
+    nest(-Species) %>%
+    mutate(
+      mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
+      cogs = pmap_cog(list(data = data), function(data) {
+        data_frame(max_sl = max(data$Sepal.Length))
+      }),
+      panel = pmap_plot(list(data = data, mod = mod), function(data, mod) {
+        figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
+          ly_points(data$Sepal.Width, data$Sepal.Length) %>%
+          ly_abline(mod)
+      })) %>%
+    trelliscope(name = "iris", thumb = FALSE)
+  print(p)
+
 })

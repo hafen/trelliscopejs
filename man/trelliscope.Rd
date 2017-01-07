@@ -4,9 +4,10 @@
 \alias{trelliscope}
 \title{Create a Trelliscope Display}
 \usage{
-trelliscope(x, name, group = "common", desc = "", md_desc = "", path,
-  height = 500, width = 500, auto_cog = TRUE, state = NULL, nrow = 1,
-  ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = TRUE)
+trelliscope(x, name, group = "common", panel_col = NULL, desc = "",
+  md_desc = "", path, height = 500, width = 500, auto_cog = TRUE,
+  state = NULL, nrow = 1, ncol = 1, jsonp = TRUE,
+  self_contained = FALSE, thumb = TRUE)
 }
 \arguments{
 \item{x}{an object to create at trelliscope display for}
@@ -15,7 +16,9 @@ trelliscope(x, name, group = "common", desc = "", md_desc = "", path,
 
 \item{group}{group that the display belongs to}
 
-\item{desc}{description of the display}
+\item{panel_col}{optional string specifying the column to use for panels (if there are multiple plot columns in \code{x})}
+
+\item{desc}{optional text description of the display}
 
 \item{md_desc}{optional string of markdown that will be shown in the viewer for additional context about the display}
 
