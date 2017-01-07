@@ -1,5 +1,6 @@
 # trelliscopejs 0.1
 
+- Update and add new tidyverse functions (0.1.7)
 - Update to trelliscopejs-lib 0.1.15 (polyfills for older browser support) (0.1.6)
 - Try trelliscopejs-lib with polyfills (0.1.6)
 - Add "tidyverse" helper `panels_by_row()` (0.1.6)
