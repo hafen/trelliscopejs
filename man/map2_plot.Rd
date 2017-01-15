@@ -29,6 +29,7 @@ See \code{\link[purrr]{map2}}
 library(tidyr)
 library(purrr)
 library(rbokeh)
+library(dplyr)
 
 iris \%>\%
   nest(-Species) \%>\%

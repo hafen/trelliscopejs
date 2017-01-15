@@ -21,13 +21,13 @@
 #' @export
 trelliscope <- function(x, name, group = "common", panel_col = NULL, desc = "",
   md_desc = "", path, height = 500, width = 500, auto_cog = TRUE, state = NULL,
-  nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = TRUE)
+  nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = FALSE)
   UseMethod("trelliscope")
 
 #' @export
 trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
   desc = "", md_desc = "", path = NULL, height = 500, width = 500, auto_cog = TRUE,
-  state = NULL, nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = TRUE) {
+  state = NULL, nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = FALSE) {
 
   classes <- unlist(lapply(x, function(a) class(a)[1]))
 
