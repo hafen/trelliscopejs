@@ -1,7 +1,7 @@
 write_thumb <- function(panel_example, path, width, height, thumb = TRUE) {
   if (thumb) {
     if (inherits(panel_example, "htmlwidget")) {
-      widget_thumbnail(panel_example, path)
+      widget_thumbnail(panel_example, path, width, height)
     } else {
       suppressMessages(
         make_png(panel_example, file = path,
@@ -18,53 +18,30 @@ write_thumb <- function(panel_example, path, width, height, thumb = TRUE) {
 }
 
 #' @importFrom graphics plot
-widget_thumbnail <- function(p, thumb_path, timeout = 750) {
-  phantom <- find_phantom()
+#' @importFrom webshot webshot
+widget_thumbnail <- function(p, thumb_path, width, height, delay = 0.5) {
   thumb_path <- path.expand(thumb_path)
 
   success <- FALSE
-  if (phantom == "") {
-    message("** phantomjs dependency could not be found - ",
-      "thumbnail cannot be generated - visit http://phantomjs.org/download.html ",
-      "to install")
-  } else {
-    res <- try({
-      ff <- tempfile(fileext = ".html")
-      ffjs <- tempfile(fileext = ".js")
+  res <- try({
+    ff <- tempfile(fileext = ".html")
+    ffjs <- tempfile(fileext = ".js")
 
-      # don't want any padding
-      p$sizingPolicy$padding <- 0 # nolint
-      suppressMessages(htmlwidgets::saveWidget(p, ff, selfcontained = FALSE))
+    # don't want any padding
+    p$sizingPolicy$padding <- 0 # nolint
+    suppressMessages(htmlwidgets::saveWidget(p, ff, selfcontained = FALSE))
 
-      js <- paste0("var page = require('webpage').create();
-page.open('file://", ff, "', function() {
-  window.setTimeout(function () {
-    page.render('", thumb_path, "');
-    phantom.exit();
-  }, ", timeout, ");
-});")
-      cat(js, file = ffjs)
-      system2(phantom, ffjs)
-    })
-    if (!inherits(res, "try-error")) {
-      success <- TRUE
-    }
-    if (!file.exists(thumb_path))
-      success <- FALSE
+    webshot::webshot(paste0("file://", ff), thumb_path, vwidth = width, vheight = height,
+      delay = delay)
+  }, silent = TRUE)
+  if (!inherits(res, "try-error")) {
+    success <- TRUE
   }
+  if (!file.exists(thumb_path))
+    success <- FALSE
 
-  if (!success) {
+  if (!success)
     message("* could not create htmlwidget thumbnail... will use blank thumbnail...")
-  }
-}
-
-# similar to webshot
-find_phantom <- function() {
-  phantom <- Sys.which("phantomjs")
-  if (Sys.which("phantomjs") == "")
-    if (identical(.Platform$OS.type, "windows"))
-      phantom <- Sys.which(file.path(Sys.getenv("APPDATA"), "npm", "phantomjs.cmd"))
-  phantom
 }
 
 #' @import ggplot2
