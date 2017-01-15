@@ -36,6 +36,28 @@ panels <- function(.x, .f, ...) {
 #' \dontrun{
 #' library(dplyr)
 #' library(tidyr)
+#' library(purrr)
+#' library(rbokeh)
+#' library(gapminder)
+#'
+#' # nest gapminder data by country
+#' by_country <- gapminder %>%
+#'   group_by(country, continent) %>%
+#'   nest()
+#'
+#' # add in a plot column with map_plot
+#' by_country <- by_country %>% mutate(
+#'   panel = map_plot(data,
+#'     ~ figure(xlim = c(1948, 2011), ylim = c(10, 95), width = 300, tools = NULL) %>%
+#'         ly_points(year, lifeExp, data = .x, hover = .x)
+#'   ))
+#'
+#' # plot it
+#' by_country %>%
+#'   trelliscope("gapminder", nrow = 2, ncol = 7)
+#'
+#' library(dplyr)
+#' library(tidyr)
 #' ggplot2::mpg %>%
 #'   group_by(manufacturer, class) %>%
 #'   nest() %>%
