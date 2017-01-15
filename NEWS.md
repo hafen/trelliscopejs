@@ -1,5 +1,6 @@
 # trelliscopejs 0.1
 
+- Use webshot for thumbnails and don't create thumbnails by default (0.1.8)
 - Update and add new tidyverse functions (0.1.7)
 - Update to trelliscopejs-lib 0.1.15 (polyfills for older browser support) (0.1.6)
 - Try trelliscopejs-lib with polyfills (0.1.6)
