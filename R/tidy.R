@@ -64,6 +64,7 @@ map_plot <- function(.x, .f, ...) {
 #' library(tidyr)
 #' library(purrr)
 #' library(rbokeh)
+#' library(dplyr)
 #'
 #' iris %>%
 #'   nest(-Species) %>%

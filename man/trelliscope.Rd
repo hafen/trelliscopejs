@@ -7,7 +7,7 @@
 trelliscope(x, name, group = "common", panel_col = NULL, desc = "",
   md_desc = "", path, height = 500, width = 500, auto_cog = TRUE,
   state = NULL, nrow = 1, ncol = 1, jsonp = TRUE,
-  self_contained = FALSE, thumb = TRUE)
+  self_contained = FALSE, thumb = FALSE)
 }
 \arguments{
 \item{x}{an object to create at trelliscope display for}
