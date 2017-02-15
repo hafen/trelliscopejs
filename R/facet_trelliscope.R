@@ -62,7 +62,7 @@ facet_trelliscope <- function(
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
   desc = "", md_desc = "", path = NULL, height = 500, width = 500,
   state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
-  self_contained = FALSE, thumb = TRUE) {
+  self_contained = FALSE, thumb = TRUE, auto_cog_data = TRUE) {
 
   if (as_plotly) {
     if (!requireNamespace("plotly", quietly = TRUE))
@@ -88,7 +88,8 @@ facet_trelliscope <- function(
     scales = upgrade_scales_param(scales),
     thumb = thumb,
     as_plotly = as_plotly,
-    plotly_args = plotly_args
+    plotly_args = plotly_args,
+    auto_cog_data = auto_cog_data
   )
 
   class(ret) <- "facet_trelliscope"
@@ -106,7 +107,7 @@ facet_trelliscope <- function(
     # e1 <- e1 %+% (e2$facet_wrap)
     attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group", "desc", "md_desc",
       "height", "width", "state", "jsonp", "self_contained", "path", "state", "nrow", "ncol",
-      "scales", "thumb", "as_plotly", "plotly_args")]
+      "scales", "thumb", "as_plotly", "plotly_args", "auto_cog_data")]
     class(e1) <- c("facet_trelliscope", class(e1))
     return(e1)
     # return(print(e1))
@@ -133,17 +134,33 @@ print.facet_trelliscope <- function(x, ...) {
   # remove special class
   class(p) <- setdiff(class(p), "facet_trelliscope")
 
-  data <- as_data_frame(p$data)
+  pp <- ggplot_build(p)
 
-  scales_info <- list(x_type = attrs$scales[1], y_type = attrs$scales[2])
+  if (isTRUE(attrs$auto_cog_data)) {
+    message("using data from the first layer")
+    # data <- ggplot2::layer_data(p, 1) # first layer data # this is computed data
+    data <- p$layers[[1]]$data # first layer data
+    if (inherits(data, "waiver")) {
+      # retrieve plot data
+      data <- p$data
+    }
+
+  } else if (is.data.frame(attrs$auto_cog_data)) {
+    data <- attrs$auto_cog_data
+  }
 
   # character vect of facet columns
   facet_cols <- unlist(lapply(attrs$facet_cols, as.character))
+
+  if (!all(facet_cols %in% names(data))) {
+    stop("all facet_trelliscope facet columns must be found in the data being used")
+  }
 
   # group by all the facets
   data <- data %>%
     group_by_(.dots = lapply(facet_cols, as.symbol)) %>%
     auto_cogs()
+  data$.id <- seq_len(nrow(data))
 
   cog_desc <- attr(data$auto_cogs, "cog_desc")
 
@@ -151,23 +168,38 @@ print.facet_trelliscope <- function(x, ...) {
   cog_df <- as_cognostics(cog_df, cond_cols = facet_cols, cog_desc = cog_desc)
 
   # get ranges of all data
-  scales_info$x_info <- get_scale_range_obj(p$mapping$x, data$data, scales_info$x_type)
-  scales_info$y_info <- get_scale_range_obj(p$mapping$y, data$data, scales_info$y_type)
+
+  get_ggplot2_scale_info <- function(dt) {
+    q <- p
+
+  }
+
+  scales_info <- list(x_type = attrs$scales[1], y_type = attrs$scales[2])
+  scales_info$x_info <- get_scale_range_obj(p$mapping$x, data$data, scales_info$x_type, p$data)
+  scales_info$y_info <- get_scale_range_obj(p$mapping$y, data$data, scales_info$y_type, p$data)
 
   # wrapper function that swaps out the data with a subset and removes the facet
-  make_plot_obj <- function(dt, as_plotly = FALSE, plotly_args = NULL) {
+  make_plot_obj <- function(dt, as_plotly = FALSE, plotly_args = NULL, pos = -1) {
     q <- p
     q$data <- dt
-    q <- add_trelliscope_scales(q, scales_info)
+    q <- add_trelliscope_scales(q, scales_info, showWarnings = (pos == 1))
     if (as_plotly)
       q <- do.call(ggplotly, c(list(p = q), plotly_args))
     q
   }
 
-  panels <- (data %>%
-    purrr::by_row(~ make_plot_obj(unnest(.x[c(facet_cols, "data")]),
-      as_plotly = attrs$as_plotly, plotly_args = attrs$plotly_args),
-      .labels = FALSE))[[1]]
+  panels <- (
+    data %>%
+      purrr::by_row(~
+        make_plot_obj(
+          unnest(.x[c(facet_cols, "data")]),
+          as_plotly = attrs$as_plotly,
+          plotly_args = attrs$plotly_args,
+          pos = .$.id
+        ),
+        .labels = FALSE
+      )
+  )[[1]]
   names(panels) <- cog_df$panelKey # nolint
 
   name <- attrs$name
@@ -235,7 +267,7 @@ print.facet_trelliscope <- function(x, ...) {
 
 
 
-get_scale_range_obj <- function(mapping_val, data_col, scale_type) {
+get_scale_range_obj <- function(mapping_val, data_col, scale_type, original_data) {
   ret <- list(scale_type = scale_type)
 
   if (
@@ -257,34 +289,66 @@ get_scale_range_obj <- function(mapping_val, data_col, scale_type) {
   } else {
     ret$data_type <- "discrete"
 
-    stop("discrete not implemented")
+    if (scale_type == "sliced") {
+      warning(
+        "facet_trelliscope does not know how to handle a 'sliced' scale for discrete data. ",
+        "Using 'free' type"
+      )
+      scale_type <- "free"
+    }
+
+    if (scale_type == "free") {
+      # do nothing
+    } else if (scale_type == "same") {
+      original_dt_col <- eval(mapping_val, envir = original_data)
+      ret$levels <- levels(as.factor(original_dt_col))
+    }
   }
 
   return(ret)
-
-
 }
 
 
 
-add_trelliscope_scales <- function(p, scales_info) {
+add_trelliscope_scales <- function(p, scales_info, ...) {
   p %>%
-    add_trelliscope_scale("x", scales_info$x_info) %>%
-    add_trelliscope_scale("y", scales_info$y_info)
+    add_trelliscope_scale("x", scales_info$x_info, ...) %>%
+    add_trelliscope_scale("y", scales_info$y_info, ...)
 }
 
 
 # the goal is to add a scale if a scale doesn't already exist.
 # if a scale exists, we should NOT overwrite it.
-add_trelliscope_scale <- function(p, axis_name, scale_info) {
+add_trelliscope_scale <- function(p, axis_name, scale_info, showWarnings = FALSE) {
   axis_scales <- p$scales$get_scales(axis_name)
   if (!is.null(axis_scales$limits)) {
     # return if there already is a limit set for this axis
     return(p)
   }
 
+  scale_type <- scale_info$scale_type
+
+  if (
+    is.null(p$mapping[[axis_name]])
+  ) {
+    # this is a possibly calculated axis, leave alone
+    if (
+      isTRUE(showWarnings) &&
+      scale_type != "free" &&
+      is.null(p$scales$get_scales(axis_name))
+    ) {
+      # warn as it isn't a free axis
+      warning(
+        "Axis: '", axis_name, "' is missing a global aesthetic. ",
+        "Add a custom scale to change default behavior",
+        call. = FALSE
+      )
+    }
+
+    return(p)
+  }
+
   if (scale_info$data_type == "continuous") {
-    scale_type <- scale_info$scale_type
     scale_fn <- switch(axis_name,
       "x" = scale_x_continuous,
       "y" = scale_y_continuous,
@@ -316,7 +380,23 @@ add_trelliscope_scale <- function(p, axis_name, scale_info) {
     }
 
   } else if (scale_info$data_type == "discrete") {
-    stop("not implemented")
+
+    data_column <- eval(p$mapping[[axis_name]], envir = p$data)
+
+    scale_fn <- switch(axis_name,
+      "x" = scale_x_discrete,
+      "y" = scale_y_discrete,
+    )
+
+    if (scale_type == "free") {
+      # at least have them appear in the same order
+      p <- p + scale_fn(limits = scale_info$levels, drop = TRUE)
+
+    } else if (scale_type == "same") {
+      p <- p + scale_fn(limits = scale_info$levels, drop = FALSE)
+
+    }
+
   }
 
   p
