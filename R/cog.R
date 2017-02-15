@@ -203,7 +203,7 @@ as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
   # get rid of cogs that are all NA
   na_cogs <- which(sapply(x, function(a) all(is.na(a))))
   if (length(na_cogs) > 0) {
-    message("Removing the following cognostics that are all NA:",
+    message("Removing the following cognostics that are all NA: ",
       paste(nms[na_cogs], collapse = ", "))
     x[na_cogs] <- NULL
   }

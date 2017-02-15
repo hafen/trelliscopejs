@@ -89,7 +89,7 @@ auto_cogs <- function(data) {
   cog_desc <- as.list(tmp$desc)
   names(cog_desc) <- tmp$cogname
 
-  res <- cogs(cog_data, function(x) {
+  res <- map_cog(cog_data, function(x) {
     res <- data_frame(count = nrow(x))
     for (ii in seq_along(cog_spec$unique$col))
       res[[cog_spec$unique$cogname[ii]]] <- x[[cog_spec$unique$col[ii]]][1]

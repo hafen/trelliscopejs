@@ -1,5 +1,12 @@
 # trelliscopejs 0.1
 
+- Use webshot for thumbnails and don't create thumbnails by default (0.1.8)
+- Update and add new tidyverse functions (0.1.7)
+- Update to trelliscopejs-lib 0.1.15 (polyfills for older browser support) (0.1.6)
+- Try trelliscopejs-lib with polyfills (0.1.6)
+- Add "tidyverse" helper `panels_by_row()` (0.1.6)
+- Update to trelliscopejs-lib 0.1.14 (0.1.5)
+- Fix issue with total panels not always being stored correctly (0.1.5)
 - Update to trelliscopejs-lib 0.1.12 (0.1.4)
 - Make sure correct config.json(p) is used and knitr handling is done right (0.1.4)
 - Add all dependencies to htmlwidget when `self_contained` is `TRUE` (0.1.4)
