@@ -408,6 +408,8 @@ print.facet_trelliscope <- function(x, ...) {
 }
 
 
+plot_clone <- getFromNamespace("plot_clone", "ggplot2")
+
 add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
   x_scale_type <- scales_info$x_info$scale_type
   y_scale_type <- scales_info$y_info$scale_type
@@ -420,7 +422,8 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
   ) {
 
     # get the ranges from the data
-    scale_plot <- ggplot2:::plot_clone(plot)
+
+    scale_plot <- plot_clone(plot)
 
     scales_val = switch(x_scale_type,
       free = switch(y_scale_type, same = "free_x", "free"),
