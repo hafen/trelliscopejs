@@ -8,9 +8,11 @@ facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
   name = NULL, group = "common", desc = "", md_desc = "", path = NULL,
   height = 500, width = 500, state = NULL, jsonp = TRUE,
   as_plotly = FALSE, plotly_args = NULL, self_contained = FALSE,
-  thumb = TRUE)
+  thumb = TRUE, auto_cog_data = TRUE)
 }
 \arguments{
+\item{facets}{formula to facet the panels on. Similar to \code{ggplot2::\link[ggplot2]{facet_wrap}}'s \code{facets}}
+
 \item{nrow}{the number of rows of panels to display by default}
 
 \item{ncol}{the number of columns of panels to display by default}
@@ -43,7 +45,7 @@ facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
 
 \item{thumb}{should a thumbnail be created?}
 
-\item{...}{all parameters passed onto \code{ggplot2::\link[ggplot2]{facet_wrap}}}
+\item{auto_cog_data}{boolean that determines if automatic cognostics are produces}
 }
 \description{
 Facet Trelliscope

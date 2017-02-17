@@ -189,7 +189,7 @@ extract_plot_content <- function(p, pg = plot_gtable(p), include_strips = TRUE) 
 
 #' Facet Trelliscope
 #'
-#' @param ... all parameters passed onto \code{ggplot2::\link[ggplot2]{facet_wrap}}
+#' @param facets formula to facet the panels on. Similar to \code{ggplot2::\link[ggplot2]{facet_wrap}}'s \code{facets}
 #' @param name name of the display
 #' @param group group that the display belongs to
 #' @param desc description of the display
@@ -206,6 +206,7 @@ extract_plot_content <- function(p, pg = plot_gtable(p), include_strips = TRUE) 
 #' @param plotly_args optinal named list of arguments to send to \code{ggplotly}
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
+#' @param auto_cog_data boolean that determines if automatic cognostics are produces
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 #' @export
 #' @example man-roxygen/ex-facet_trelliscope.R
