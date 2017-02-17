@@ -185,9 +185,6 @@ print.facet_trelliscope <- function(x, ...) {
   scales_info <- upgrade_scales_param(attrs$scales, p$facet)
   scales_info <- add_range_info_to_scales(p, scales_info, attrs$facet_cols)
 
-  print(scales_info)
-  # browser()
-
   # wrapper function that swaps out the data with a subset and removes the facet
   make_plot_obj <- function(dt, as_plotly = FALSE, plotly_args = NULL, pos = -1) {
     q <- p
