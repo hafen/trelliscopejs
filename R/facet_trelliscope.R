@@ -1,7 +1,7 @@
 utils::globalVariables(c(".", "ggplotly"))
 
 
-upgrade_scales_param <- function(scales) {
+upgrade_scales_param <- function(scales, plot_facet) {
   if (length(scales) > 2) {
     stop("scales must not be longer than length 2")
   }
@@ -29,8 +29,22 @@ upgrade_scales_param <- function(scales) {
     stop("a length 2 scales parameter can only be made of 'same', 'free', or 'sliced' values")
   }
 
-  scales
 
+  # sliced is not allowed for faceted columns
+  if (!inherits(plot_facet, "FacetNull")) {
+    for (item_val in list(list(1, "x"), list(2, "y"))) {
+      if (scales[item_val[[1]]] == "sliced") {
+        message(
+          "If a panel is being displayed with 'facet_wrap' or 'facet_grid', ",
+          "the ", item_val[[2]], " scale can not be sliced.  Using 'free' instead."
+        )
+        scales[item_val[[1]]] <- "free"
+      }
+    }
+  }
+
+
+  list(x_info = list(name = "x", scale_type = scales[1]), y_info = list(name = "y", scale_type = scales[1]))
 }
 
 
@@ -85,7 +99,7 @@ facet_trelliscope <- function(
     self_contained = self_contained,
     nrow = nrow,
     ncol = ncol,
-    scales = upgrade_scales_param(scales),
+    scales = scales,
     thumb = thumb,
     as_plotly = as_plotly,
     plotly_args = plotly_args,
@@ -150,8 +164,8 @@ print.facet_trelliscope <- function(x, ...) {
   }
 
   # character vect of facet columns
+  # TODO need to work with facet_trelliscope(~ disp < 5)
   facet_cols <- unlist(lapply(attrs$facet_cols, as.character))
-
   if (!all(facet_cols %in% names(data))) {
     stop("all facet_trelliscope facet columns must be found in the data being used")
   }
@@ -168,15 +182,11 @@ print.facet_trelliscope <- function(x, ...) {
   cog_df <- as_cognostics(cog_df, cond_cols = facet_cols, cog_desc = cog_desc)
 
   # get ranges of all data
+  scales_info <- upgrade_scales_param(attrs$scales, p$facet)
+  scales_info <- add_range_info_to_scales(p, scales_info, attrs$facet_cols)
 
-  get_ggplot2_scale_info <- function(dt) {
-    q <- p
-
-  }
-
-  scales_info <- list(x_type = attrs$scales[1], y_type = attrs$scales[2])
-  scales_info$x_info <- get_scale_range_obj(p$mapping$x, data$data, scales_info$x_type, p$data)
-  scales_info$y_info <- get_scale_range_obj(p$mapping$y, data$data, scales_info$y_type, p$data)
+  print(scales_info)
+  # browser()
 
   # wrapper function that swaps out the data with a subset and removes the facet
   make_plot_obj <- function(dt, as_plotly = FALSE, plotly_args = NULL, pos = -1) {
@@ -262,58 +272,107 @@ print.facet_trelliscope <- function(x, ...) {
 }
 
 
-
-
-
-
-
-get_scale_range_obj <- function(mapping_val, data_col, scale_type, original_data) {
-  ret <- list(scale_type = scale_type)
+add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
+  x_scale_type <- scales_info$x_info$scale_type
+  y_scale_type <- scales_info$y_info$scale_type
 
   if (
-    is.numeric(eval(mapping_val, envir = data_col[[1]]))
+    any(
+      x_scale_type != "free",
+      y_scale_type != "free"
+    )
   ) {
-    ret$data_type <- "continuous"
 
-    range_list <- purrr::map(data_col, ~ range(eval(mapping_val, envir = .), na.rm = TRUE))
+    # get the ranges from the data
+    scale_plot <- ggplot2:::plot_clone(plot)
 
-    if (scale_type == "same") {
-      ret$range <- range(unlist(range_list), na.rm = TRUE)
+    scales_val = switch(x_scale_type,
+      free = switch(y_scale_type, same = "free_x", "free"),
+      sliced = switch(y_scale_type, same = "free_x", "free"),
+      same = switch(y_scale_type, same = "fixed", "free_y")
+    )
+    facet_part <- facet_wrap(~ ., scales = scales_val)
 
-    } else if (scale_type == "sliced") {
-      range_vals <- unlist(lapply(range_list, diff))
-      ret$width <- max(range_vals)
+    if (inherits(scale_plot$facet, "FacetNull")) {
+      # add a facet_wrap with scales == free and get limits
+      # since can only be same here. build_plot with extra param and take limits
+      facet_part$params$facets <- facet_cols
 
-    }
-
-  } else {
-    ret$data_type <- "discrete"
-
-    if (scale_type == "sliced") {
-      warning(
-        "facet_trelliscope does not know how to handle a 'sliced' scale for discrete data. ",
-        "Using 'free' type"
+    } else {
+      # can only do same (or free)
+      # since can only be same here. build_plot with extra param and take limits
+      facet_part$params$facets <- append(
+        scale_plot$facet$params$rows,
+        append(
+          scale_plot$facet$params$cols,
+          facet_cols
+        )
       )
-      scale_type <- "free"
+    }
+    scale_plot <- scale_plot + facet_part
+
+    scale_plot_built <- ggplot_build(scale_plot)
+
+    calculate_scale_info <- function(scale_info) {
+      if (scale_info$scale_type == "free") {
+        return(scale_info)
+      }
+
+      plot_scales <- scale_plot_built$layout$panel_scales
+      test_scale <- plot_scales[[scale_info$name]][[1]]
+
+      if (inherits(test_scale, "ScaleDiscrete")) {
+        scale_info$data_type <- "discrete"
+
+        if (scale_info$scale_type == "sliced") {
+          message(
+            "facet_trelliscope does not know how to handle a 'sliced' scale for discrete data. ",
+            "Using 'free' type"
+          )
+
+        } else {
+          # isn't free, so can take first test_scale and reutrn range values
+          scale_info$levels <- test_scale$range$range
+        }
+
+
+      } else {
+        # continuous
+        scale_info$data_type <- "continuous"
+
+        if (scale_info$scale_type == "same") {
+          # test scale is accurate for all panels
+          scale_info$range <- test_scale$range$range
+        }
+
+        # "Behavior for relation="sliced" is similar, except that the length (max - min) of the scales are constrained to remain the same across panels."
+        if (scale_info$scale_type == "sliced") {
+          range_list <- lapply(plot_scales[[scale_info$name]], function(ps) {
+            ps$range$range
+          })
+          diffs <- unlist(lapply(range_list, diff))
+
+          max_diff <- diffs[which.max(diffs)]
+
+          scale_info$width <- max_diff
+        }
+      }
+
+      return(scale_info)
     }
 
-    if (scale_type == "free") {
-      # do nothing
-    } else if (scale_type == "same") {
-      original_dt_col <- eval(mapping_val, envir = original_data)
-      ret$levels <- levels(as.factor(original_dt_col))
-    }
+    scales_info$x_info <- calculate_scale_info(scales_info$x_info)
+    scales_info$y_info <- calculate_scale_info(scales_info$y_info)
   }
 
-  return(ret)
+  scales_info
 }
-
 
 
 add_trelliscope_scales <- function(p, scales_info, ...) {
   p %>%
-    add_trelliscope_scale("x", scales_info$x_info, ...) %>%
-    add_trelliscope_scale("y", scales_info$y_info, ...)
+    add_trelliscope_scale(scales_info$x_info$name, scales_info$x_info, ...) %>%
+    add_trelliscope_scale(scales_info$y_info$name, scales_info$y_info, ...)
 }
 
 
@@ -338,7 +397,7 @@ add_trelliscope_scale <- function(p, axis_name, scale_info, showWarnings = FALSE
       is.null(p$scales$get_scales(axis_name))
     ) {
       # warn as it isn't a free axis
-      warning(
+      message(
         "Axis: '", axis_name, "' is missing a global aesthetic. ",
         "Add a custom scale to change default behavior",
         call. = FALSE
@@ -348,55 +407,58 @@ add_trelliscope_scale <- function(p, axis_name, scale_info, showWarnings = FALSE
     return(p)
   }
 
-  if (scale_info$data_type == "continuous") {
-    scale_fn <- switch(axis_name,
-      "x" = scale_x_continuous,
-      "y" = scale_y_continuous,
-    )
+  if (scale_type != "free") {
 
-    if (scale_type == "free") {
-      # do nothing
-      p <- p + scale_fn(limits = c(NA, NA)) # "Use NA to refer to the existing minimum or maximum."
+    if (scale_info$data_type == "continuous") {
+      scale_fn <- switch(axis_name,
+        "x" = scale_x_continuous,
+        "y" = scale_y_continuous,
+      )
 
-    } else if (scale_type == "same") {
-      p <- p + scale_fn(limits = scale_info$range)
+      if (scale_type == "free") {
+        # do nothing
+        p <- p + scale_fn(limits = c(NA, NA)) # "Use NA to refer to the existing minimum or maximum."
 
-    } else if (scale_type == "sliced") {
-      eval(p$mapping[[axis_name]], envir = p$data) %>%
-        range(na.rm = TRUE) ->
-      dt_range
+      } else if (scale_type == "same") {
+        p <- p + scale_fn(limits = scale_info$range)
 
-      mid_range_val <- mean(dt_range)
+      } else if (scale_type == "sliced") {
+        eval(p$mapping[[axis_name]], envir = p$data) %>%
+          range(na.rm = TRUE) ->
+        dt_range
 
-      width <- scale_info$width
-      limits <- c(mid_range_val - 1/2 * width, mid_range_val + 1/2 * width)
+        mid_range_val <- mean(dt_range)
 
-      if (!isTRUE(all.equal(dt_range, limits))) {
-        # this if check is done to avoid silly R floating point rounding errors
-        # this situation should only happen twice. one for each axis
-        p <- p + scale_fn(limits = limits)
+        width <- scale_info$width
+        limits <- c(mid_range_val - 1/2 * width, mid_range_val + 1/2 * width)
+
+        if (!isTRUE(all.equal(dt_range, limits))) {
+          # this if check is done to avoid silly R floating point rounding errors
+          # this situation should only happen twice. one for each axis
+          p <- p + scale_fn(limits = limits)
+        }
+
+      }
+
+    } else if (scale_info$data_type == "discrete") {
+
+      data_column <- eval(p$mapping[[axis_name]], envir = p$data)
+
+      scale_fn <- switch(axis_name,
+        "x" = scale_x_discrete,
+        "y" = scale_y_discrete,
+      )
+
+      if (scale_type == "free") {
+        # at least have them appear in the same order
+        p <- p + scale_fn(limits = scale_info$levels, drop = TRUE)
+
+      } else if (scale_type == "same") {
+        p <- p + scale_fn(limits = scale_info$levels, drop = FALSE)
+
       }
 
     }
-
-  } else if (scale_info$data_type == "discrete") {
-
-    data_column <- eval(p$mapping[[axis_name]], envir = p$data)
-
-    scale_fn <- switch(axis_name,
-      "x" = scale_x_discrete,
-      "y" = scale_y_discrete,
-    )
-
-    if (scale_type == "free") {
-      # at least have them appear in the same order
-      p <- p + scale_fn(limits = scale_info$levels, drop = TRUE)
-
-    } else if (scale_type == "same") {
-      p <- p + scale_fn(limits = scale_info$levels, drop = FALSE)
-
-    }
-
   }
 
   p
