@@ -13,13 +13,25 @@ make_png <- function(p, file, width, height, orig_width = width, res = 72,
     }
   }
 
+  # need to convert unit to pixels
+  # need to have 'fac' factor if coming from unit
+  width_is_unit <- height_is_unit <- FALSE
+  if (inherits(width, "unit")) {
+    width <- unit_to_px(width, res)
+    width_is_unit <- TRUE
+  }
+  if (inherits(height, "unit")) {
+    height <- unit_to_px(height, res)
+    height_is_unit <- TRUE
+  }
+
   fac <- max(min(width / orig_width, 1), 0.65) * 1.5
   pointsize <- base_point_size
 
   pngfun(filename = file,
     res = res * pixelratio * fac,
-    width = width * pixelratio,
-    height = height * pixelratio,
+    width = width * pixelratio * ifelse(width_is_unit, fac, 1),
+    height = height * pixelratio * ifelse(height_is_unit, fac, 1),
     pointsize = base_point_size * fac)
 
   dv <- grDevices::dev.cur()
@@ -29,6 +41,8 @@ make_png <- function(p, file, width, height, orig_width = width, res = 72,
       print(p)
     } else if (inherits(p, "ggplot")) {
       print(p)
+    } else if (inherits(p, "gtable")) {
+      grid::grid.draw(p)
     }
   },
   finally = grDevices::dev.off(dv))

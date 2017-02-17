@@ -15,6 +15,7 @@ Imports:
     dplyr,
     purrr,
     tidyr,
+    grid,
     htmltools,
     DistributionUtils,
     grDevices,
