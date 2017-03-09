@@ -49,15 +49,19 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
   if (is.null(thumb))
     thumb <- TRUE
 
+  in_notebook <- FALSE
   if (in_rmarkdown_notebook()) {
     # spa <- FALSE # (don't need to set spa to FALSE because it's in an iframe)
     if (!self_contained) {
-      message("** note: Currently trelliscope displays can only be created from ",
-        "within an RMarkdown notebook with self_contained = TRUE. Setting this ",
-        "option and ignoring specified path (if any).")
-      path <- tempfile("trelliscope")
-      self_contained <- TRUE
+      message("** note: When inside an R Markdown document, the only way to embed a",
+        "Trelliscope display within the notebook is to use self_contained = TRUE.")
+      # message("** note: Currently trelliscope displays can only be created from ",
+      #   "within an RMarkdown notebook with self_contained = TRUE. Setting this ",
+      #   "option and ignoring specified path (if any).")
+      # path <- tempfile("trelliscope")
+      # self_contained <- TRUE
     }
+    in_notebook <- TRUE
   }
 
   in_knitr <- getOption("knitr.in.progress", FALSE)
@@ -112,6 +116,7 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
     spa = spa,
     state = state,
     in_knitr = in_knitr,
+    in_notebook = in_notebook,
     thumb = thumb
   )
 }
