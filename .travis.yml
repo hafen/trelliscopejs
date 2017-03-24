@@ -9,7 +9,7 @@ r_github_packages:
 after_success:
   - Rscript -e "covr::codecov()"
   - Rscript -e "packagedocs::deploy_travis()"
-  - Rscript -e "travisDrat::deploy_drat(repo = 'schloerke/drat', valid_branches = 'master')"
+  - Rscript -e "travisDrat::deploy_drat(drat_repo = 'schloerke/drat', valid_branches = 'master')"
 
 env:
   global:
