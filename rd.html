@@ -1,0 +1,1432 @@
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc" />
+
+    <meta name="author" content="Ryan Hafen" />
+  
+  
+  <title>trelliscopejs Function Reference</title>
+
+    <script src="rd_files/jquery-1.11.3/jquery.min.js"></script>
+  <link href="rd_files/bootstrap-3.3.2/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="rd_files/bootstrap-3.3.2/js/bootstrap.min.js"></script>
+  <script src="rd_files/bootstrap-3.3.2/shim/html5shiv.min.js"></script>
+  <script src="rd_files/bootstrap-3.3.2/shim/respond.min.js"></script>
+  <link href="rd_files/highlight-8.4/tomorrow.css" rel="stylesheet" />
+  <script src="rd_files/highlight-8.4/highlight.pack.js"></script>
+  <link href="rd_files/fontawesome-4.3.0/css/font-awesome.min.css" rel="stylesheet" />
+  <script src="rd_files/stickykit-1.1.1/sticky-kit.min.js"></script>
+  <script src="rd_files/jqueryeasing-1.3/jquery.easing.min.js"></script>
+  <link href="rd_files/recliner-0.2.2/recliner.css" rel="stylesheet" />
+  <script src="rd_files/recliner-0.2.2/recliner.min.js"></script>
+  <script src="rd_files/recliner-0.2.2/onload.js"></script>
+  <link href="rd_files/packagedocs-0.0.1/pd.css" rel="stylesheet" />
+  <script src="rd_files/packagedocs-0.0.1/pd.js"></script>
+  <script src="rd_files/packagedocs-0.0.1/pd-sticky-toc.js"></script>
+  
+  
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+</head>
+
+<body>
+
+  
+  <header class="navbar navbar-white navbar-fixed-top" role="banner" id="header">
+    <div class="container">
+      <div class="navbar-header">
+        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+                <a href="index.html" class="navbar-brand page-scroll">
+        trelliscopejs Function Reference
+        </a>
+      </div>
+            <nav class="collapse navbar-collapse" role="navigation">
+        <ul class="nav nav-pills pull-right">
+<li>
+<a href='index.html'>Docs</a>
+</li>
+<li class="active">
+<a href='rd.html'>Package Ref</a>
+</li>
+<li>
+<a href='https://github.com/hafen/trelliscopejs'>Github <i class='fa fa-github'></i></a>
+</li>
+        </ul>
+      </nav>
+          </div>
+  </header>
+
+  <!-- Begin Body -->
+  <div class="container">
+    <div class="row">
+            <div class="col-md-3" id="sidebar-col">
+        <div id="toc">
+          <ul>
+          <li><a href="#trelliscope-functions">Trelliscope Functions</a><ul>
+          <li><a href="#trelliscope">trelliscope</a></li>
+          <li><a href="#facet_trelliscope">facet_trelliscope</a></li>
+          <li><a href="#print.facet_trelliscope">print.facet_trelliscope</a></li>
+          </ul></li>
+          <li><a href="#cognostics">Cognostics</a><ul>
+          <li><a href="#cog">cog</a></li>
+          <li><a href="#cog_href">cog_href</a></li>
+          <li><a href="#cogs">cogs</a></li>
+          <li><a href="#auto_cogs">auto_cogs</a></li>
+          </ul></li>
+          <li><a href="#helpers">Helpers</a><ul>
+          <li><a href="#panel">panel</a></li>
+          <li><a href="#panels">panels</a></li>
+          <li><a href="#set_labels">set_labels</a></li>
+          <li><a href="#sort_spec">sort_spec</a></li>
+          </ul></li>
+          <li><a href="#low-level-functions">Low-level Functions</a><ul>
+          <li><a href="#prepare_display">prepare_display</a></li>
+          <li><a href="#update_display_list">update_display_list</a></li>
+          <li><a href="#write_cognostics">write_cognostics</a></li>
+          <li><a href="#write_config">write_config</a></li>
+          <li><a href="#write_display_obj">write_display_obj</a></li>
+          <li><a href="#write_panel">write_panel</a></li>
+          <li><a href="#write_panels">write_panels</a></li>
+          <li><a href="#as_cognostics">as_cognostics</a></li>
+          </ul></li>
+          <li><a href="#datasets">Datasets</a><ul>
+          <li><a href="#mpg_labels">mpg_labels</a></li>
+          </ul></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-9" id="content-col">
+      
+<div id="content-top"></div>
+<h1>
+Create Interactive Trelliscope Displays
+</h1>
+<p>
+<strong>Authors:</strong> <a href="mailto:rhafen@gmail.com">Ryan Hafen</a> [aut, cre],<a href="mailto:schloerke@gmail.com">Barret Schloerke</a> [aut]
+</p>
+<p>
+<strong>Version:</strong> 0.1.8
+</p>
+<p>
+<strong>License:</strong> BSD_3_clause + file LICENSE
+</p>
+<h4>
+Description
+</h4>
+<p>
+Trelliscope is a scalable, flexible, interactive approach to visualizing data. This package provides methods that make it easy to create a Trelliscope display specification for TrelliscopeJS. High-level functions are provided for creating displays from within dplyr or ggplot2 workflows. Low-level functions are also provided for creating new interfaces.
+</p>
+<h4>
+Depends
+</h4>
+<p>
+R (&gt;= 3.2.3)
+</p>
+<h4>
+Imports
+</h4>
+<p>
+dplyr, purrr, tidyr, htmltools, DistributionUtils, grDevices, digest, jsonlite, ggplot2 (&gt; 2.1.0), base64enc, htmlwidgets, graphics, progress, utils, knitr, webshot
+</p>
+<h4>
+Suggests
+</h4>
+<p>
+rbokeh, plotly, Cairo, testthat, covr, gapminder, housingData, packagedocs
+</p>
+<div id="trelliscope-functions" class="section level1">
+<h1>Trelliscope Functions</h1>
+<div id="trelliscope" class="section level2">
+<h2>trelliscope</h2>
+<a id="trelliscope_alias"></a>
+<h3>
+Create a Trelliscope Display
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>trelliscope(x, name, group&nbsp;=&nbsp;"common", panel_col&nbsp;=&nbsp;NULL, desc&nbsp;=&nbsp;"", md_desc&nbsp;=&nbsp;"", path, height&nbsp;=&nbsp;500, width&nbsp;=&nbsp;500, auto_cog&nbsp;=&nbsp;TRUE, state&nbsp;=&nbsp;NULL, nrow&nbsp;=&nbsp;1, ncol&nbsp;=&nbsp;1, jsonp&nbsp;=&nbsp;TRUE, self_contained&nbsp;=&nbsp;FALSE, thumb&nbsp;=&nbsp;FALSE)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+x
+</dt>
+<dd class="rd-dd">
+an object to create at trelliscope display for
+</dd>
+<dt>
+name
+</dt>
+<dd class="rd-dd">
+name of the display
+</dd>
+<dt>
+group
+</dt>
+<dd class="rd-dd">
+group that the display belongs to
+</dd>
+<dt>
+panel_col
+</dt>
+<dd class="rd-dd">
+optional string specifying the column to use for panels (if there are multiple plot columns in <code>x</code>)
+</dd>
+<dt>
+desc
+</dt>
+<dd class="rd-dd">
+optional text description of the display
+</dd>
+<dt>
+md_desc
+</dt>
+<dd class="rd-dd">
+optional string of markdown that will be shown in the viewer for additional context about the display
+</dd>
+<dt>
+path
+</dt>
+<dd class="rd-dd">
+the base directory of the trelliscope application
+</dd>
+<dt>
+height
+</dt>
+<dd class="rd-dd">
+height in pixels of each panel
+</dd>
+<dt>
+width
+</dt>
+<dd class="rd-dd">
+width in pixels of each panel
+</dd>
+<dt>
+auto_cog
+</dt>
+<dd class="rd-dd">
+should auto cogs be computed (if possible)?
+</dd>
+<dt>
+state
+</dt>
+<dd class="rd-dd">
+the initial state the display will open in
+</dd>
+<dt>
+nrow
+</dt>
+<dd class="rd-dd">
+the number of rows of panels to display by default
+</dd>
+<dt>
+ncol
+</dt>
+<dd class="rd-dd">
+the number of columns of panels to display by default
+</dd>
+<dt>
+jsonp
+</dt>
+<dd class="rd-dd">
+should json for display object be jsonp (TRUE) or json (FALSE)?
+</dd>
+<dt>
+self_contained
+</dt>
+<dd class="rd-dd">
+should the Trelliscope display be a self-contained html document? (see note)
+</dd>
+<dt>
+thumb
+</dt>
+<dd class="rd-dd">
+should a thumbnail be created?
+</dd>
+</dl>
+<h4>
+Note
+</h4>
+<p class="rd-p">
+Note that <code>self_contained</code> is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>## Not run: 
+# library(dplyr)
+# library(rbokeh)
+# library(ggplot2)
+# 
+# # dplyr + rbokeh
+# d &lt;- mpg %&gt;%
+#   group_by(manufacturer, class) %&gt;%
+#   summarise(
+#     panel = panel(
+#       figure(xlab = &quot;City mpg&quot;, ylab = &quot;Highway mpg&quot;) %&gt;%
+#         ly_points(cty, hwy)))
+# 
+# d %&gt;% trelliscope(name = &quot;city_vs_highway_mpg&quot;)
+# 
+# # if you want to use in RStudio Viewer or RMarkdown Notebook, use self_containedd
+# # (this will hopefully change, and you should avoid self_contained whenever possible)
+# d %&gt;% trelliscope(name = &quot;city_vs_highway_mpg&quot;, self_contained = TRUE)
+# 
+# # set default layout
+# d %&gt;% trelliscope(name = &quot;city_vs_highway_mpg&quot;, nrow = 2, ncol = 3)
+# 
+# # set the output path for where files will be stored
+# d %&gt;% trelliscope(name = &quot;city_vs_highway_mpg&quot;, path = &quot;mydisplays&quot;)
+# 
+# # multiple displays can be added to the same path and all will be available in the viewer
+# d %&gt;% trelliscope(name = &quot;city_vs_highway_mpg2&quot;, path = &quot;mydisplays&quot;)
+# 
+# # ordering the data frame will set default sort order of the display
+# d %&gt;%
+#   arrange(-mean_city_mpg) %&gt;%
+#   trelliscope(name = &quot;city_vs_highway_mpg&quot;)
+# 
+# # dplyr + ggplot2
+# mpg %&gt;%
+#   group_by(manufacturer, class) %&gt;%
+#   summarise(
+#     panel = panel(
+#       qplot(cty, hwy) + xlab(&quot;cty&quot;) + ylab(&quot;hwy&quot;) +
+#         xlim(7, 37) + ylim(9, 47) + theme_bw())) %&gt;%
+#   trelliscope(name = &quot;dplyr_gg&quot;)
+# 
+# # computing additional cognostics
+# mpg %&gt;%
+#   group_by(manufacturer, class) %&gt;%
+#   summarise(
+#     mean_city_mpg = mean(cty),
+#     mean_hwy_mpg = mean(hwy),
+#     most_common_drv = tail(names(table(drv)), 1),
+#     panel = panel(
+#       figure(xlab = &quot;City mpg&quot;, ylab = &quot;Highway mpg&quot;,
+#         xlim = c(9, 47), ylim = c(7, 37)) %&gt;%
+#         ly_points(cty, hwy,
+#           hover = data_frame(model = paste(year, model),
+#           cty = cty, hwy = hwy)))) %&gt;%
+#   trelliscope(name = &quot;city_vs_highway_mpg&quot;, nrow = 1, ncol = 2)
+# 
+# # computing additional cognostics explicitly using cog()
+# # so we can specify descriptions, etc.
+# mpg %&gt;%
+#   group_by(manufacturer, class) %&gt;%
+#   summarise(
+#     mean_city_mpg = cog(mean(cty), desc = &quot;Mean city mpg&quot;),
+#     mean_hwy_mpg = cog(mean(hwy), desc = &quot;Mean highway mpg&quot;),
+#     most_common_drv = cog(tail(names(table(drv)), 1), desc = &quot;Most common drive type&quot;),
+#     panel = panel(
+#       figure(xlab = &quot;City mpg&quot;, ylab = &quot;Highway mpg&quot;,
+#         xlim = c(9, 47), ylim = c(7, 37)) %&gt;%
+#         ly_points(cty, hwy,
+#           hover = data_frame(model = paste(year, model),
+#           cty = cty, hwy = hwy)))) %&gt;%
+#   trelliscope(name = &quot;city_vs_highway_mpg&quot;, nrow = 1, ncol = 2)
+# ## End(Not run)</code></pre>
+</div>
+<div id="facet_trelliscope" class="section level2">
+<h2>facet_trelliscope</h2>
+<a id="facet_trelliscope_alias"></a>
+<h3>
+Facet Trelliscope
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>facet_trelliscope(..., nrow&nbsp;=&nbsp;1, ncol&nbsp;=&nbsp;1, name&nbsp;=&nbsp;NULL, group&nbsp;=&nbsp;"common", desc&nbsp;=&nbsp;"", md_desc&nbsp;=&nbsp;"", path&nbsp;=&nbsp;NULL, height&nbsp;=&nbsp;500, width&nbsp;=&nbsp;500, state&nbsp;=&nbsp;NULL, jsonp&nbsp;=&nbsp;TRUE, as_plotly&nbsp;=&nbsp;FALSE, plotly_args&nbsp;=&nbsp;NULL, self_contained&nbsp;=&nbsp;FALSE, thumb&nbsp;=&nbsp;TRUE)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+…
+</dt>
+<dd class="rd-dd">
+all parameters passed onto <code>ggplot2::<a href=http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap>facet_wrap</a></code>
+</dd>
+<dt>
+nrow
+</dt>
+<dd class="rd-dd">
+the number of rows of panels to display by default
+</dd>
+<dt>
+ncol
+</dt>
+<dd class="rd-dd">
+the number of columns of panels to display by default
+</dd>
+<dt>
+name
+</dt>
+<dd class="rd-dd">
+name of the display
+</dd>
+<dt>
+group
+</dt>
+<dd class="rd-dd">
+group that the display belongs to
+</dd>
+<dt>
+desc
+</dt>
+<dd class="rd-dd">
+description of the display
+</dd>
+<dt>
+md_desc
+</dt>
+<dd class="rd-dd">
+optional string of markdown that will be shown in the viewer for additional context about the display
+</dd>
+<dt>
+path
+</dt>
+<dd class="rd-dd">
+the base directory of the trelliscope application
+</dd>
+<dt>
+height
+</dt>
+<dd class="rd-dd">
+height in pixels of each panel
+</dd>
+<dt>
+width
+</dt>
+<dd class="rd-dd">
+width in pixels of each panel
+</dd>
+<dt>
+state
+</dt>
+<dd class="rd-dd">
+the initial state the display will open in
+</dd>
+<dt>
+jsonp
+</dt>
+<dd class="rd-dd">
+should json for display object be jsonp (TRUE) or json (FALSE)?
+</dd>
+<dt>
+as_plotly
+</dt>
+<dd class="rd-dd">
+should the panels be written as plotly objects?
+</dd>
+<dt>
+plotly_args
+</dt>
+<dd class="rd-dd">
+optinal named list of arguments to send to <code>ggplotly</code>
+</dd>
+<dt>
+self_contained
+</dt>
+<dd class="rd-dd">
+should the Trelliscope display be a self-contained html document? (see note)
+</dd>
+<dt>
+thumb
+</dt>
+<dd class="rd-dd">
+should a thumbnail be created?
+</dd>
+</dl>
+<h4>
+Note
+</h4>
+<p class="rd-p">
+Note that <code>self_contained</code> is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>## Not run: 
+# library(ggplot2)
+# 
+# # basically swap out facet_wrap for facet_trelliscope
+# qplot(cty, hwy, data = mpg) +
+#   facet_trelliscope(~ class + manufacturer)
+# 
+# # not required, but if you set labels, these will be added as
+# # descriptions to the cognostics that are automatically computed
+# mpg &lt;- set_labels(mpg, mpg_labels)
+# 
+# qplot(cty, hwy, data = mpg) +
+#   xlim(7, 37) + ylim(9, 47) + theme_bw() +
+#   facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4)
+# 
+# # using plotly
+# library(plotly)
+# qplot(cty, hwy, data = mpg) +
+#   xlim(7, 37) + ylim(9, 47) + theme_bw() +
+#   facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4, as_plotly = TRUE)
+# 
+# qplot(class, cty, data = mpg, geom = c(&quot;boxplot&quot;, &quot;jitter&quot;)) +
+#   facet_trelliscope(~ class, ncol = 7, height = 800, width = 200,
+#     state = list(sort = list(sort_spec(&quot;cty_mean&quot;)))) +
+#   ylim(7, 37) + theme_bw()
+# ## End(Not run)</code></pre>
+</div>
+<div id="print.facet_trelliscope" class="section level2">
+<h2>print.facet_trelliscope</h2>
+<a id="print.facet_trelliscope_alias"></a>
+<h3>
+Print facet trelliscope object
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>"print"(x, ...)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+x
+</dt>
+<dd class="rd-dd">
+plot object
+</dd>
+<dt>
+…
+</dt>
+<dd class="rd-dd">
+ignored
+</dd>
+</dl>
+</div>
+</div>
+<div id="cognostics" class="section level1">
+<h1>Cognostics</h1>
+<div id="cog" class="section level2">
+<h2>cog</h2>
+<a id="cog_alias"></a>
+<h3>
+Cast Column as a Cognostic
+</h3>
+<p class="rd-p">
+Cast a column of a cognostics data frame as a cognostic object
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>cog(val&nbsp;=&nbsp;NULL, desc&nbsp;=&nbsp;"", group&nbsp;=&nbsp;"common", type&nbsp;=&nbsp;NULL, default_label&nbsp;=&nbsp;FALSE, default_active&nbsp;=&nbsp;TRUE, filterable&nbsp;=&nbsp;TRUE, sortable&nbsp;=&nbsp;TRUE, log&nbsp;=&nbsp;NULL)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+val
+</dt>
+<dd class="rd-dd">
+a scalar value (numeric, characer, date, etc.)
+</dd>
+<dt>
+desc
+</dt>
+<dd class="rd-dd">
+a description for this cognostic value
+</dd>
+<dt>
+group
+</dt>
+<dd class="rd-dd">
+optional categorization of the cognostic for organizational purposes in the viewer (currently not implemented in the viewer)
+</dd>
+<dt>
+type
+</dt>
+<dd class="rd-dd">
+the desired type of cognostic you would like to compute (see details)
+</dd>
+<dt>
+default_label
+</dt>
+<dd class="rd-dd">
+should this cognostic be used as a panel label in the viewer by default?
+</dd>
+<dt>
+default_active
+</dt>
+<dd class="rd-dd">
+should this cognostic be active (available for sort / filter / sample) by default?
+</dd>
+<dt>
+filterable
+</dt>
+<dd class="rd-dd">
+should this cognostic be filterable? Default is <code>TRUE</code>. It can be useful to set this to <code>FALSE</code> if the cognostic is categorical with many unique values and is only desired to be used as a panel label.
+</dd>
+<dt>
+sortable
+</dt>
+<dd class="rd-dd">
+should this cognostic be sortable?
+</dd>
+<dt>
+log
+</dt>
+<dd class="rd-dd">
+when being used in the viewer for visual univariate and bivariate filters, should the log be computed? Useful when the distribution of the cognostic is very long-tailed or has large outliers. Can either be a logical or a positive integer indicating the base.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+object of class “cog”
+</dl>
+</p>
+<h4>
+Details
+</h4>
+<p class="rd-p">
+Different types of cognostics can be specified through the <code>type</code> argument that will affect how the user is able to interact with those cognostics in the viewer. This can usually be ignored because it will be inferred from the implicit data type of <code>val</code>. But there are special types of cognostics, such as geographic coordinates and relations (not implemented) that can be specified as well. Current possibilities for <code>type</code> are “key”, “integer”, “numeric”, “factor”, “date”, “time”, “href”.
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>## Not run: 
+# mpg %&gt;%
+#   group_by(manufacturer, class) %&gt;%
+#   summarise(
+#     mean_city_mpg = cog(mean(cty), desc = &quot;Mean city mpg&quot;),
+#     mean_hwy_mpg = cog(mean(hwy), desc = &quot;Mean highway mpg&quot;),
+#     most_common_drv = cog(tail(names(table(drv)), 1), desc = &quot;Most common drive type&quot;),
+#     panel = panel(
+#       figure(xlab = &quot;City mpg&quot;, ylab = &quot;Highway mpg&quot;,
+#         xlim = c(9, 47), ylim = c(7, 37)) %&gt;%
+#         ly_points(cty, hwy,
+#           hover = data_frame(model = paste(year, model),
+#           cty = cty, hwy = hwy)))) %&gt;%
+#   trelliscope(name = &quot;city_vs_highway_mpg&quot;, nrow = 1, ncol = 2)
+# ## End(Not run)</code></pre>
+</div>
+<div id="cog_href" class="section level2">
+<h2>cog_href</h2>
+<a id="cog_href_alias"></a>
+<h3>
+Href Cognostic
+</h3>
+<p class="rd-p">
+Create href to be used as cognostics in a trelliscope display
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>cog_href(x, desc&nbsp;=&nbsp;"link", group&nbsp;=&nbsp;"common", default_label&nbsp;=&nbsp;FALSE, default_active&nbsp;=&nbsp;FALSE, filterable&nbsp;=&nbsp;FALSE, sortable&nbsp;=&nbsp;FALSE, log&nbsp;=&nbsp;FALSE)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+x
+</dt>
+<dd class="rd-dd">
+URL to link to
+</dd>
+<dt>
+desc, group, default_label, default_active, filterable, sortable, log
+</dt>
+<dd class="rd-dd">
+arguments passed to <code><a href=#cog>cog</a></code>
+</dd>
+</dl>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>## Not run: 
+# library(dplyr)
+# library(rbokeh)
+# iris %&gt;%
+#   group_by(Species) %&gt;%
+#   summarise(
+#     wiki_link = cog_href(paste0(&quot;https://en.wikipedia.org/wiki/Iris_&quot;,
+#       tolower(Species))[1], default_label = TRUE,
+#       desc = &quot;link to species on wikipedia&quot;),
+#     panel = panel(figure(xlab = &quot;Sepal Length&quot;, ylab = &quot;Sepal Width&quot;) %&gt;%
+#       ly_points(Sepal.Length, Sepal.Width))) %&gt;%
+#   trelliscope(name = &quot;iris_species&quot;, ncol = 3)
+# ## End(Not run)</code></pre>
+<h4>
+See also
+</h4>
+<p><code><a href=#cog>cog</a></code></p>
+</div>
+<div id="cogs" class="section level2">
+<h2>cogs</h2>
+<a id="cogs_alias"></a>
+<h3>
+Cogs Wrapper Function
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>cogs(.x, .f, ...)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+.x
+</dt>
+<dd class="rd-dd">
+a list or atomic vector (see <code><a href=http://www.rdocumentation.org/packages/purrr/topics/map>map</a></code> for details)
+</dd>
+<dt>
+.f
+</dt>
+<dd class="rd-dd">
+a function, formula, or atomic vector (see <code><a href=http://www.rdocumentation.org/packages/purrr/topics/map>map</a></code> for details)
+</dd>
+<dt>
+…
+</dt>
+<dd class="rd-dd">
+additional arguments passed on to .f (see <code><a href=http://www.rdocumentation.org/packages/purrr/topics/map>map</a></code> for details)
+</dd>
+</dl>
+<h4>
+Details
+</h4>
+<p class="rd-p">
+See <code><a href=http://www.rdocumentation.org/packages/purrr/topics/map>map</a></code>
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>## Not run: 
+# library(dplyr)
+# library(tidyr)
+# ggplot2::mpg %&gt;%
+#   group_by(manufacturer, class) %&gt;%
+#   nest() %&gt;%
+#   mutate(
+#     additional_cogs = map_cog(data,
+#       ~ data_frame(
+#         max_city_mpg = cog(max(.x$cty), desc = &quot;Max city mpg&quot;),
+#         min_city_mpg = cog(min(.x$cty), desc = &quot;Min city mpg&quot;))),
+#     panel = map_plot(data, ~ figure(xlab = &quot;City mpg&quot;, ylab = &quot;Highway mpg&quot;) %&gt;%
+#       ly_points(cty, hwy, data = .x))) %&gt;%
+#   trelliscope(name = &quot;city_vs_highway_mpg&quot;, nrow = 1, ncol = 2)
+# ## End(Not run)</code></pre>
+</div>
+<div id="auto_cogs" class="section level2">
+<h2>auto_cogs</h2>
+<a id="auto_cogs_alias"></a>
+<h3>
+Compute automatic cognostics
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>auto_cogs(data)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+data
+</dt>
+<dd class="rd-dd">
+a list of data frames (one per subset), a grouped data frame, or a nested data frame
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+If the input is a list of data frames, the return value is a list of data frames containing the cognostics. If the input is a grouped or nested df, the result will be a nested df with a new column containing the cognostics.
+</dl>
+</p>
+<h4>
+See also
+</h4>
+<p><code><a href=#trelliscope>trelliscope</a></code></p>
+</div>
+</div>
+<div id="helpers" class="section level1">
+<h1>Helpers</h1>
+<div id="panel" class="section level2">
+<h2>panel</h2>
+<a id="panel_alias"></a>
+<h3>
+Panel Wrapper Function Wrapper function to specify a plot object for a panel for use in dplyr summarise()
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>panel(x)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+x
+</dt>
+<dd class="rd-dd">
+a plot object
+</dd>
+</dl>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>## Not run: 
+# library(rbokeh)
+# library(dplyr)
+# ggplot2::mpg %&gt;%
+#   group_by(manufacturer, class) %&gt;%
+#   summarise(
+#     panel = panel(
+#       figure(xlab = &quot;City mpg&quot;, ylab = &quot;Highway mpg&quot;) %&gt;%
+#         ly_points(cty, hwy)))
+# ## End(Not run)</code></pre>
+</div>
+<div id="panels" class="section level2">
+<h2>panels</h2>
+<a id="panels_alias"></a>
+<h3>
+Panels Wrapper Function
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>panels(.x, .f, ...)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+.x
+</dt>
+<dd class="rd-dd">
+a list or atomic vector (see <code><a href=http://www.rdocumentation.org/packages/purrr/topics/map>map</a></code> for details)
+</dd>
+<dt>
+.f
+</dt>
+<dd class="rd-dd">
+a function, formula, or atomic vector (see <code><a href=http://www.rdocumentation.org/packages/purrr/topics/map>map</a></code> for details)
+</dd>
+<dt>
+…
+</dt>
+<dd class="rd-dd">
+additional arguments passed on to .f (see <code><a href=http://www.rdocumentation.org/packages/purrr/topics/map>map</a></code> for details)
+</dd>
+</dl>
+<h4>
+Details
+</h4>
+<p class="rd-p">
+See <code><a href=http://www.rdocumentation.org/packages/purrr/topics/map>map</a></code>
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>## Not run: 
+# library(dplyr)
+# library(tidyr)
+# ggplot2::mpg %&gt;%
+#   group_by(manufacturer, class) %&gt;%
+#   nest() %&gt;%
+#   mutate(panel = map_plot(data,
+#     ~ figure(xlab = &quot;City mpg&quot;, ylab = &quot;Highway mpg&quot;) %&gt;%
+#         ly_points(cty, hwy, data = .x))) %&gt;%
+#   trelliscope(name = &quot;city_vs_highway_mpg&quot;)
+# ## End(Not run)</code></pre>
+</div>
+<div id="set_labels" class="section level2">
+<h2>set_labels</h2>
+<a id="set_labels_alias"></a>
+<h3>
+Set labels for a data frame
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>set_labels(dat, label_list)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+dat
+</dt>
+<dd class="rd-dd">
+a data frame to apply labels to
+</dd>
+<dt>
+label_list
+</dt>
+<dd class="rd-dd">
+a named list with names matching those of <code>dat</code> and values being labels
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+data frame with labels attached as attributes (attached to each column and named “label”)
+</dl>
+</p>
+</div>
+<div id="sort_spec" class="section level2">
+<h2>sort_spec</h2>
+<a id="sort_spec_alias"></a>
+<h3>
+Specify how a display should be sorted
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>sort_spec(name, dir&nbsp;=&nbsp;"asc")</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+name
+</dt>
+<dd class="rd-dd">
+variable name to sort on
+</dd>
+<dt>
+dir
+</dt>
+<dd class="rd-dd">
+direction to sort (asc or desc)
+</dd>
+</dl>
+</div>
+</div>
+<div id="low-level-functions" class="section level1">
+<h1>Low-level Functions</h1>
+<div id="prepare_display" class="section level2">
+<h2>prepare_display</h2>
+<a id="prepare_display_alias"></a>
+<h3>
+Set up all auxilliary files needed for a Trelliscope app
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>prepare_display(base_path, id, self_contained&nbsp;=&nbsp;FALSE, jsonp&nbsp;=&nbsp;TRUE, pb&nbsp;=&nbsp;NULL)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+base_path
+</dt>
+<dd class="rd-dd">
+the base directory of the trelliscope application
+</dd>
+<dt>
+id
+</dt>
+<dd class="rd-dd">
+a unique id for the application
+</dd>
+<dt>
+self_contained
+</dt>
+<dd class="rd-dd">
+should the Trelliscope display be a self-contained html document?
+</dd>
+<dt>
+jsonp
+</dt>
+<dd class="rd-dd">
+should json for display list and app config be jsonp (TRUE) or json (FALSE)?
+</dd>
+<dt>
+pb
+</dt>
+<dd class="rd-dd">
+optional progress bar object to pass in and use to report progress
+</dd>
+</dl>
+</div>
+<div id="update_display_list" class="section level2">
+<h2>update_display_list</h2>
+<a id="update_display_list_alias"></a>
+<h3>
+Update Trelliscope app display list file
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>update_display_list(base_path, jsonp&nbsp;=&nbsp;TRUE)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+base_path
+</dt>
+<dd class="rd-dd">
+the base directory of the trelliscope application
+</dd>
+<dt>
+jsonp
+</dt>
+<dd class="rd-dd">
+should json for display list be jsonp (TRUE) or json (FALSE)?
+</dd>
+</dl>
+</div>
+<div id="write_cognostics" class="section level2">
+<h2>write_cognostics</h2>
+<a id="write_cognostics_alias"></a>
+<h3>
+Write cognostics data for a display in a Trelliscope app
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>write_cognostics(cogdf, base_path, id, name, group&nbsp;=&nbsp;"common", jsonp&nbsp;=&nbsp;TRUE)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+cogdf
+</dt>
+<dd class="rd-dd">
+a data frame of cognostics, prepared with <code><a href=#as_cognostics>as_cognostics</a></code>
+</dd>
+<dt>
+base_path
+</dt>
+<dd class="rd-dd">
+the base directory of the trelliscope application
+</dd>
+<dt>
+id
+</dt>
+<dd class="rd-dd">
+a unique id for the application
+</dd>
+<dt>
+name
+</dt>
+<dd class="rd-dd">
+name of the display
+</dd>
+<dt>
+group
+</dt>
+<dd class="rd-dd">
+group that the display belongs to
+</dd>
+<dt>
+jsonp
+</dt>
+<dd class="rd-dd">
+should json for cognostics be jsonp (TRUE) or json (FALSE)?
+</dd>
+</dl>
+</div>
+<div id="write_config" class="section level2">
+<h2>write_config</h2>
+<a id="write_config_alias"></a>
+<h3>
+Write Trelliscope app configuration file
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>write_config(base_path, id, self_contained&nbsp;=&nbsp;FALSE, jsonp&nbsp;=&nbsp;TRUE)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+base_path
+</dt>
+<dd class="rd-dd">
+the base directory of the trelliscope application
+</dd>
+<dt>
+id
+</dt>
+<dd class="rd-dd">
+a unique id for the application
+</dd>
+<dt>
+self_contained
+</dt>
+<dd class="rd-dd">
+should the Trelliscope display be a self-contained html document?
+</dd>
+<dt>
+jsonp
+</dt>
+<dd class="rd-dd">
+should json for app config be jsonp (TRUE) or json (FALSE)?
+</dd>
+</dl>
+</div>
+<div id="write_display_obj" class="section level2">
+<h2>write_display_obj</h2>
+<a id="write_display_obj_alias"></a>
+<h3>
+Write a “display object” file for a Trelliscope app
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>write_display_obj(cogdf, panel_example, base_path, id, name, group&nbsp;=&nbsp;"common", desc&nbsp;=&nbsp;"", height&nbsp;=&nbsp;500, width&nbsp;=&nbsp;500, md_desc&nbsp;=&nbsp;"", state&nbsp;=&nbsp;NULL, jsonp&nbsp;=&nbsp;TRUE, panel_img_col&nbsp;=&nbsp;NULL, self_contained&nbsp;=&nbsp;FALSE, thumb&nbsp;=&nbsp;TRUE, pb&nbsp;=&nbsp;NULL)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+cogdf
+</dt>
+<dd class="rd-dd">
+a data frame of cognostics, prepared with <code><a href=#as_cognostics>as_cognostics</a></code>
+</dd>
+<dt>
+panel_example
+</dt>
+<dd class="rd-dd">
+an example object of one panel of a display (can be trellis, ggplot2, or htmlwidget object)
+</dd>
+<dt>
+base_path
+</dt>
+<dd class="rd-dd">
+the base directory of the trelliscope application
+</dd>
+<dt>
+id
+</dt>
+<dd class="rd-dd">
+a unique id for the application
+</dd>
+<dt>
+name
+</dt>
+<dd class="rd-dd">
+name of the display
+</dd>
+<dt>
+group
+</dt>
+<dd class="rd-dd">
+group that the display belongs to
+</dd>
+<dt>
+desc
+</dt>
+<dd class="rd-dd">
+description of the display
+</dd>
+<dt>
+height
+</dt>
+<dd class="rd-dd">
+height in pixels of each panel
+</dd>
+<dt>
+width
+</dt>
+<dd class="rd-dd">
+width in pixels of each panel
+</dd>
+<dt>
+md_desc
+</dt>
+<dd class="rd-dd">
+optional string of markdown that will be shown in the viewer for additional context about the display
+</dd>
+<dt>
+state
+</dt>
+<dd class="rd-dd">
+the initial state the display will open in
+</dd>
+<dt>
+jsonp
+</dt>
+<dd class="rd-dd">
+should json for display object be jsonp (TRUE) or json (FALSE)?
+</dd>
+<dt>
+panel_img_col
+</dt>
+<dd class="rd-dd">
+which column (if any) is a panel image column?
+</dd>
+<dt>
+self_contained
+</dt>
+<dd class="rd-dd">
+should the Trelliscope display be a self-contained html document?
+</dd>
+<dt>
+thumb
+</dt>
+<dd class="rd-dd">
+should a thumbnail be created?
+</dd>
+<dt>
+pb
+</dt>
+<dd class="rd-dd">
+optional progress bar object to pass in and use to report progress
+</dd>
+</dl>
+</div>
+<div id="write_panel" class="section level2">
+<h2>write_panel</h2>
+<a id="write_panel_alias"></a>
+<h3>
+Write a plot object as a panel in a Trelliscope display
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>write_panel(plot_object, key, base_path, name, group&nbsp;=&nbsp;"common", width, height, jsonp&nbsp;=&nbsp;TRUE)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+plot_object
+</dt>
+<dd class="rd-dd">
+a plot object to be written (can be trellis, ggplot2, or htmlwidget)
+</dd>
+<dt>
+key
+</dt>
+<dd class="rd-dd">
+a string identifying the panel key, which will be used as the panel file name and which the <code>panelKey</code> column of the cognostics data frame should point to
+</dd>
+<dt>
+base_path
+</dt>
+<dd class="rd-dd">
+the base directory of the trelliscope application
+</dd>
+<dt>
+name
+</dt>
+<dd class="rd-dd">
+name of the display that the panel belongs to
+</dd>
+<dt>
+group
+</dt>
+<dd class="rd-dd">
+group name of the display that the panel belongs to
+</dd>
+<dt>
+width
+</dt>
+<dd class="rd-dd">
+width in pixels of each panel
+</dd>
+<dt>
+height
+</dt>
+<dd class="rd-dd">
+height in pixels of each panel
+</dd>
+<dt>
+jsonp
+</dt>
+<dd class="rd-dd">
+should json for panel be jsonp (TRUE) or json (FALSE)?
+</dd>
+</dl>
+</div>
+<div id="write_panels" class="section level2">
+<h2>write_panels</h2>
+<a id="write_panels_alias"></a>
+<h3>
+Write a list of plot objects as panels in a Trelliscope display
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>write_panels(plot_list, base_path, name, group&nbsp;=&nbsp;"common", width&nbsp;=&nbsp;500, height&nbsp;=&nbsp;500, jsonp&nbsp;=&nbsp;TRUE, progress&nbsp;=&nbsp;TRUE, pb&nbsp;=&nbsp;NULL)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+plot_list
+</dt>
+<dd class="rd-dd">
+a named list of plot objects to be written as panels (objects can be trellis, ggplot2, or htmlwidget) with the list names being the keys for the panels
+</dd>
+<dt>
+base_path
+</dt>
+<dd class="rd-dd">
+the base directory of the trelliscope application
+</dd>
+<dt>
+name
+</dt>
+<dd class="rd-dd">
+name of the display that the panel belongs to
+</dd>
+<dt>
+group
+</dt>
+<dd class="rd-dd">
+group name of the display that the panel belongs to
+</dd>
+<dt>
+width
+</dt>
+<dd class="rd-dd">
+width in pixels of each panel
+</dd>
+<dt>
+height
+</dt>
+<dd class="rd-dd">
+height in pixels of each panel
+</dd>
+<dt>
+jsonp
+</dt>
+<dd class="rd-dd">
+should json for panels be jsonp (TRUE) or json (FALSE)?
+</dd>
+<dt>
+progress
+</dt>
+<dd class="rd-dd">
+= TRUE
+</dd>
+<dt>
+pb
+</dt>
+<dd class="rd-dd">
+optional progress bar object to pass in and use to report progress
+</dd>
+</dl>
+</div>
+<div id="as_cognostics" class="section level2">
+<h2>as_cognostics</h2>
+<a id="as_cognostics_alias"></a>
+<h3>
+Cast a data frame as a cognostics data frame
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>as_cognostics(x, cond_cols, key_col&nbsp;=&nbsp;NULL, cog_desc&nbsp;=&nbsp;NULL, needs_key&nbsp;=&nbsp;TRUE, needs_cond&nbsp;=&nbsp;TRUE)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+x
+</dt>
+<dd class="rd-dd">
+a data frame
+</dd>
+<dt>
+cond_cols
+</dt>
+<dd class="rd-dd">
+the column name(s) that comprise the conditioning variables
+</dd>
+<dt>
+key_col
+</dt>
+<dd class="rd-dd">
+the column name that indicates the panel key
+</dd>
+<dt>
+cog_desc
+</dt>
+<dd class="rd-dd">
+an optional named list of descriptions for the cognostics columns
+</dd>
+<dt>
+needs_key
+</dt>
+<dd class="rd-dd">
+does the result need to have a “key” column?
+</dd>
+<dt>
+needs_cond
+</dt>
+<dd class="rd-dd">
+does the result need to have conditioning variable columns?
+</dd>
+</dl>
+</div>
+</div>
+<div id="datasets" class="section level1">
+<h1>Datasets</h1>
+<div id="mpg_labels" class="section level2">
+<h2>mpg_labels</h2>
+<a id="mpg_labels_alias"></a>
+<h3>
+Labels for ggplot2 “mpg” data
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>mpg_labels</div></code></pre>
+<h4>
+Format
+</h4>
+<p class="rd-p">
+An object of class <code>list</code> of length 10.
+</p>
+</div>
+</div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <div id="footer">
+    <div class="container">
+      <div class="col-md-6">
+                <p>&copy; Ryan Hafen, 2017</p>
+              </div>
+      <div class="col-md-6">
+        <p class="pull-right">created with <a href="https://github.com/hafen/packagedocs">packagedocs</a>
+                  </p>
+      </div>
+    </div>
+  </div>
+
+  
+</body>
+</html>

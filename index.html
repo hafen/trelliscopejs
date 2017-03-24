@@ -1,0 +1,573 @@
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc" />
+
+    <meta name="author" content="Ryan Hafen" />
+  
+  
+  <title>trelliscopejs</title>
+
+    <script src="index_files/jquery-1.11.3/jquery.min.js"></script>
+  <link href="index_files/bootstrap-3.3.2/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="index_files/bootstrap-3.3.2/js/bootstrap.min.js"></script>
+  <script src="index_files/bootstrap-3.3.2/shim/html5shiv.min.js"></script>
+  <script src="index_files/bootstrap-3.3.2/shim/respond.min.js"></script>
+  <link href="index_files/highlight-8.4/tomorrow.css" rel="stylesheet" />
+  <script src="index_files/highlight-8.4/highlight.pack.js"></script>
+  <link href="index_files/fontawesome-4.3.0/css/font-awesome.min.css" rel="stylesheet" />
+  <script src="index_files/stickykit-1.1.1/sticky-kit.min.js"></script>
+  <script src="index_files/jqueryeasing-1.3/jquery.easing.min.js"></script>
+  <link href="index_files/recliner-0.2.2/recliner.css" rel="stylesheet" />
+  <script src="index_files/recliner-0.2.2/recliner.min.js"></script>
+  <script src="index_files/recliner-0.2.2/onload.js"></script>
+  <link href="index_files/packagedocs-0.0.1/pd.css" rel="stylesheet" />
+  <script src="index_files/packagedocs-0.0.1/pd.js"></script>
+  <script src="index_files/packagedocs-0.0.1/pd-sticky-toc.js"></script>
+  
+  
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+</head>
+
+<body>
+
+  
+  <header class="navbar navbar-white navbar-fixed-top" role="banner" id="header">
+    <div class="container">
+      <div class="navbar-header">
+        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+                <a href="index.html" class="navbar-brand page-scroll">
+        trelliscopejs
+        </a>
+      </div>
+            <nav class="collapse navbar-collapse" role="navigation">
+        <ul class="nav nav-pills pull-right">
+<li class="active">
+<a href='index.html'>Docs</a>
+</li>
+<li>
+<a href='rd.html'>Package Ref</a>
+</li>
+<li>
+<a href='https://github.com/hafen/trelliscopejs'>Github <i class='fa fa-github'></i></a>
+</li>
+        </ul>
+      </nav>
+          </div>
+  </header>
+
+  <!-- Begin Body -->
+  <div class="container">
+    <div class="row">
+            <div class="col-md-3" id="sidebar-col">
+        <div id="toc">
+          <ul>
+          <li><a href="#trelliscope">Trelliscope</a></li>
+          <li><a href="#getting-started">Getting Started</a><ul>
+          <li><a href="#installation">Installation</a></li>
+          <li><a href="#facet_trelliscope">facet_trelliscope</a></li>
+          <li><a href="#tidy-interface">“tidy” Interface</a></li>
+          <li><a href="#collections-of-displays">Collections of Displays</a></li>
+          <li><a href="#modifying-displays">Modifying Displays</a></li>
+          <li><a href="#embedding-sharing">Embedding / sharing</a></li>
+          <li><a href="#low-level-functions">Low-Level Functions</a></li>
+          </ul></li>
+          <li><a href="#examples">Examples</a><ul>
+          <li><a href="#gapminder-data">Gapminder data</a></li>
+          <li><a href="#housing-data">Housing data</a></li>
+          </ul></li>
+          <li><a href="#why">Why</a><ul>
+          <li><a href="#why-small-multiples">Why Small Multiples</a></li>
+          <li><a href="#why-trelliscope">Why Trelliscope</a></li>
+          </ul></li>
+          <li><a href="#trelliscopejs-lib">trelliscopejs-lib</a></li>
+          <li><a href="#history">History</a></li>
+          <li><a href="#upcoming-work">Upcoming Work</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-9" id="content-col">
+      
+<div id="content-top"></div>
+<script src="https://unpkg.com/trelliscopejs-lib@0.1.14/dist/trelliscope.min.js"></script>
+<div id="trelliscope" class="section level1">
+<h1>Trelliscope</h1>
+<p>Trelliscope is a visualization approach based on the idea of <a href="http://www.juiceanalytics.com/writing/better-know-visualization-small-multiples">“small multiples”</a> or <a href="chrome-extension://oemmndcbldboiebfnladdacbdfmadadm/http://polisci.msu.edu/jacoby/uic/manuscripts/95.8.color.pdf">“Trellis Display”</a>, where data are split into groups and a plot is made for each group, with the resulting plots arranged in a grid. This approach is very simple yet is considered to be <a href="https://en.wikipedia.org/wiki/Small_multiple">“the best design solution for a wide range or problems in data presentation”</a>. Trelliscope makes small multiple displays come alive by providing the ability to interactively sort and filter the plots based on summary statistics computed for each group.</p>
+<p>The trelliscopejs R package is an interface for creating Trelliscope displays with the goal of providing methods that are convenient to use in traditional visual / analytical workflows. For example, the package provides methods that allow you to easily generate Trelliscope displays from ggplot2 or <a href="https://blog.rstudio.org/2016/09/15/tidyverse-1-0-0/">“tidy”</a> workflows.</p>
+<p>At the core of the trelliscopejs is a JavaScript library, <a href="https://github.com/hafen/trelliscopejs-lib">trelliscopejs-lib</a>, which provides the interactive viewer for the displays, and the R package is an <a href="http://www.htmlwidgets.org/">htmlwidget</a> around this library, meaning that it is easy to share your displays whether through embedding in an RMarkdown document / notebook or simply sending the resulting html file to someone or hosting on the web.</p>
+<p>To quickly get a feel for trelliscopejs, here’s a screen capture of it in use:</p>
+<div style="text-align: center;">
+<iframe width="700" height="394" src="https://www.youtube.com/embed/u3YGLD-5R0s?rel=0" frameborder="0" allowfullscreen>
+</iframe>
+</div>
+</div>
+<div id="getting-started" class="section level1">
+<h1>Getting Started</h1>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>trellscopejs is currently available on Github. The package is in beta status as we continue to hone in on the best R interface, but it is stable and ready for people to try out. So please do!</p>
+<pre class="r"><code>devtools::install_github(&quot;hafen/trelliscopejs&quot;)</code></pre>
+<p>Any other package that you see in this document that is not already installed along with trelliscopejs will be available on CRAN and can be installed with <code>install.packages()</code>.</p>
+</div>
+<div id="facet_trelliscope" class="section level2">
+<h2>facet_trelliscope</h2>
+<p>For ggplot2 users, the easiest way to get quick results with trelliscopejs is with the function <code><a href='rd.html#facet_trelliscope_alias'>facet_trelliscope</a>()</code>. If you are familiar with faceting in ggplot2 using <code>facet_wrap()</code>, you can easily transform your static faceted plot into an interactive one by swapping out <code>facet_wrap()</code> with <code>facet_trelliscope()</code>.</p>
+<p>To illustrate, let’s look at some fuel economy data from the <code>mpg</code> dataset available in the ggplot2 package:</p>
+<pre class="r"><code>library(trelliscopejs)
+library(ggplot2)
+library(dplyr)
+
+glimpse(mpg)</code></pre>
+<pre><code>Observations: 234
+Variables: 11
+$ manufacturer &lt;chr&gt; &quot;audi&quot;, &quot;audi&quot;, &quot;audi&quot;, &quot;audi&quot;, &quot;audi&quot;, &quot;audi&quot;, &quot;...
+$ model        &lt;chr&gt; &quot;a4&quot;, &quot;a4&quot;, &quot;a4&quot;, &quot;a4&quot;, &quot;a4&quot;, &quot;a4&quot;, &quot;a4&quot;, &quot;a4 qua...
+$ displ        &lt;dbl&gt; 1.8, 1.8, 2.0, 2.0, 2.8, 2.8, 3.1, 1.8, 1.8, 2.0,...
+$ year         &lt;int&gt; 1999, 1999, 2008, 2008, 1999, 1999, 2008, 1999, 1...
+$ cyl          &lt;int&gt; 4, 4, 4, 4, 6, 6, 6, 4, 4, 4, 4, 6, 6, 6, 6, 6, 6...
+$ trans        &lt;chr&gt; &quot;auto(l5)&quot;, &quot;manual(m5)&quot;, &quot;manual(m6)&quot;, &quot;auto(av)...
+$ drv          &lt;chr&gt; &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;4&quot;, &quot;4&quot;, &quot;4&quot;,...
+$ cty          &lt;int&gt; 18, 21, 20, 21, 16, 18, 18, 18, 16, 20, 19, 15, 1...
+$ hwy          &lt;int&gt; 29, 29, 31, 30, 26, 26, 27, 26, 25, 28, 27, 25, 2...
+$ fl           &lt;chr&gt; &quot;p&quot;, &quot;p&quot;, &quot;p&quot;, &quot;p&quot;, &quot;p&quot;, &quot;p&quot;, &quot;p&quot;, &quot;p&quot;, &quot;p&quot;, &quot;p&quot;,...
+$ class        &lt;chr&gt; &quot;compact&quot;, &quot;compact&quot;, &quot;compact&quot;, &quot;compact&quot;, &quot;comp...</code></pre>
+<p>We might be interested looking at highway vs. city miles per gallon for each manufacturer and class of vehicle:</p>
+<pre class="r"><code>qplot(cty, hwy, data = mpg) +
+  geom_abline(alpha = 0.5) +
+  xlim(7, 37) + ylim(9, 47) + theme_bw() +
+  facet_wrap(~ manufacturer + class, nrow = 4, ncol = 8)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" width="1132.8" /></p>
+<p>The effect of vehicle class on mpg measurements is apparent, although it is more difficult to tell if within each class there are significant differences in the distributions between manufacturers. There are of course many ways we can visualize this data to look into these things, but this example is mainly for illustration of usage. Another feature that we notice from looking at the plot is that the range of highway and city mpg is larger for some classes / manufacturers than others.</p>
+<p>To create the same plot with Trelliscope, swap <code>facet_wrap()</code> for <code>facet_trelliscope()</code>:</p>
+<pre class="r"><code># with facet_trelliscope:
+qplot(cty, hwy, data = mpg) +
+  geom_abline(alpha = 0.5) +
+  xlim(7, 37) + ylim(9, 47) + theme_bw() +
+  facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4)</code></pre>
+<p>A simple change! The output will look something like this:</p>
+<div style="margin-top:20px; margin-bottom: 20px">
+<div id="ebbfa969" class="trelliscope-not-spa" style="width:850px; height:600px;">
+
+</div>
+</div>
+<p>Go ahead and experiment with the interactive controls of the plot above. You can click the fullscreen button in the bottom right if you want more space. The question mark icon in the upper right corner will give you more information about how to use the viewer.</p>
+<p>Here we used a different layout of rows and columns to illustrate Trelliscope’s pagination. In the viewer you will see that there are 8 panels shown per page, and that you can use the “prev” and “next” buttons to page through the panels. You can change the layout in the “Grid” controls. Also, we can now filter the panels based on various summaries that were computed for each panel.</p>
+<p>For example, we might want to only look at panels for the “compact” class so that we can compare all manufacturers for this class without being distracted by the others. Or we might want to sort the panels by mean city mpg. You can see what variables are available opening the “Filter” or “Sort” controls.</p>
+<p>You can see some of these controls in action in the video above, and we’ll discuss more about how these summaries are computed below. If you click the question mark icon in the upper right of the viewer, you can learn more about the controls and how to use them. Feel free to explore.</p>
+<p>Note that Trelliscope can be useful even for trivial faceting with smaller displays. For example, suppose we want to compare the distribution of city mpg for each class:</p>
+<pre class="r"><code>qplot(class, cty, data = mpg, geom = c(&quot;boxplot&quot;, &quot;jitter&quot;)) +
+  ylim(7, 37) + theme_bw()</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>Here, the side-by-side boxplots are essentially a trellis display in that we are looking at the same plot for each class. It might be more interesting if the boxplots were sorted by city mpg mean. While this can be done programmatically with ggplot2, we can create essentially the same plot with Trelliscope with no extra effort and interactively change how the panels are sorted as we wish.</p>
+<pre class="r"><code>qplot(class, cty, data = mpg, geom = c(&quot;boxplot&quot;, &quot;jitter&quot;)) +
+  facet_trelliscope(~ class, ncol = 7, height = 800, width = 200,
+    state = list(sort = list(sort_spec(&quot;cty_mean&quot;)))) +
+  ylim(7, 37) + theme_bw()</code></pre>
+<p>In this display, the panels are by default sorted by mean city mpg, but you can open the “Sort” sidebar and rearrange the panels as you wish.</p>
+<p>This example brings up a few more options for <code>facet_trelliscope()</code>. First, you can specify the height and width of the panels (in pixels). While these dimensions are relative based on the size and layout of the viewer, they control the aspect ratio of the plot which is very important. Another option shown in this example is the specification of the default sort order through the <code>state</code> parameter. This is likely to become much more straightforward to specify in the future so I won’t go into detail here.</p>
+<p>For more options, see the documentation for <code><a href='rd.html#facet_trelliscope_alias'>facet_trelliscope</a>()</code>.</p>
+</div>
+<div id="tidy-interface" class="section level2">
+<h2>“tidy” Interface</h2>
+<p>In addition to <code>facet_trelliscope()</code>, this package comes with a more generic <code>trelliscope()</code> method that fits naturally into <a href="https://blog.rstudio.org/2016/09/15/tidyverse-1-0-0/">“tidy”</a> workflows involving dplyr or tidyr.</p>
+<p>One of the most common uses for dplyr is grouping data frames and computing summaries for each group. A typical workflow is to compute summaries, visualize them, and then determine the next step of the analysis based on what is seen. Often, however, summaries can mask interesting behavior in the data that is occurring at a deeper level. For example, a summary of mean city mpg per manufacturer and class doesn’t capture the variability of the measurements, the outliers, number of obserations, etc. We can capture these behaviors with additional summaries, but visualizing the detailed data from which the summaries were computed is often very enlightening.</p>
+<div id="dplyr" class="section level3">
+<h3>dplyr</h3>
+<p>Speaking of computing summaries, let’s compute some for the mpg data with <a href="https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html">dplyr</a>:</p>
+<pre class="r"><code>mpg %&gt;%
+  group_by(manufacturer, class) %&gt;%
+  summarise(
+    mean_city_mpg = mean(cty),
+    mean_hwy_mpg = mean(hwy))</code></pre>
+<pre><code>Source: local data frame [32 x 4]
+Groups: manufacturer [?]
+
+   manufacturer      class mean_city_mpg mean_hwy_mpg
+          &lt;chr&gt;      &lt;chr&gt;         &lt;dbl&gt;        &lt;dbl&gt;
+1          audi    compact      17.93333     26.93333
+2          audi    midsize      16.00000     24.00000
+3     chevrolet    2seater      15.40000     24.80000
+4     chevrolet    midsize      18.80000     27.60000
+5     chevrolet        suv      12.66667     17.11111
+6         dodge    minivan      15.81818     22.36364
+7         dodge     pickup      12.05263     16.10526
+8         dodge        suv      11.85714     16.00000
+9          ford     pickup      13.00000     16.42857
+10         ford subcompact      15.88889     23.22222
+# ... with 22 more rows</code></pre>
+<p>But now let’s add another “summary” - a plot object! Let’s make a plot of the raw data from which the summaries were computed. We’ll use <a href="http://hafen.github.io/rbokeh/">rbokeh</a> here, although you can use whatever visualization system you’d like.</p>
+<pre class="r"><code>library(rbokeh)
+
+d &lt;- mpg %&gt;%
+  group_by(manufacturer, class) %&gt;%
+  summarise(
+    mean_city_mpg = mean(cty),
+    mean_hwy_mpg = mean(hwy),
+    panel = panel(
+      figure(xlab = &quot;City mpg&quot;, ylab = &quot;Highway mpg&quot;,
+        xlim = c(7, 37), ylim = c(9, 47)) %&gt;%
+        ly_points(cty, hwy,
+          hover = data_frame(model = paste(year, model),
+            cty = cty, hwy = hwy))))
+
+d</code></pre>
+<pre><code>Source: local data frame [32 x 5]
+Groups: manufacturer [?]
+
+   manufacturer      class mean_city_mpg mean_hwy_mpg        panel
+          &lt;chr&gt;      &lt;chr&gt;         &lt;dbl&gt;        &lt;dbl&gt;       &lt;list&gt;
+1          audi    compact      17.93333     26.93333 &lt;S3: rbokeh&gt;
+2          audi    midsize      16.00000     24.00000 &lt;S3: rbokeh&gt;
+3     chevrolet    2seater      15.40000     24.80000 &lt;S3: rbokeh&gt;
+4     chevrolet    midsize      18.80000     27.60000 &lt;S3: rbokeh&gt;
+5     chevrolet        suv      12.66667     17.11111 &lt;S3: rbokeh&gt;
+6         dodge    minivan      15.81818     22.36364 &lt;S3: rbokeh&gt;
+7         dodge     pickup      12.05263     16.10526 &lt;S3: rbokeh&gt;
+8         dodge        suv      11.85714     16.00000 &lt;S3: rbokeh&gt;
+9          ford     pickup      13.00000     16.42857 &lt;S3: rbokeh&gt;
+10         ford subcompact      15.88889     23.22222 &lt;S3: rbokeh&gt;
+# ... with 22 more rows</code></pre>
+<p>Here we create an additional plot “summary” using a special function, <code><a href='rd.html#panel_alias'>panel</a>()</code>, which wraps our plot object in a list and tags it so that when we create our trelliscope display it will know which column to use for the plot.</p>
+<p>Note that the resulting “panel” column is just another column of the summary data frame – a <em>“plot summary”</em>.</p>
+<p>Now we can pipe this to <code><a href='rd.html#trelliscope_alias'>trelliscope</a>()</code>:</p>
+<pre class="r"><code>d %&gt;%
+  trelliscope(name = &quot;city_vs_highway_mpg&quot;, nrow = 2, ncol = 4)</code></pre>
+<p>The arguments to <code><a href='rd.html#trelliscope_alias'>trelliscope</a>()</code> are very similar to that of <code><a href='rd.html#facet_trelliscope_alias'>facet_trelliscope</a>()</code>. All trelliscopejs displays must have names. In the ggplot2 examples above, if a name is not specified, it is inferred from the ggplot2 object.</p>
+<p>Looking at this example, this is a conceptually very interesting way to think about what we are doing with faceted plots. As noted, we are creating plots as “summaries”, and using other summary statistics to help us navigate the space of these plots. <em>“Summary plots”</em> based on summary statistics coupled with detailed <em>“plot summaries”</em> of the raw data from which summaries are computed is a powerful combination.</p>
+<p>Although the <code>facet_trelliscope()</code> approach with ggplot2 is usually more concise and elegant, I tend to prefer this tidy approach. First, there is more flexibility in what plotting library you use (you can still use ggplot2, of course). But I prefer the flexibility of being able to shape the data for each subset in the way I want for plotting (group first and reshape rather than specify the grouping with the “facet” functions).</p>
+</div>
+<div id="control-over-cognostics" class="section level3">
+<h3>Control Over Cognostics</h3>
+<p>Summaries that are used to navigate a Trelliscope display have a special name, <em>“cognostics”</em>. This is a term coined by John Tukey that you can read more about <a href="https://projecteuclid.org/download/pdf_1/euclid.aos/1043351250">here</a>. The trelliscopejs package has some convenience functions for specifying cognostics that help describe their behavior in the Trelliscope viewer. One of the most useful attributes is a cognostics <em>description</em> that helps the user navigating the displays in the viewer know what the summary statistics that they are looking at mean.</p>
+<p>Here we create the same display as above, but we use the <code><a href='rd.html#cog_alias'>cog</a>()</code> function to wrap our summaries, providing a custom description that will be used in the viewer.</p>
+<pre class="r"><code>mpg %&gt;%
+  group_by(manufacturer, class) %&gt;%
+  summarise(
+    mean_city_mpg = cog(mean(cty), desc = &quot;Mean city mpg&quot;),
+    mean_hwy_mpg = cog(mean(hwy), desc = &quot;Mean highway mpg&quot;),
+    panel = panel(
+      figure(xlab = &quot;City mpg&quot;, ylab = &quot;Highway mpg&quot;,
+        xlim = c(7, 37), ylim = c(9, 47)) %&gt;%
+        ly_points(cty, hwy,
+          hover = data_frame(model = paste(year, model),
+            cty = cty, hwy = hwy)))) %&gt;%
+  trelliscope(name = &quot;city_vs_highway_mpg&quot;, nrow = 1, ncol = 2)</code></pre>
+<p>You can look at the documentation for <code><a href='rd.html#cog_alias'>cog</a>()</code> to see what other options are available.</p>
+</div>
+<div id="tidyr" class="section level3">
+<h3>tidyr</h3>
+<p>Another way to create trelliscope displays in “tidy” workflows is using <code>group_by()</code> with <code>nest()</code>:</p>
+<pre class="r"><code>library(tidyr)
+
+d &lt;- mpg %&gt;%
+  group_by(manufacturer, class) %&gt;%
+  nest() %&gt;%
+  mutate(panel = map_plot(data,
+    ~ figure(xlab = &quot;City mpg&quot;, ylab = &quot;Highway mpg&quot;) %&gt;%
+        ly_points(cty, hwy, data = .x)))
+d</code></pre>
+<pre><code># A tibble: 32 × 4
+   manufacturer   class              data        panel
+          &lt;chr&gt;   &lt;chr&gt;            &lt;list&gt;       &lt;list&gt;
+1          audi compact &lt;tibble [15 × 9]&gt; &lt;S3: rbokeh&gt;
+2          audi midsize  &lt;tibble [3 × 9]&gt; &lt;S3: rbokeh&gt;
+3     chevrolet     suv  &lt;tibble [9 × 9]&gt; &lt;S3: rbokeh&gt;
+4     chevrolet 2seater  &lt;tibble [5 × 9]&gt; &lt;S3: rbokeh&gt;
+5     chevrolet midsize  &lt;tibble [5 × 9]&gt; &lt;S3: rbokeh&gt;
+6         dodge minivan &lt;tibble [11 × 9]&gt; &lt;S3: rbokeh&gt;
+7         dodge  pickup &lt;tibble [19 × 9]&gt; &lt;S3: rbokeh&gt;
+8         dodge     suv  &lt;tibble [7 × 9]&gt; &lt;S3: rbokeh&gt;
+9          ford     suv  &lt;tibble [9 × 9]&gt; &lt;S3: rbokeh&gt;
+10         ford  pickup  &lt;tibble [7 × 9]&gt; &lt;S3: rbokeh&gt;
+# ... with 22 more rows</code></pre>
+<p>This output looks similar to the output we created using <code>summarise()</code>, but we have been able to preserve the original data for each group, allowing us more flexibility in passing the data to other functions that might compute additional summary cognostics to be used in our display.</p>
+<p>Here, a function <code><a href='rd.html#map_plot_alias'>map_plot</a>()</code> is a wrapper for purrr’s <code>map()</code> function that applies the map and tags the resulting column so that when we create our trelliscope display it will know which column to use for the plot. This is similar to <code><a href='rd.html#panel_alias'>panel</a>()</code> but suitable for application to an entire list-column as in the case of <code>nest() %&gt;% mutate()</code> rather than to each individual group as in the case of <code>summarise()</code>.</p>
+<p>We can now pipe this into a call to <code>trelliscope()</code>:</p>
+<pre class="r"><code>d %&gt;%
+  trelliscope(name = &quot;city_vs_highway_mpg&quot;)</code></pre>
+<p>Note that since the original data is preserved, <code>trelliscope()</code> detects this and computes automatic cognostics for the variables in the nested data frame <code>data</code>. Currently these automatic summaries are simply means if the variable is numeric, and the value of any categorical variable that is fixed within each group. The same is done for <code>facet_trelliscope()</code> as you may have noticed above. We will be adding more automatic cognostics in the future, particularly geared toward extracting cognostics based on the context of what is being plotted (see “upcoming work” below).</p>
+<p>We will continue to work on the “tidy” interface to see if there are more simple or useful ways to do things.</p>
+</div>
+</div>
+<div id="collections-of-displays" class="section level2">
+<h2>Collections of Displays</h2>
+<p>While the examples shown so far create one-off displays, it is possible to build and maintain a collection of Trelliscope displays that are bundled together in the same viewer. This is useful for tracking and sharing multiple displays in once place, and for future functionality which will allow the ability to show panels from multiple displays created from the same grouping side by side.</p>
+<p>To achieve this, you can simply specify a <code>path</code> pointing to a directory where you would like multiple displays to be organized, as an argument to <code>facet_trelliscope()</code> or <code>trelliscope()</code>. Any display created will be placed inside this directory and an inventory of displays will be maintained and will be available to select from in the viewer. Note that you can also use the <code>group</code> argument to help organize multiple displays into groups.</p>
+<p>Using the <code>path</code> argument even when not creating a collection of displays is a good idea when you want your display to persist or if you want to control wher it is so you can share it.</p>
+</div>
+<div id="modifying-displays" class="section level2">
+<h2>Modifying Displays</h2>
+<p>Functions will be added in the future that allow you to treat a display as an object and modify its properties (state, name, cognostics, location, etc.) without re-creating the display every time.</p>
+</div>
+<div id="embedding-sharing" class="section level2">
+<h2>Embedding / sharing</h2>
+<p>While all of the examples so far have created a single application that fills the window of your viewer pane or web browser, you can embed multiple trelliscope displays inside of RMarkdown documents or RMarkdown Notebooks. When using trelliscopejs in RMarkdown documents, each display is embedded within the flow of the document (and dimensions can be controlled in the usual way), but an additional “fullscreen” button appears in the bottom right corner allowing toggling between full window mode. In RMarkdown Notebooks, however, you do not get the fullscreen option because Notebooks embed htmlwidgets as iframes rather than as an integrated part of the page.</p>
+<p>Note that if you want to embed a plot in an RMarkdown notebook, you must specify <code>self_contained = TRUE</code> in your call to <code>facet_trelliscope()</code> or <code>trelliscope()</code>. This causes all of the plot dependencies to be embedded in an html page instead of saved as separate files and then loaded as the viewer needs them. This will hopefully change in the future, but <code>self_contained = TRUE</code> should be avoided whenever possible because especially when the number of panels is large, it’s much more efficient to save the panels as separate files and load them on demand rather than embed them all in the page and wait for them to load at the beginning.</p>
+<p>trelliscopejs displays are also easy to share as standalone apps on the web through Github or a simple web server. For example, some of the examples from this document have been made available through Github (see <a href="http://hafen.github.io/trelliscopejs-demo/housing/">here</a>, <a href="http://hafen.github.io/trelliscopejs-demo/gapminder/">here</a>, and <a href="http://hafen.github.io/trelliscopejs-demo/mpg/">here</a>).</p>
+</div>
+<div id="low-level-functions" class="section level2">
+<h2>Low-Level Functions</h2>
+<p>trelliscopejs provides several low-level functions useful for building new interfaces. I will add more documentation for these in the future, but they are used as the building blocks for <code>facet_trelliscope()</code> and <code>trelliscope()</code> and examples of their usage can be found in the <a href="https://github.com/hafen/trelliscopejs/blob/master/R/trelliscope.R">source code for these functions</a>.</p>
+</div>
+</div>
+<div id="examples" class="section level1">
+<h1>Examples</h1>
+<p>Here are a few more interesting examples of Trelliscope. You can check out my <a href="http://ryanhafen.com/blog/">blog</a> for upcoming posts on other interesting displays.</p>
+<div id="gapminder-data" class="section level2">
+<h2>Gapminder data</h2>
+<p>The “gapminder” R package contains an excerpt of the Gapminder data on life expectancy, GDP per capita, and population by country. Below we create a simple trelliscope plot that shows life expectancy over time for each country. We increase the aspect ratio by decreasing the width of the plot so that changes over time are more pronounced visually.</p>
+<pre class="r"><code>library(gapminder)
+
+gapminder %&gt;%
+  group_by(country, continent) %&gt;%
+  nest() %&gt;%
+  mutate(panel = map_plot(data,
+    ~ figure(ylim = c(10, 95), toolbar = NULL, width = 300) %&gt;%
+        ly_points(year, lifeExp, hover = .x, data = .x) %&gt;%
+        theme_axis(&quot;x&quot;, major_label_orientation = 45))) %&gt;%
+  trelliscope(name = &quot;gapminder_lifeexp&quot;, nrow = 2, ncol = 6)</code></pre>
+<p>Or with ggplot2:</p>
+<pre class="r"><code>qplot(year, lifeExp, data = gapminder) +
+  xlim(1948, 2011) + ylim(10, 95) + theme_bw() +
+  facet_trelliscope(~ country + continent, nrow = 2, ncol = 7, width = 300)</code></pre>
+<p>Here is the resulting display:</p>
+<div style="margin-top:20px; margin-bottom: 20px">
+<div id="32b2482a" class="trelliscope-not-spa" style="width:850px; height:600px;">
+
+</div>
+</div>
+<p>If you’d like to interact with this display, try sorting primarily on life expectancy and /or filtering by continent to start, and see if you can find anything interesting.</p>
+<p>The data being plotted is fairly simple – we see a usually steady increase in life expectancy over time, with varying mean by country. However, the eye is able to quickly catch deviations from the normal pattern such as the dips in Rwanda and Cambodia or the peaks in life expectancy in several African countries in the late 80s / early 90s with life expectancy decreasing after. 142 countries is almost small enough that you might stick all of them on one static trellis display, but the added functionality of filtering and sorting helps navigate the displays in an interactive query-driven manner.</p>
+<!-- small multiples vs. animation.... While animation can make general impressions about things going on in the data, it is very difficult to quantitatively capture what is really going on over time because you can't compare one frame to another. -->
+</div>
+<div id="housing-data" class="section level2">
+<h2>Housing data</h2>
+<p>While the power of small multiples often lies in making rapid comparisons across many panels, it can also be useful to study individual subsets of data over a large space of subsets. A good example of this is with data available in the <a href="https://github.com/hafen/housingData">“housingData”</a> package.</p>
+<p>This package has a dataset, “housing” that gives the monthly median list and sold price for residential homes by US county, provided by Zillow. Let’s take a look at the median list price over time by county.</p>
+<p>Here, we are going to compute our own custom summary “cognostics”, including the slope of a fitted line, the median list and sold price, the number of non-NA observations, and a special “href” cognostic, which will provide a link to Zillow showing the homes for sale in the county.</p>
+<p>For this one I would recommend using rbokeh over ggplot2 simply because of the time it takes to generate the panels with ggplot2.</p>
+<pre class="r"><code>library(housingData)
+
+lm_coefs &lt;- function(x, y)
+  coef(lm(y ~ x))
+
+d &lt;- housing %&gt;%
+  group_by(county, state) %&gt;%
+  summarise(
+    slope = cog(lm_coefs(time, medListPriceSqft)[2], desc = &quot;list price slope&quot;),
+    mean_list = cog(mean(medListPriceSqft, na.rm = TRUE), desc = &quot;mean list price / sq ft&quot;),
+    mean_sold = cog(mean(medSoldPriceSqft, na.rm = TRUE), desc = &quot;mean sold price / sq ft&quot;),
+    n_obs = cog(length(which(!is.na(medListPriceSqft))),
+       desc = &quot;number of non-NA list prices&quot;),
+    zillow_link = cog_href(
+      sprintf(&quot;http://www.zillow.com/homes/%s_rb/&quot;,
+        gsub(&quot; &quot;, &quot;-&quot;, paste(county, state)))[1],
+      desc = &quot;zillow link&quot;),
+    panel = panel(
+      figure(xlab = &quot;time&quot;, ylab = &quot;median list price / sq ft&quot;, toolbar = NULL) %&gt;%
+        ly_points(time, medListPriceSqft,
+          hover = data_frame(time = time, mean_list = medListPriceSqft)))
+  ) %&gt;%
+  filter(n_obs &gt; 1) %&gt;%
+  trelliscope(
+    name = &quot;list_vs_time&quot;,
+    desc = &quot;monthly mean list price vs. time for 2984 US counties from 2008–2016&quot;,
+    state = list(labels = c(&quot;county&quot;, &quot;state&quot;)))</code></pre>
+<p>Here is the resulting display:</p>
+<div style="margin-top:20px; margin-bottom: 20px">
+<div id="8a43f2dd" class="trelliscope-not-spa" style="width:850px; height:600px;">
+
+</div>
+</div>
+<p>Here we used the default of a single panel per page. While we can increase the grid size and make comparisons across counties, we are mainly interested in what is going on within each county. Because of this, we also did not fix the axes of every panel to have the same limits. Generally, you will want to do this as it makes comparisons across panels much more meaningful.</p>
+<p>By simply paging through the panels, which by default are not very meaningfully sorted alphabetically by county and then state, we begin to get a feel for the data. The first 3 panels exhibit quite a bit of variation, while the fourth, Ada County, ID appears to be much more smooth, with a pronounced drop and rise in home prices over the course of the decade. We will see this kind of pattern in many other counties. Simply mindlessly paging has already given us some insights. Continuing on, we see Adams County, CO exhibiting a slight decrease in list price followed by a sharp incline from 2012 onward in what looks like about a 50% jump over 4 years. Certainly not all counties are the same when it comes to their home price history or whether or not they were effected by the housing crisis.</p>
+<p>If you keep looking through you will see some counties with truly bizarre patterns that in some cases call data integrity into question (notice how several counties have a severe change point between July and August 2011, for example).</p>
+<p>It is also fun to use this display to investigate the trend of home prices around where you live. You can do a regex filter on your county’s name or simply filter on your state and look at all the counties arranged by price or slope.</p>
+<p>Another interesting way to look at the dislays is sorted on the slope, while filtering out counties that have a small number of observations. In which counties is real estate booming / busting?</p>
+<p>This display works well as an app for consumers to play with to explore home prices, and it was nearly effortless to create it. However, if we are doing modeling or analysis of this data, exploring the detail in this simple display gives us plenty to think about in terms of what we might do next.</p>
+</div>
+</div>
+<div id="why" class="section level1">
+<h1>Why</h1>
+<div id="why-small-multiples" class="section level2">
+<h2>Why Small Multiples</h2>
+<p>The power of small multiples has hopefully been evident through some of the examples shown so far. However, it is worthwhile talking about why they are useful so that you know when you might want to use them.</p>
+<div id="simple-to-make" class="section level3">
+<h3>Simple to make</h3>
+<p>Creating small multiple plots, particularly with trellicopejs, is as simple as specifying how to break up the data and what to plot for each subset. It’s easy to do and it’s quick, which are very attractive qualities for exploratory data analysis, where not every idea sticks and you need to be able to rapidly iterate.</p>
+</div>
+<div id="efficient-to-consume" class="section level3">
+<h3>Efficient to consume</h3>
+<p>“The reader can quickly learn to read an individual chart and apply this knowledge as they scan the rest of the charts. This shifts the reader’s effort from understanding how the chart works to what the data says. That’s a worthy goal in all data presentation. Small multiples enable comparison across variables and reveal the range of potential patterns in the charts.” (<a href="http://www.juiceanalytics.com/writing/better-know-visualization-small-multiples">Zach Gemigagni</a>).</p>
+<p>“Small multiples are economical: once viewers understand the design of one slice, they have immediate access to the data in all the other slices… as the eye moves from one slice to the next, the consistency of the design allows viewers to focus on changes in the data rather than on changes in graphical design.” (<a href="https://www.edwardtufte.com/tufte/books_vdqi">Edward Tufte, Visual Display of Quantitative Information</a>).</p>
+</div>
+<div id="harness-the-human-brain" class="section level3">
+<h3>Harness the human brain</h3>
+<p>The human brain is remarkably adept at finding patterns, and having many examples to look at simultaneously helps differences stand out even more.</p>
+<p>A <a href="https://www.propublica.org/nerds/item/a-big-article-about-wee-things">ProPublic article on small multiples</a> delves a bit more into why this is the case:</p>
+<p>“The reason we can make comparisons so easily is because these small multiples take advantage of the built-in capabilities of our visual system. Specifically, something called <a href="https://en.wikipedia.org/wiki/Pre-attentive_processing">preattentive processing</a> – cognitive operations that can be performed prior to focusing attention on any particular region of an image… Our brains aren’t like scanners, they throw away most of what the eyes see. But they are good at perceiving simple visual features like color or shape or size, and in fact they do it amazingly fast without any conscious effort. That means we can tell immediately when a part of an image is different from the rest, without really having to focus on it. Our minds are really good at spotting one or two differences when everything else is the same.”</p>
+<p>Even when not looking for anomalous or “strange” behavior in data, small multiple plots can do a good job of revealing subtle features of a dataset.</p>
+</div>
+<div id="avoids-overplotting-and-allows-more-detailed-views" class="section level3">
+<h3>Avoids overplotting and allows more detailed views</h3>
+<p>Even if we are not using small multiples to find visual features that stand out, they are useful because they help eliminate overplotting. A lot of data in a small space can be confusing for visualization consumers, and small multiples break that data up into pieces that are displayed independently in a grid, allowing for greater detail of the data being plotted in each grid cell, particularly when these cells can be paginated and displayed at a higher resolution.</p>
+<p>The ability to slice data into many plots also helps deal with higher dimensional data. Small multiples handle higher dimensions by using one or more of the variables to determine how to break the data up, and then for each subset plotting the data for one or two variables. In most cases this is <em>much</em> more effective than 3d visualization, and can scale to higher dimensions than 3. One needs to look no further than <code>library(lattice); example(xyplot)</code> to see this idea in action.</p>
+<!--
+For example:
+
+```r
+xyplot(NOx ~ C | EE, data = ethanol,
+  prepanel = function(x, y) prepanel.loess(x, y, span = 1),
+  xlab = "Compression Ratio", ylab = "NOx (micrograms/J)",
+  panel = function(x, y) {
+    panel.grid(h = -1, v = 2)
+    panel.xyplot(x, y)
+    panel.loess(x, y, span=1)
+  },
+  aspect = "xy")
+```
+-->
+</div>
+<div id="experience" class="section level3">
+<h3>Experience</h3>
+<p>If it counts as a final argument, experience has shown small multiples to be extremely useful in practice. This is not true just for me, but for several visualization experts.</p>
+<p>For example, Edward Tufte said “for a wide range of problems in data presentation, small multiples are the best design solution.”</p>
+<p>Another expert to look to is Bill Cleveland, who is one of the minds behind Trellis Display and who uses it extensively to this day in many noteworthy analyses.</p>
+<p>Not that my opinion counts nearly as much as these two, but on a personal note, I learned to appreciate the power of small multiples while I was a student of Bill Cleveland. While visualization was not the main topic of research in my graduate studies, in all of the applied work I did during that time (and since), small multiples have been at the forefront of nearly every interesting discovery.</p>
+<!--
+While it's not as pretty as crazy interactive visualizations with buttons, knobs, brushing, etc. it's very simple to create and very effective.
+-->
+</div>
+</div>
+<div id="why-trelliscope" class="section level2">
+<h2>Why Trelliscope</h2>
+<p>We are trying to design trelliscopejs in such a way that if you are already sold on using small multiples, you should see no reason why to not use trelliscopejs to generate Trelliscope small multiple displays.</p>
+<p>Keep in mind that the main addition that Trelliscope brings to small multiples is the ability to interactively sort and filter panels of a small multiples display based on “cognostic” summaries of the data.</p>
+<div id="easy-to-specify" class="section level3">
+<h3>Easy to specify</h3>
+<p>Small multiple plots are already easy to create in R with packages like ggplot2 or lattice. As we’ve seen in examples above, it is not really any more work to create a small multiples plot with trelliscopejs, particularly when cognostics are automatically computed for you.</p>
+</div>
+<div id="interactivity-for-free" class="section level3">
+<h3>Interactivity for free</h3>
+<p>A really nice feature of Trelliscope is that you get interactivity for free. In statistical graphics, particularly exploratory data analysis, interactivity is sometimes difficult to achieve because it usually requires a lot more time and work than simple static graphics. The audience for the visualizations is usually ourselves, and we are in a hurry to see what’s in the data or how well our model is working, and are not willing to put in hours or days of time on some interactive feature when we know we may discard the plot quickly. Often our plots are “interactive” in that we can rapidly create new static plots faster than we can come up with any interaction to do so for us. But if interactivity is easy and comes for free, there’s no reason not to use it.</p>
+<p>A nice feature of Trelliscope interactivity is that the interaction paradigm is the same for every display. Instead of creating many different apps that users might need to figure out how to use independently, once they learn how to use one Trellscope display, they are set (see “displays as apps” section below).</p>
+<!-- The simple interaction paradigm is also useful for provenance - the sorting and filtering of the panels is transient. -->
+</div>
+<div id="scalable" class="section level3">
+<h3>Scalable</h3>
+<p>Perhaps one of the most unrealized features of small multiples, and one we are trying to tackle with Trelliscope, is the natural fit small multiple plots have with big data. Often the approach to visualizing a large data set is computing summaries and making a single visualization based on the summaries. As we’ve mentioned before, you can lose a lot of important information that way. A perfect companion to plots of summaries is small multiple plots which can be navigated with respect to the summaries, and provide much-needed detail into the data, regardless of size.</p>
+<p>Small multiples with Trelliscope scales because we never <em>need</em> to be able to see all the panels, we just need to be <em>able</em> to, and we need to be guided to those panels that have the most interesting content. Cognostics help us answer that. We have used the previous incarnation of Trelliscope to flexibly visualize the raw data of hundreds of gigabytes of data on a Hadoop cluster (see <a href="https://www.youtube.com/watch?v=KatkJx9Ui0o">here</a> for an example).</p>
+<!-- One of the reasons multi-panel displays are effective is that they allow you to make visual comparisons across groups. Often the number of groups is so large that it is difficult to look at all the panels at once, and in Trelliscope we can -->
+</div>
+<div id="trelliscope-displays-as-apps" class="section level3">
+<h3>Trelliscope displays as “apps”</h3>
+<p>While the Trelliscope viewer is meant to be used primarly in the exporatory data analysis process, we have found that in many cases these displays are also useful and insightful for non-data-scientists to consume (take the housing example above, for example). In fact, in my previous job we used this approach frequently with domain scientists. The displays are easy enough for any data scientist to create without needing to know how to write an interface or an app, while the resulting displays are intuitive enough for domain experts to navigate, with the interactivity allowing them to feel and learn from their data. These displays provided an excellent communication medium when sitting down with a domain expert to discuss the data.</p>
+<p>In addition to exploratory displays of data as apps, Trelliscope displays can also act as complete replacements of more traditional statistical apps. Many statistical apps I have seen consist of a few inputs the user can specify and a plot that updates as these inputs change. It is possible cast most such cases as a Trelliscope app, with the full space of input combinations being represented as cognostics and the output being the panel of a Trelliscope display representing the output for each input combination. An additional benefit of this approach is that many outcomes can be compared simultaneously.</p>
+</div>
+</div>
+</div>
+<div id="trelliscopejs-lib" class="section level1">
+<h1>trelliscopejs-lib</h1>
+<p>trelliscopejs is an <a href="http://www.htmlwidgets.org/">htmlwidget</a> interface to the <a href="https://www.npmjs.com/package/trelliscopejs-lib">trelliscopejs-lib</a> JavaScript library. While this is a (probably) rare example of an htmlwidget where both the JavaScript and R libraries are entirely written and maintained by the same entity, trelliscopejs-lib is designed to be language-agnostic, meaning that for a new language to provide a binding to trelliscopejs-lib, it simply needs to provide a JSON specification that trelliscopejs-lib knows how to handle. The schema for this spec is settling in, but is still subject to change. More documentation will be provided as demand necessitates.</p>
+<p>For those who are interested, trelliscopejs-lib is written using <a href="https://facebook.github.io/react/">React</a>, <a href="http://redux.js.org/">redux</a>, and <a href="https://webpack.github.io/">Webpack</a>. Other major components include <a href="http://www.material-ui.com/#/">material-ui</a> and <a href="https://www.npmjs.com/package/crossfilter2">crossfilter</a>, and <a href="https://d3js.org/">d3</a>.</p>
+<p>The library is available on <a href="https://www.npmjs.com/package/trelliscopejs-lib">npm</a> and therefore over CDN using <a href="http://unpkg.com/">unpkg</a>. All dependencies, fonts, css, etc. are bundled into the library and it weighs in at a little over 1MB.</p>
+<div id="embedding-trelliscopejs-apps" class="section level3">
+<h3>Embedding trelliscopejs apps</h3>
+<p>It is easy to embed the library and corresponding Trelliscope displays into another web page or web application.</p>
+<p>NOTE: this is not required knowledge for anyone who is simply creating displays with the R package, but is provided as a reference for others who may want to take displays that have been deployed and embed the viewer in their own web applications.</p>
+<p>First, you need to load the trelliscopejs-lib library with this script tag (check for the latest version):</p>
+<pre class="html"><code>&lt;script src=&quot;https://unpkg.com/trelliscopejs-lib@0.1.4/dist/trelliscope.min.js&quot;&gt;&lt;/script&gt;</code></pre>
+<p>This attaches a function to the window called <code>trellscopeApp()</code> that is used to instantiate an app in a div.</p>
+<p>Then, you create a div where you would like to embed the app. The div needs to have an ID that matches the ID provided for a given display. For example, the housing example above is shared in a github repository and in the <code>appfiles</code> subdirectory of the app, there is a text file <code>id</code>: <a href="https://github.com/hafen/trelliscopejs-demo/blob/gh-pages/housing/appfiles/id" class="uri">https://github.com/hafen/trelliscopejs-demo/blob/gh-pages/housing/appfiles/id</a>.</p>
+<pre class="html"><code>&lt;div id=&quot;8a43f2dd&quot; class=&quot;trelliscope-not-spa&quot; style=&quot;width:800px; height:500px;&quot;&gt;&lt;/div&gt;</code></pre>
+<p>We give this div a class “trelliscope-not-spa” to help the application know that we are embedding the display and therefore it is not a “single-page-application”. You can embed it as a full-page application if you would like and would omit the “class” and “style”.</p>
+<p>Finally, at the end of your html file (or wherever it is in your app that you want to make the app appear), you need to point <code>trelliscopeApp()</code> to the id of the div it should populate and your app’s config.jsonp that tells the viewer where all the components are. In the case of this example, we can point directly to the housing app files as they are hosted on github pages:</p>
+<pre class="html"><code>&lt;script&gt;
+  (function() {
+    trelliscopeApp(&#39;8a43f2dd&#39;,
+      &#39;http://hafen.github.io/trelliscopejs-demo/housing/appfiles/config.jsonp&#39;);
+  })();
+&lt;/script&gt;</code></pre>
+<p>In the future I envision <code>trelliscopeApp()</code> passing back “get” and “set” methods so that other applications can drive the behavior of a trelliscopejs app.</p>
+</div>
+</div>
+<div id="history" class="section level1">
+<h1>History</h1>
+<p>I’ve been working on ideas related to Trelliscope since I was a graduate student less than a decade ago. Web technology has come a long way since then and Trelliscope has gone through several iterations ranging from ad hoc scripts to an implementation that scales to run on Hadoop clusters.</p>
+<p>The most recent previous incarnation is the <a href="http://deltarho.org/docs-trelliscope/">“trelliscope”</a> package, part of the <a href="http://deltarho.org/">DeltaRho</a> project. trelliscopejs is designed to be the successor of this package and it is hoped that those using this package are able to migrate their workflows to trelliscopejs. There are some use cases that trelliscopejs can’t yet handle that the old trelliscope package can, such as integration with big data systems like Hadoop and the ability to generate panels on the fly, but supporting these options is in the road map for trelliscopejs.</p>
+<p>The old trelliscope package does have a very experimental conversion function that will help users convert their old displays to be compatible with trelliscopejs:</p>
+<pre class="r"><code>library(trelliscope)
+vdbConn(&quot;_path_to_vdb_&quot;)
+vdbConvert()</code></pre>
+</div>
+<div id="upcoming-work" class="section level1">
+<h1>Upcoming Work</h1>
+<p>What’s available now represents quite a lot of work, but there is much more planned for trelliscopejs.</p>
+<div id="automatic-cognostics" class="section level3">
+<h3>Automatic cognostics</h3>
+<p>The biggest thing on the horizon and the one I’m most excited about is the idea of “automatic cognostics”. The idea is to automatically derive metrics that will be useful for navigating the panels based on the context of what is being plotted. For example, if plotting a time series, there is a useful class of metrics that can capture time-series-related plots. If plotting a scatterplot, there’s <a href="https://research.tableau.com/sites/default/files/Wilkinson_Infovis-05.pdf">scagnostics</a>, among other things. Using plotting systems like ggplot2 or rbokeh, the plot objects can be analyzed to derive context. Barret Schloerke, a graduate student at Purdue, is working on these ideas right now.</p>
+</div>
+<div id="axes-almost-always-matter" class="section level3">
+<h3>Axes almost always matter</h3>
+<p>If you haven’t noticed, axis scales are important when viewing a small multiple display. As stated <a href="http://www.juiceanalytics.com/writing/better-know-visualization-small-multiples">here</a>, “Small multiples should share the same measures, scales, size, and shape. Changing one of these factors undermines ability for people to re-use their understanding of the chart.”</p>
+<p>Currently you have to manually specify axis limits with trelliscopejs, but we plan to soon add the ability to specify your axes as “same”, “sliced”, or “free”.</p>
+<p>Also, axes take up a lot of screen real estate, and when all the axes are the same, we can save that space and open up more space for visual comparison by moving the axes to the margins of the grid. This will require the ability to decompose panels into content and axes and will take some work, but is an important priority.</p>
+</div>
+<div id="grid-placement-sometimes-matters" class="section level3">
+<h3>Grid placement sometimes matters</h3>
+<p>Sometimes the exact grid placement of the panels makes a big difference in the effectiveness of a small multiples display. As stated <a href="http://www.juiceanalytics.com/writing/better-know-visualization-small-multiples">here</a>, “Placement of the small multiples charts should reflect some logical order, e.g. dimensional matrix, geography, or time. This helps the user quickly find the charts that are interesting to them.”</p>
+<p>Currently placement in trelliscopejs is just a sequential grid dictated by the sort order of the cognostics. We plan to investigate other ways to allow users to specify the layout of the grid such as each page.</p>
+</div>
+<div id="scalability" class="section level3">
+<h3>Scalability</h3>
+<p>In the previous implementation of Trelliscope, our initial focus was on very large datasets. This was out of necessity because of some large datasets we were working with, but also because these implementations have been products of funding from the DARPA XDATA “big data” initiative. I have since found that the vast majority of use cases for Trelliscope involve small to moderate-size data. Because of this, with trellscopejs, I focused first on the simplicity of the interface, and we will then work toward scalability.</p>
+<p>The previous Trellicope implementation was based on <a href="http://deltarho.org/docs-datadr/">datadr</a>, a back-end agnostic framework for general-purpose distributed computing, and ran on things like Hadoop with a MapReduce-like interface. I have strong hopes for systems like sparklyr to eventually support the kind of dplyr-like operations that the trelliscopejs interface requires (remote arbitrary R code execution on subsets and support for list-columns) such that trelliscopejs simply plugs in and immediately becomes a very easy-to-use big data visualization platform.</p>
+</div>
+<div id="viewer-improvements-and-more-modes-of-interaction" class="section level3">
+<h3>Viewer improvements and more modes of interaction</h3>
+<p>There are many more modes of interaction we would like to build in to the Trelliscope viewer. For example, date/time cognostics should have their own special mode of interaction. It would also be able to filter based in views of combinations of cognostics. The new React framework we are using for the JavaScript viewer facilitates rapid development and stability of such features.</p>
+<p>We would also like to make the viewer be able to track and share state, so an analyst can share interesting discoveries with others. This should also be straightforward.</p>
+<p>We also plan to make the viewer support more ways to serve panels of a display. Currently, trelliscopejs pre-generates panels as json files and the viewer loads them on demand. It would be good to have more options for requesting panels, and this will particularly be useful when working on scaling up to very large data sets.</p>
+</div>
+<div id="other-languages" class="section level3">
+<h3>Other languages?</h3>
+<p>It would be really cool to see other languages become trelliscopejs-lib interfaces but we’re not in the position to work on that.</p>
+<script>
+  (function() {
+    trelliscopeApp('ebbfa969', 'https://hafen.github.io/trelliscopejs-demo/mpg/appfiles/config.jsonp');
+    trelliscopeApp('32b2482a', 'https://hafen.github.io/trelliscopejs-demo/gapminder/appfiles/config.jsonp');
+    trelliscopeApp('8a43f2dd', 'https://hafen.github.io/trelliscopejs-demo/housing/appfiles/config.jsonp');
+  })();
+</script>
+</div>
+</div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <div id="footer">
+    <div class="container">
+      <div class="col-md-6">
+                <p>&copy; Ryan Hafen, 2017</p>
+              </div>
+      <div class="col-md-6">
+        <p class="pull-right">created with <a href="https://github.com/hafen/packagedocs">packagedocs</a>
+                  </p>
+      </div>
+    </div>
+  </div>
+
+  
+</body>
+</html>
