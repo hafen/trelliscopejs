@@ -11,7 +11,8 @@ trelliscope_widget <- function(id, config_info, www_dir, latest_display,
     self_contained = self_contained,
     latest_display = latest_display,
     spa = spa,
-    in_knitr = getOption("knitr.in.progress", FALSE))
+    in_knitr = getOption("knitr.in.progress", FALSE),
+    in_notebook = in_rmarkdown_notebook())
 
   if (spa) {
     width <- height <- "100%"
@@ -91,10 +92,12 @@ knit_print.facet_trelliscope <- function(x, ..., options = NULL) {
 # Override print.htmlwidget for trelliscopejs_widget so we can control the output location
 #' @export
 print.trelliscopejs_widget <- function(x, ..., view = interactive()) {
-  # hacky way to detect R Markdown Notebook
-  print_fn <- try(get("print.htmlwidget"), silent = TRUE)
-  if (!inherits(print_fn, "try-error")) {
-    return(print_fn(x))
+
+  if (x$x$in_notebook && x$x$self_contained) {
+    print_fn <- try(get("print.htmlwidget"), silent = TRUE)
+    if (!inherits(print_fn, "try-error")) {
+      return(print_fn(x))
+    }
   }
 
   # if (x$x$self_contained) {
