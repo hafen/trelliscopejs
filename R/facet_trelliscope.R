@@ -431,7 +431,19 @@ print.facet_trelliscope <- function(x, ...) {
     pb = pb
   )
 
-  prepare_display(params$path, params$id, params$self_contained, params$jsonp, pb = pb)
+  if (params$split_layout) {
+    has_legend <- "guide-box" %in% plot_gtable(panels[[1]])$layout$name
+  } else {
+    # if it isn't split, we will say there is no legend to draw, as it will be drawn in the regular plot
+    has_legend <- FALSE
+  }
+
+  prepare_display(
+    params$path, params$id, params$self_contained, params$jsonp,
+    pb = pb,
+    split_layout = params$split_layout,
+    has_legend
+  )
 
   res <- trelliscope_widget(
     id = params$id,
