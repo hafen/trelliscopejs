@@ -102,6 +102,14 @@ axis_left_width <- function(pg, unitTo = "cm") {
 axis_bottom_height <- function(pg, unitTo = "cm") {
   grid::convertHeight(sum(grid::convertHeight(pg$heights, unitTo = unitTo)), unitTo = unitTo)
 }
+legend_width_or_height <- function(pg, section, default_value, unitTo = "cm") {
+  val <- grid::convertHeight(pg[[section]][1], unitTo = unitTo, valueOnly = TRUE)
+  if (val == 0) {
+    default_value
+  } else {
+    grid::unit(val, unitTo)
+  }
+}
 
 
 
@@ -181,6 +189,17 @@ extract_plot_content <- function(p, pg = plot_gtable(p), include_strips = TRUE) 
   plot_panel
 }
 
+
+#' @importFrom gtable gtable_filter
+extract_legend <- function(p, pg = plot_gtable(p)) {
+  if (!("guide-box" %in% pg$layout$name)) {
+    return(NULL)
+  }
+
+  gg_legend <- gtable_filter(pg, "guide-box")
+
+  gg_legend
+}
 
 
 

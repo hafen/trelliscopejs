@@ -85,7 +85,20 @@ write_panel <- function(plot_object, key, base_path, name, group = "common",
         jsonp, panel_path
       )
 
+      gg_legend <- extract_legend(pg = pg)
+      if (!is.null(gg_legend)) {
 
+        legend_width <- legend_width_or_height(gg_legend, "widths", width)
+        legend_height <- legend_width_or_height(gg_legend, "heights", height)
+
+        write_ggplot2_component(
+          gg_legend,
+          width = legend_width,
+          height = legend_height,
+          key = paste0(key, "_legend"),
+          jsonp, panel_path
+        )
+      }
 
     } else {
       # behave like a normal plot
