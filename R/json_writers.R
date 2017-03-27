@@ -124,6 +124,7 @@ write_ggplot2_component <- function(
   file = tempfile()
 ) {
 
+  # TODO change back to listen to file arg
   # ff <- tempfile()
   dir.create(file.path(".", "_ignore", "_pics"), showWarnings = FALSE, recursive = TRUE)
   ff <- file.path(".", "_ignore", "_pics", paste0(key, ".png"))
