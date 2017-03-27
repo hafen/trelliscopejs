@@ -214,7 +214,7 @@ extract_plot_content <- function(p, pg = plot_gtable(p), include_strips = TRUE) 
 facet_trelliscope <- function(
   facets,
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
-  desc = "", md_desc = "", path = NULL, height = 500, width = 500,
+  desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
   state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
   self_contained = FALSE, thumb = TRUE, auto_cog_data = TRUE) {
 
@@ -381,6 +381,14 @@ print.facet_trelliscope <- function(x, ...) {
     jsonp = params$jsonp,
     pb = pb
   )
+
+  if (inherits(attrs$desc, "waiver")) {
+    attrs$desc <- ifelse(is.null(p$labels$title), "", p$labels$title)
+  }
+  if (inherits(attrs$md_desc, "waiver")) {
+    attrs$md_desc <- ifelse(is.null(p$labels$subtitle), "", p$labels$subtitle)
+  }
+
 
   write_display_obj(
     cog_df,
