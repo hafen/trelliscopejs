@@ -5,7 +5,7 @@
 \title{Write a plot object as a panel in a Trelliscope display}
 \usage{
 write_panel(plot_object, key, base_path, name, group = "common", width,
-  height, jsonp = TRUE)
+  height, jsonp = TRUE, split_layout = FALSE)
 }
 \arguments{
 \item{plot_object}{a plot object to be written (can be trellis, ggplot2, or htmlwidget)}
@@ -23,6 +23,8 @@ write_panel(plot_object, key, base_path, name, group = "common", width,
 \item{height}{height in pixels of each panel}
 
 \item{jsonp}{should json for panel be jsonp (TRUE) or json (FALSE)?}
+
+\item{split_layout}{boolean that determines if the layout is split into components like a facet_grid vs. individual panels like facet_wrap.  Only applies to ggplot2 plot objects.}
 }
 \description{
 Write a plot object as a panel in a Trelliscope display

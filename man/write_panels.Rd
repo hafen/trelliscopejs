@@ -4,25 +4,12 @@
 \alias{write_panels}
 \title{Write a list of plot objects as panels in a Trelliscope display}
 \usage{
-write_panels(plot_list, base_path, name, group = "common", width = 500,
-  height = 500, jsonp = TRUE, progress = TRUE, pb = NULL)
+write_panels(plot_list, ..., pb = NULL)
 }
 \arguments{
 \item{plot_list}{a named list of plot objects to be written as panels (objects can be trellis, ggplot2, or htmlwidget) with the list names being the keys for the panels}
 
-\item{base_path}{the base directory of the trelliscope application}
-
-\item{name}{name of the display that the panel belongs to}
-
-\item{group}{group name of the display that the panel belongs to}
-
-\item{width}{width in pixels of each panel}
-
-\item{height}{height in pixels of each panel}
-
-\item{jsonp}{should json for panels be jsonp (TRUE) or json (FALSE)?}
-
-\item{progress}{= TRUE}
+\item{...}{params passed directly to \code{\link{write_panel}}}
 
 \item{pb}{optional progress bar object to pass in and use to report progress}
 }
