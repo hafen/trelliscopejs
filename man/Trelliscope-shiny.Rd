@@ -2,8 +2,8 @@
 % Please edit documentation in R/htmlwidget.R
 \name{Trelliscope-shiny}
 \alias{Trelliscope-shiny}
-\alias{renderTrelliscope}
 \alias{trelliscopeOutput}
+\alias{renderTrelliscope}
 \title{Shiny bindings for Trelliscope}
 \usage{
 trelliscopeOutput(outputId, width = "100\%", height = "400px")
@@ -28,4 +28,3 @@ is useful if you want to save an expression in a variable.}
 Output and render functions for using trelliscopejs_widget within Shiny
 applications and interactive Rmd documents.
 }
-

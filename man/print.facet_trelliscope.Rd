@@ -14,4 +14,3 @@
 \description{
 Print facet trelliscope object
 }
-

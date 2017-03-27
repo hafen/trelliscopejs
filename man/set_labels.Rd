@@ -17,4 +17,3 @@ data frame with labels attached as attributes (attached to each column and named
 \description{
 Set labels for a data frame
 }
-

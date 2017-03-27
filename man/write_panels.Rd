@@ -29,4 +29,3 @@ write_panels(plot_list, base_path, name, group = "common", width = 500,
 \description{
 Write a list of plot objects as panels in a Trelliscope display
 }
-

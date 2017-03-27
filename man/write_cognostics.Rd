@@ -22,4 +22,3 @@ write_cognostics(cogdf, base_path, id, name, group = "common", jsonp = TRUE)
 \description{
 Write cognostics data for a display in a Trelliscope app
 }
-

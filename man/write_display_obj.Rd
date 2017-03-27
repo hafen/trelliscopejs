@@ -45,4 +45,3 @@ write_display_obj(cogdf, panel_example, base_path, id, name, group = "common",
 \description{
 Write a "display object" file for a Trelliscope app
 }
-

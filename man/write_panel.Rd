@@ -27,4 +27,3 @@ write_panel(plot_object, key, base_path, name, group = "common", width,
 \description{
 Write a plot object as a panel in a Trelliscope display
 }
-

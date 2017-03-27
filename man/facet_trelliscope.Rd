@@ -81,4 +81,3 @@ qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
   ylim(7, 37) + theme_bw()
 }
 }
-

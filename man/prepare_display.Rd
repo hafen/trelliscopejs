@@ -21,4 +21,3 @@ prepare_display(base_path, id, self_contained = FALSE, jsonp = TRUE,
 \description{
 Set up all auxilliary files needed for a Trelliscope app
 }
-

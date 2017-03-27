@@ -18,4 +18,3 @@ write_config(base_path, id, self_contained = FALSE, jsonp = TRUE)
 \description{
 Write Trelliscope app configuration file
 }
-

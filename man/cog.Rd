@@ -53,4 +53,3 @@ mpg \%>\%
   trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
 }
 }
-
