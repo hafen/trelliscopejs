@@ -290,6 +290,16 @@ print.facet_trelliscope <- function(x, ...) {
 
   pp <- ggplot_build(p)
 
+  if (isTRUE(attrs$split_layout)) {
+    first_panel_scales <- pp$layout$get_scales(1)
+    if (!identical(first_panel_scales$x$position, "bottom")) {
+      stop("x axis must be on the bottom if the layout is split")
+    }
+    if (!identical(first_panel_scales$y$position, "left")) {
+      stop("y axis must be on the left if the layout is split")
+    }
+  }
+
   if (isTRUE(attrs$auto_cog_data)) {
     message("using data from the first layer")
     # data <- ggplot2::layer_data(p, 1) # first layer data # this is computed data
