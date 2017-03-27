@@ -1,18 +1,11 @@
 #' Write a list of plot objects as panels in a Trelliscope display
 #'
 #' @param plot_list a named list of plot objects to be written as panels (objects can be trellis, ggplot2, or htmlwidget) with the list names being the keys for the panels
-#' @param base_path the base directory of the trelliscope application
-#' @param name name of the display that the panel belongs to
-#' @param group group name of the display that the panel belongs to
-#' @param width width in pixels of each panel
-#' @param height height in pixels of each panel
-#' @param jsonp should json for panels be jsonp (TRUE) or json (FALSE)?
-#' @param progress = TRUE
 #' @param pb optional progress bar object to pass in and use to report progress
+#' @param ... params passed directly to \code{\link{write_panel}}
 #' @import progress
 #' @export
-write_panels <- function(plot_list, base_path, name, group = "common",
-  width = 500, height = 500, jsonp = TRUE, progress = TRUE, pb = NULL) {
+write_panels <- function(plot_list, ..., pb = NULL) {
 
   nms <- names(plot_list)
   if (length(nms) == 0) {
@@ -26,9 +19,7 @@ write_panels <- function(plot_list, base_path, name, group = "common",
 
   lapply(nms, function(nm) {
     pb$tick(tokens = list(what = "writing panels      "))
-    write_panel(plot_list[[nm]], key = nm, base_path = base_path,
-      name = name, group = group,
-      width = width, height = height, jsonp = jsonp)
+    write_panel(plot_list[[nm]], key = nm, ...)
   })
 
   invisible(NULL)
