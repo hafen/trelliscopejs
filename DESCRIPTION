@@ -19,6 +19,7 @@ Imports:
     htmltools,
     DistributionUtils,
     grDevices,
+    gtable,
     digest,
     jsonlite,
     ggplot2 (> 2.1.0),
