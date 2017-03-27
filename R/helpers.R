@@ -42,7 +42,7 @@ set_labels <- function(dat, label_list) {
 }
 
 resolve_app_params <- function(path, self_contained, jsonp, name, group,
-  state, nrow = 1, ncol = 1, thumb = TRUE) {
+  state, nrow = 1, ncol = 1, thumb = TRUE, split_layout = FALSE) {
 
   spa <- TRUE # "single-page application"
 
@@ -104,6 +104,9 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
     state <- list()
   state$layout <- list(nrow = nrow, ncol = ncol, arrange = "row")
 
+  # make sure split_layout is a boolean
+  split_layout <- isTRUE(split_layout)
+
   list(
     path = path,
     www_dir = www_dir,
@@ -117,7 +120,8 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
     state = state,
     in_knitr = in_knitr,
     in_notebook = in_notebook,
-    thumb = thumb
+    thumb = thumb,
+    split_layout = split_layout
   )
 }
 

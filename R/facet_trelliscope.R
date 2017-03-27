@@ -207,6 +207,7 @@ extract_plot_content <- function(p, pg = plot_gtable(p), include_strips = TRUE) 
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
 #' @param auto_cog_data boolean that determines if automatic cognostics are produces
+#' @template param-split-layout
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 #' @export
 #' @example man-roxygen/ex-facet_trelliscope.R
@@ -216,7 +217,9 @@ facet_trelliscope <- function(
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
   desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
   state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
-  self_contained = FALSE, thumb = TRUE, auto_cog_data = TRUE) {
+  self_contained = FALSE, thumb = TRUE, auto_cog_data = TRUE,
+  split_layout = TRUE
+) {
 
   if (as_plotly) {
     if (!requireNamespace("plotly", quietly = TRUE))
@@ -243,7 +246,8 @@ facet_trelliscope <- function(
     thumb = thumb,
     as_plotly = as_plotly,
     plotly_args = plotly_args,
-    auto_cog_data = auto_cog_data
+    auto_cog_data = auto_cog_data,
+    split_layout = split_layout
   )
 
   class(ret) <- "facet_trelliscope"
@@ -261,7 +265,7 @@ facet_trelliscope <- function(
     # e1 <- e1 %+% (e2$facet_wrap)
     attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group", "desc", "md_desc",
       "height", "width", "state", "jsonp", "self_contained", "path", "state", "nrow", "ncol",
-      "scales", "thumb", "as_plotly", "plotly_args", "auto_cog_data")]
+      "scales", "thumb", "as_plotly", "plotly_args", "auto_cog_data", "split_layout")]
     class(e1) <- c("facet_trelliscope", class(e1))
     return(e1)
     # return(print(e1))
@@ -364,7 +368,7 @@ print.facet_trelliscope <- function(x, ...) {
     name <- paste("by_", paste(facet_cols, collapse = "_"), sep = "")
 
   params <- resolve_app_params(attrs$path, attrs$self_contained, attrs$jsonp,
-    name, attrs$group, attrs$state, attrs$nrow, attrs$ncol, attrs$thumb)
+    name, attrs$group, attrs$state, attrs$nrow, attrs$ncol, attrs$thumb, attrs$split_layout)
 
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",
@@ -379,6 +383,7 @@ print.facet_trelliscope <- function(x, ...) {
     width = attrs$width,
     height = attrs$height,
     jsonp = params$jsonp,
+    split_layout = params$split_layout,
     pb = pb
   )
 
