@@ -153,6 +153,8 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
       panels,
       base_path = params$path,
       name = params$name,
+      width = width,
+      height = height,
       group = params$group,
       jsonp = params$jsonp,
       pb = pb
