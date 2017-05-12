@@ -53,7 +53,7 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
   if (in_rmarkdown_notebook()) {
     # spa <- FALSE # (don't need to set spa to FALSE because it's in an iframe)
     if (!self_contained) {
-      message("** note: When inside an R Markdown document, the only way to embed a",
+      message("** note: When inside an R Markdown document, the only way to embed a ",
         "Trelliscope display within the notebook is to use self_contained = TRUE.")
       # message("** note: Currently trelliscope displays can only be created from ",
       #   "within an RMarkdown notebook with self_contained = TRUE. Setting this ",
