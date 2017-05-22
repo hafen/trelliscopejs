@@ -150,7 +150,7 @@ pmap_plot <- function(.l, .f, ...) {
 #' }
 #' @export
 by_row_plot <- function(.d, ..f, .to = "panel") {
-  res <- purrr::by_row(.d = .d, ..f = ..f, .to = .to)
+  res <- purrrlyr::by_row(.d = .d, ..f = ..f, .to = .to)
   class(res[[.to]]) <- c("trelliscope_panels", "list")
   res
 }
@@ -287,7 +287,7 @@ by_row_cog <- function(.d, ..f, .to = NULL) {
       .to <- "cogs"
     }
   }
-  res <- purrr::by_row(.d = .d, ..f = ..f, .to = .to)
+  res <- purrrlyr::by_row(.d = .d, ..f = ..f, .to = .to)
   class(res[[.to]]) <- c("trelliscope_cogs", "list")
   res
 }
