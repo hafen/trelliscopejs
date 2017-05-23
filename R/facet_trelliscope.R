@@ -370,7 +370,7 @@ print.facet_trelliscope <- function(x, ...) {
 
   panels <- (
     data %>%
-      purrr::by_row(~
+      purrrlyr::by_row(~
         make_plot_obj(
           unnest(.x[c(facet_cols, "data")]),
           as_plotly = attrs$as_plotly,
@@ -380,6 +380,7 @@ print.facet_trelliscope <- function(x, ...) {
         .labels = FALSE
       )
   )[[1]]
+
   names(panels) <- cog_df$panelKey # nolint
 
   name <- attrs$name
