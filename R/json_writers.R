@@ -1,18 +1,11 @@
 #' Write a list of plot objects as panels in a Trelliscope display
 #'
 #' @param plot_list a named list of plot objects to be written as panels (objects can be trellis, ggplot2, or htmlwidget) with the list names being the keys for the panels
-#' @param base_path the base directory of the trelliscope application
-#' @param name name of the display that the panel belongs to
-#' @param group group name of the display that the panel belongs to
-#' @param width width in pixels of each panel
-#' @param height height in pixels of each panel
-#' @param jsonp should json for panels be jsonp (TRUE) or json (FALSE)?
-#' @param progress = TRUE
 #' @param pb optional progress bar object to pass in and use to report progress
+#' @param ... params passed directly to \code{\link{write_panel}}
 #' @import progress
 #' @export
-write_panels <- function(plot_list, base_path, name, group = "common",
-  width = 500, height = 500, jsonp = TRUE, progress = TRUE, pb = NULL) {
+write_panels <- function(plot_list, ..., pb = NULL) {
 
   nms <- names(plot_list)
   if (length(nms) == 0) {
@@ -26,9 +19,7 @@ write_panels <- function(plot_list, base_path, name, group = "common",
 
   lapply(nms, function(nm) {
     pb$tick(tokens = list(what = "writing panels      "))
-    write_panel(plot_list[[nm]], key = nm, base_path = base_path,
-      name = name, group = group,
-      width = width, height = height, jsonp = jsonp)
+    write_panel(plot_list[[nm]], key = nm, ...)
   })
 
   invisible(NULL)
@@ -44,9 +35,10 @@ write_panels <- function(plot_list, base_path, name, group = "common",
 #' @param width width in pixels of each panel
 #' @param height height in pixels of each panel
 #' @param jsonp should json for panel be jsonp (TRUE) or json (FALSE)?
+#' @template param-split-layout
 #' @export
 write_panel <- function(plot_object, key, base_path, name, group = "common",
-  width, height, jsonp = TRUE) {
+  width, height, jsonp = TRUE, split_layout = FALSE) {
 
   panel_path <- file.path(base_path, "displays", group, name,
     ifelse(jsonp, "jsonp", "json"))
@@ -60,15 +52,55 @@ write_panel <- function(plot_object, key, base_path, name, group = "common",
     }
   }
 
-  if (inherits(plot_object, c("trellis", "ggplot"))) {
-    ff <- tempfile()
-    make_png(p = plot_object, file = ff,
-      width = width, height = height)
-    dat <- paste0("\"", encode_png(ff), "\"")
-    txt <- get_jsonp_text(jsonp, paste0("__panel__._", key))
-    cat(paste0(txt$st, dat, txt$nd),
-      file = file.path(panel_path,
-        paste0(key, ifelse(jsonp, ".jsonp", ".json"))))
+  if (inherits(plot_object, "ggplot")) {
+    if (split_layout) {
+      pg <- plot_gtable(plot_object)
+      left_axis <- extract_axis_left(pg = pg)
+      bottom_axis <- extract_axis_bottom(pg = pg)
+      plot_content <- extract_plot_content(pg = pg)
+
+      write_ggplot2_component(
+        plot_content, width = width, height = height, key = paste0(key, "_plot"),
+        jsonp, panel_path
+      )
+      write_ggplot2_component(
+        left_axis,
+        width = axis_left_width(left_axis),
+        height = height, key = paste0(key, "_axis_left"),
+        jsonp, panel_path
+      )
+      write_ggplot2_component(
+        bottom_axis, width = width,
+        height = axis_bottom_height(bottom_axis),
+        key = paste0(key, "_axis_bottom"),
+        jsonp, panel_path
+      )
+
+      gg_legend <- extract_legend(pg = pg)
+      if (!is.null(gg_legend)) {
+
+        legend_width <- legend_width_or_height(gg_legend, "widths", width)
+        legend_height <- legend_width_or_height(gg_legend, "heights", height)
+
+        write_ggplot2_component(
+          gg_legend,
+          width = legend_width,
+          height = legend_height,
+          key = paste0(key, "_legend"),
+          jsonp, panel_path
+        )
+      }
+
+    } else {
+      # behave like a normal plot
+      write_ggplot2_component(plot_object, width, height, key, jsonp, panel_path)
+
+    }
+
+
+  } else if (inherits(plot_object, c("trellis"))) {
+    write_ggplot2_component(plot_object, width, height, key, jsonp, panel_path)
+
   } else if (inherits(plot_object, "htmlwidget")) {
     p <- htmltools::as.tags(plot_object)
     txt <- get_jsonp_text(jsonp, paste0("__panel__._", key))
@@ -78,6 +110,31 @@ write_panel <- function(plot_object, key, base_path, name, group = "common",
   } else {
     message("panel not written - must be trellis, ggplot, or htmlwidget object")
   }
+}
+
+unit_to_px <- function(x, res) {
+  ret <- unclass(grid::convertWidth(x, unitTo = "cm")) * res / 2.54
+  attr(ret, "unit") <- NULL
+  attr(ret, "valid.unit") <- NULL
+  ret
+}
+
+write_ggplot2_component <- function(
+  plot_component, width, height, key, jsonp, panel_path,
+  file = tempfile()
+) {
+
+  # TODO change back to listen to file arg
+  # ff <- tempfile()
+  dir.create(file.path(".", "_ignore", "_pics"), showWarnings = FALSE, recursive = TRUE)
+  ff <- file.path(".", "_ignore", "_pics", paste0(key, ".png"))
+  make_png(p = plot_component, file = ff,
+    width = width, height = height)
+  dat <- paste0("\"", encode_png(ff), "\"")
+  txt <- get_jsonp_text(jsonp, paste0("__panel__._", key))
+  cat(paste0(txt$st, dat, txt$nd),
+    file = file.path(panel_path,
+      paste0(key, ifelse(jsonp, ".jsonp", ".json"))))
 }
 
 #' Write cognostics data for a display in a Trelliscope app
@@ -226,8 +283,18 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
 #' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param jsonp should json for display list and app config be jsonp (TRUE) or json (FALSE)?
 #' @param pb optional progress bar object to pass in and use to report progress
+#' @template param-split-layout
+#' @template param-has-legend
 #' @export
-prepare_display <- function(base_path, id, self_contained = FALSE, jsonp = TRUE, pb = NULL) {
+prepare_display <- function(
+  base_path,
+  id,
+  self_contained = FALSE,
+  jsonp = TRUE,
+  pb = NULL,
+  split_layout = FALSE,
+  has_legend = FALSE
+) {
 
   # write the id to a plain text file
   cat(id, file = file.path(base_path, "id"))
@@ -237,7 +304,14 @@ prepare_display <- function(base_path, id, self_contained = FALSE, jsonp = TRUE,
   if (!is.null(pb))
     pb$tick(tokens = list(what = "writing app config  "))
 
-  write_config(base_path, id = id, self_contained = self_contained, jsonp = jsonp)
+  write_config(
+    base_path,
+    id = id,
+    self_contained = self_contained,
+    jsonp = jsonp,
+    split_layout = split_layout,
+    has_legend = has_legend
+  )
 }
 
 #' Update Trelliscope app display list file
@@ -290,8 +364,10 @@ update_display_list <- function(base_path, jsonp = TRUE) {
 #' @param id a unique id for the application
 #' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param jsonp should json for app config be jsonp (TRUE) or json (FALSE)?
+#' @template param-split-layout
+#' @template param-has-legend
 #' @export
-write_config <- function(base_path, id, self_contained = FALSE, jsonp = TRUE) {
+write_config <- function(base_path, id, self_contained = FALSE, jsonp = TRUE, split_layout = FALSE, has_legend = FALSE) {
   cfg <- as.character(jsonlite::toJSON(
     list(
       display_base = ifelse(self_contained, "__self__", "displays"),
@@ -299,7 +375,9 @@ write_config <- function(base_path, id, self_contained = FALSE, jsonp = TRUE) {
       cog_server = list(
         type = ifelse(jsonp, "jsonp", "json"),
         info = list(base = ifelse(self_contained, "__self__", "displays"))
-      )
+      ),
+      split_layout = split_layout,
+      has_legend = has_legend
     ),
     pretty = TRUE,
     auto_unbox = TRUE

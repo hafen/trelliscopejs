@@ -4,18 +4,21 @@
 \alias{facet_trelliscope}
 \title{Facet Trelliscope}
 \usage{
-facet_trelliscope(..., nrow = 1, ncol = 1, name = NULL,
-  group = "common", desc = "", md_desc = "", path = NULL,
-  height = 500, width = 500, state = NULL, jsonp = TRUE,
-  as_plotly = FALSE, plotly_args = NULL, self_contained = FALSE,
-  thumb = TRUE)
+facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
+  name = NULL, group = "common", desc = ggplot2::waiver(),
+  md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
+  state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
+  self_contained = FALSE, thumb = TRUE, auto_cog_data = TRUE,
+  split_layout = TRUE)
 }
 \arguments{
-\item{...}{all parameters passed onto \code{ggplot2::\link[ggplot2]{facet_wrap}}}
+\item{facets}{formula to facet the panels on. Similar to \code{ggplot2::\link[ggplot2]{facet_wrap}}'s \code{facets}}
 
 \item{nrow}{the number of rows of panels to display by default}
 
 \item{ncol}{the number of columns of panels to display by default}
+
+\item{scales}{should Scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.}
 
 \item{name}{name of the display}
 
@@ -42,6 +45,10 @@ facet_trelliscope(..., nrow = 1, ncol = 1, name = NULL,
 \item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
 
 \item{thumb}{should a thumbnail be created?}
+
+\item{auto_cog_data}{boolean that determines if automatic cognostics are produces}
+
+\item{split_layout}{boolean that determines if the layout is split into components like a facet_grid vs. individual panels like facet_wrap.  Only applies to ggplot2 plot objects.}
 }
 \description{
 Facet Trelliscope
@@ -77,4 +84,3 @@ qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
   ylim(7, 37) + theme_bw()
 }
 }
-

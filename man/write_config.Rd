@@ -4,7 +4,8 @@
 \alias{write_config}
 \title{Write Trelliscope app configuration file}
 \usage{
-write_config(base_path, id, self_contained = FALSE, jsonp = TRUE)
+write_config(base_path, id, self_contained = FALSE, jsonp = TRUE,
+  split_layout = FALSE, has_legend = FALSE)
 }
 \arguments{
 \item{base_path}{the base directory of the trelliscope application}
@@ -14,8 +15,11 @@ write_config(base_path, id, self_contained = FALSE, jsonp = TRUE)
 \item{self_contained}{should the Trelliscope display be a self-contained html document?}
 
 \item{jsonp}{should json for app config be jsonp (TRUE) or json (FALSE)?}
+
+\item{split_layout}{boolean that determines if the layout is split into components like a facet_grid vs. individual panels like facet_wrap.  Only applies to ggplot2 plot objects.}
+
+\item{has_legend}{should a legend be reported for split_layout}
 }
 \description{
 Write Trelliscope app configuration file
 }
-

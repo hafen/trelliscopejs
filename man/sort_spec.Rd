@@ -14,4 +14,3 @@ sort_spec(name, dir = "asc")
 \description{
 Specify how a display should be sorted
 }
-

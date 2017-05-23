@@ -18,4 +18,3 @@ Compute automatic cognostics
 \seealso{
 \code{\link{trelliscope}}
 }
-

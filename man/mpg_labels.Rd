@@ -12,4 +12,3 @@ mpg_labels
 Labels for ggplot2 "mpg" data
 }
 \keyword{datasets}
-

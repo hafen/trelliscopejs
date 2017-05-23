@@ -23,4 +23,3 @@ as_cognostics(x, cond_cols, key_col = NULL, cog_desc = NULL,
 \description{
 Cast a data frame as a cognostics data frame
 }
-

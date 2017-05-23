@@ -5,7 +5,7 @@
 \title{Set up all auxilliary files needed for a Trelliscope app}
 \usage{
 prepare_display(base_path, id, self_contained = FALSE, jsonp = TRUE,
-  pb = NULL)
+  pb = NULL, split_layout = FALSE, has_legend = FALSE)
 }
 \arguments{
 \item{base_path}{the base directory of the trelliscope application}
@@ -17,8 +17,11 @@ prepare_display(base_path, id, self_contained = FALSE, jsonp = TRUE,
 \item{jsonp}{should json for display list and app config be jsonp (TRUE) or json (FALSE)?}
 
 \item{pb}{optional progress bar object to pass in and use to report progress}
+
+\item{split_layout}{boolean that determines if the layout is split into components like a facet_grid vs. individual panels like facet_wrap.  Only applies to ggplot2 plot objects.}
+
+\item{has_legend}{should a legend be reported for split_layout}
 }
 \description{
 Set up all auxilliary files needed for a Trelliscope app
 }
-

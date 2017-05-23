@@ -14,4 +14,3 @@ update_display_list(base_path, jsonp = TRUE)
 \description{
 Update Trelliscope app display list file
 }
-

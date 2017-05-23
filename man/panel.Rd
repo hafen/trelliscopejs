@@ -26,4 +26,3 @@ ggplot2::mpg \%>\%
         ly_points(cty, hwy)))
 }
 }
-

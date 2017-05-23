@@ -54,4 +54,3 @@ iris \%>\%
   trelliscope(name = "iris")
 }
 }
-

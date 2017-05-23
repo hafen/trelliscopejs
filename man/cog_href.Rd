@@ -34,4 +34,3 @@ iris \%>\%
 \seealso{
 \code{\link{cog}}
 }
-

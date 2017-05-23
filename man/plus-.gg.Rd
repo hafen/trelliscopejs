@@ -14,4 +14,3 @@
 \description{
 Add method for gg / facet_trelliscope
 }
-

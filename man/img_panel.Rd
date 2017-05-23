@@ -12,4 +12,3 @@ img_panel(x)
 \description{
 Cast a vector of URLs pointing to images as an image panel source
 }
-

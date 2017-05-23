@@ -13,4 +13,3 @@ Create interactive Trelliscope displays
 \examples{
 help(package = trelliscopejs)
 }
-
