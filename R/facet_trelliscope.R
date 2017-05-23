@@ -31,8 +31,11 @@ facet_trelliscope <- function(
   desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
   state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
   self_contained = FALSE, thumb = TRUE, auto_cog_data = TRUE,
-  split_layout = TRUE
+  split_layout = FALSE
 ) {
+
+  if (split_layout)
+    stop("Sorry - the viewer doesn't support rendering split layout yet...")
 
   if (as_plotly) {
     if (!requireNamespace("plotly", quietly = TRUE))
