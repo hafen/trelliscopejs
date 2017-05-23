@@ -7,7 +7,8 @@
 write_display_obj(cogdf, panel_example, base_path, id, name, group = "common",
   desc = "", height = 500, width = 500, md_desc = "", state = NULL,
   jsonp = TRUE, panel_img_col = NULL, self_contained = FALSE,
-  thumb = TRUE, pb = NULL)
+  thumb = TRUE, split_layout = FALSE, split_aspect = NULL,
+  has_legend = FALSE, pb = NULL)
 }
 \arguments{
 \item{cogdf}{a data frame of cognostics, prepared with \code{\link{as_cognostics}}}
@@ -39,6 +40,12 @@ write_display_obj(cogdf, panel_example, base_path, id, name, group = "common",
 \item{self_contained}{should the Trelliscope display be a self-contained html document?}
 
 \item{thumb}{should a thumbnail be created?}
+
+\item{split_layout}{boolean that determines if the layout is split into components like a facet_grid vs. individual panels like facet_wrap.  Only applies to ggplot2 plot objects.}
+
+\item{split_aspect}{list indicating aspect ratios of axes for a split layour.  Only applies to ggplot2 plot objects.}
+
+\item{has_legend}{should a legend be reported for split_layout}
 
 \item{pb}{optional progress bar object to pass in and use to report progress}
 }

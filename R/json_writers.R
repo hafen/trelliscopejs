@@ -90,13 +90,10 @@ write_panel <- function(plot_object, key, base_path, name, group = "common",
           jsonp, panel_path
         )
       }
-
     } else {
       # behave like a normal plot
       write_ggplot2_component(plot_object, width, height, key, jsonp, panel_path)
-
     }
-
 
   } else if (inherits(plot_object, c("trellis"))) {
     write_ggplot2_component(plot_object, width, height, key, jsonp, panel_path)
@@ -178,12 +175,16 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @param panel_img_col which column (if any) is a panel image column?
 #' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param thumb should a thumbnail be created?
+#' @template param-split-layout
+#' @template param-split-aspect
+#' @template param-has-legend
 #' @param pb optional progress bar object to pass in and use to report progress
 #' @importFrom digest digest
 #' @export
 write_display_obj <- function(cogdf, panel_example, base_path, id, name, group = "common",
   desc = "", height = 500, width = 500, md_desc = "", state = NULL, jsonp = TRUE,
-  panel_img_col = NULL, self_contained = FALSE, thumb = TRUE, pb = NULL) {
+  panel_img_col = NULL, self_contained = FALSE, thumb = TRUE, split_layout = FALSE,
+  split_aspect = NULL, has_legend = FALSE, pb = NULL) {
 
   display_path <- file.path(base_path, "displays", group, name)
   panel_path <- file.path(display_path, ifelse(jsonp, "jsonp", "json"))
@@ -223,6 +224,9 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
     n = nrow(cogdf),
     height = height,
     width = width,
+    has_legend = has_legend,
+    split_layout = split_layout,
+    split_aspect = split_aspect,
     keySig = digest::digest(sort(cogdf$panelKey)), # nolint
     cogInterface = list(name = name, group = group, type = "JSON"),
     panelInterface = panelInterface,
@@ -283,17 +287,13 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
 #' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param jsonp should json for display list and app config be jsonp (TRUE) or json (FALSE)?
 #' @param pb optional progress bar object to pass in and use to report progress
-#' @template param-split-layout
-#' @template param-has-legend
 #' @export
 prepare_display <- function(
   base_path,
   id,
   self_contained = FALSE,
   jsonp = TRUE,
-  pb = NULL,
-  split_layout = FALSE,
-  has_legend = FALSE
+  pb = NULL
 ) {
 
   # write the id to a plain text file
@@ -308,9 +308,7 @@ prepare_display <- function(
     base_path,
     id = id,
     self_contained = self_contained,
-    jsonp = jsonp,
-    split_layout = split_layout,
-    has_legend = has_legend
+    jsonp = jsonp
   )
 }
 
