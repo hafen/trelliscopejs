@@ -51,16 +51,21 @@ Note that \code{self_contained} is severely limiting and should only be used in 
 \examples{
 \dontrun{
 library(dplyr)
+library(tidyr)
+library(purrr)
 library(rbokeh)
 library(ggplot2)
 
-# dplyr + rbokeh
+# tidyverse + rbokeh
 d <- mpg \%>\%
   group_by(manufacturer, class) \%>\%
-  summarise(
-    panel = panel(
-      figure(xlab = "City mpg", ylab = "Highway mpg") \%>\%
-        ly_points(cty, hwy)))
+  nest() \%>\%
+  mutate(
+    mean_city_mpg = map_dbl(data, ~ mean(.$cty)),
+    panel = map_plot(data, ~
+      figure(., xlab = "City mpg", ylab = "Highway mpg") \%>\%
+        ly_points(cty, hwy))
+  )
 
 d \%>\% trelliscope(name = "city_vs_highway_mpg")
 
@@ -82,44 +87,57 @@ d \%>\%
   arrange(-mean_city_mpg) \%>\%
   trelliscope(name = "city_vs_highway_mpg")
 
-# dplyr + ggplot2
+# tidyverse + ggplot2
 mpg \%>\%
   group_by(manufacturer, class) \%>\%
-  summarise(
-    panel = panel(
-      qplot(cty, hwy) + xlab("cty") + ylab("hwy") +
+  nest() \%>\%
+  mutate(
+    panel = map_plot(data, ~
+      qplot(cty, hwy, data = .) + xlab("cty") + ylab("hwy") +
         xlim(7, 37) + ylim(9, 47) + theme_bw())) \%>\%
-  trelliscope(name = "dplyr_gg")
+  trelliscope(name = "tidy_gg")
 
 # computing additional cognostics
-mpg \%>\%
+mpg_cog <- mpg \%>\%
   group_by(manufacturer, class) \%>\%
-  summarise(
-    mean_city_mpg = mean(cty),
-    mean_hwy_mpg = mean(hwy),
-    most_common_drv = tail(names(table(drv)), 1),
-    panel = panel(
-      figure(xlab = "City mpg", ylab = "Highway mpg",
+  nest() \%>\%
+  mutate(
+    cogs = map_cog(data, ~ data_frame(
+      mean_city_mpg = mean(.$cty),
+      mean_hwy_mpg = mean(.$hwy),
+      most_common_drv = tail(names(table(.$drv)), 1)
+    )),
+    panel = map_plot(data, ~
+      figure(., xlab = "City mpg", ylab = "Highway mpg",
         xlim = c(9, 47), ylim = c(7, 37)) \%>\%
         ly_points(cty, hwy,
-          hover = data_frame(model = paste(year, model),
-          cty = cty, hwy = hwy)))) \%>\%
+          hover = list(year, model))
+    )
+  )
+
+mpg_cog \%>\%
   trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
 
 # computing additional cognostics explicitly using cog()
 # so we can specify descriptions, etc.
-mpg \%>\%
+mpg_cog2 <- mpg \%>\%
   group_by(manufacturer, class) \%>\%
-  summarise(
-    mean_city_mpg = cog(mean(cty), desc = "Mean city mpg"),
-    mean_hwy_mpg = cog(mean(hwy), desc = "Mean highway mpg"),
-    most_common_drv = cog(tail(names(table(drv)), 1), desc = "Most common drive type"),
-    panel = panel(
-      figure(xlab = "City mpg", ylab = "Highway mpg",
+  nest() \%>\%
+  mutate(
+    cogs = map_cog(data, ~ data_frame(
+      mean_city_mpg = cog(mean(.$cty), desc = "Mean city mpg"),
+      mean_hwy_mpg = cog(mean(.$hwy), desc = "Mean highway mpg"),
+      most_common_drv = cog(tail(names(table(.$drv)), 1), desc = "Most common drive type")
+    )),
+    panel = map_plot(data, ~
+      figure(., xlab = "City mpg", ylab = "Highway mpg",
         xlim = c(9, 47), ylim = c(7, 37)) \%>\%
         ly_points(cty, hwy,
-          hover = data_frame(model = paste(year, model),
-          cty = cty, hwy = hwy)))) \%>\%
+          hover = list(year, model))
+    )
+  )
+
+mpg_cog2 \%>\%
   trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
 }
 }

@@ -9,7 +9,7 @@ facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
   md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
   state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
   self_contained = FALSE, thumb = TRUE, auto_cog_data = TRUE,
-  split_layout = TRUE)
+  split_layout = FALSE)
 }
 \arguments{
 \item{facets}{formula to facet the panels on. Similar to \code{ggplot2::\link[ggplot2]{facet_wrap}}'s \code{facets}}
@@ -69,18 +69,18 @@ qplot(cty, hwy, data = mpg) +
 mpg <- set_labels(mpg, mpg_labels)
 
 qplot(cty, hwy, data = mpg) +
-  xlim(7, 37) + ylim(9, 47) + theme_bw() +
+  theme_bw() +
   facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4)
 
 # using plotly
 library(plotly)
 qplot(cty, hwy, data = mpg) +
-  xlim(7, 37) + ylim(9, 47) + theme_bw() +
+  theme_bw() +
   facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4, as_plotly = TRUE)
 
 qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
   facet_trelliscope(~ class, ncol = 7, height = 800, width = 200,
     state = list(sort = list(sort_spec("cty_mean")))) +
-  ylim(7, 37) + theme_bw()
+  theme_bw()
 }
 }

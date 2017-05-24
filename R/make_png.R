@@ -67,7 +67,7 @@ make_png <- function(p, file, width, height, orig_width = width, res = 72,
   # res = res * pixelratio,
   if (!file.exists(file)) {
     pngfun(filename = file, width = width * pixelratio, height = height * pixelratio,
-      pointsize = pointsize)
+      pointsize = units$pointsize)
     blank_image("no panel")
     grDevices::dev.off()
   }
