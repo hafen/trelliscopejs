@@ -17,7 +17,7 @@ by_row_cog(.d, ..f, .to = NULL)
 Apply a function to each row of a data frame and return a data frame with new column of cognostics
 }
 \details{
-See \code{\link[purrr]{by_row}}
+See \code{\link[purrrlyr]{by_row}}
 }
 \examples{
 \dontrun{

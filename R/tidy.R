@@ -132,7 +132,7 @@ pmap_plot <- function(.l, .f, ...) {
 #' @param .d A data frame.
 #' @param ..f A function to apply to each row. It should return a valid panel object (such as a ggplot2 / lattice / htmlwidget object).
 #' @param .to Name of output column (defaults to "panel").
-#' @details See \code{\link[purrr]{by_row}}
+#' @details See \code{\link[purrrlyr]{by_row}}
 #' @examples
 #' \dontrun{
 #' library(tidyr)
@@ -258,7 +258,7 @@ pmap_cog <- function(.l, .f, ...) {
 #' @param .d A data frame.
 #' @param ..f A function to apply to each row. It should return a single-row data frame of cognostics
 #' @param .to Name of output column (defaults to "cogs" or if "cogs" exists, "cogs1", etc.).
-#' @details See \code{\link[purrr]{by_row}}
+#' @details See \code{\link[purrrlyr]{by_row}}
 #' @examples
 #' \dontrun{
 #' library(tidyr)

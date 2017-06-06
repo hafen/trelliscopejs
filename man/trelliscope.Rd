@@ -77,10 +77,11 @@ d \%>\% trelliscope(name = "city_vs_highway_mpg", self_contained = TRUE)
 d \%>\% trelliscope(name = "city_vs_highway_mpg", nrow = 2, ncol = 3)
 
 # set the output path for where files will be stored
-d \%>\% trelliscope(name = "city_vs_highway_mpg", path = "mydisplays")
+my_displays <- tempfile()
+d \%>\% trelliscope(name = "city_vs_highway_mpg", path = my_displays)
 
 # multiple displays can be added to the same path and all will be available in the viewer
-d \%>\% trelliscope(name = "city_vs_highway_mpg2", path = "mydisplays")
+d \%>\% trelliscope(name = "city_vs_highway_mpg2", path = my_displays)
 
 # ordering the data frame will set default sort order of the display
 d \%>\%
