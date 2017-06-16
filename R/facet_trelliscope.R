@@ -479,6 +479,7 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
 
       plot_scales <- scale_plot_built$layout$panel_scales
       test_scale <- plot_scales[[scale_info$name]][[1]]
+      scale_info$scale <- test_scale
 
       if (inherits(test_scale, "ScaleDiscrete")) {
         scale_info$data_type <- "discrete"
@@ -565,9 +566,20 @@ add_trelliscope_scale <- function(p, axis_name, scale_info, showWarnings = FALSE
   if (scale_type != "free") {
 
     if (scale_info$data_type == "continuous") {
-      scale_fn <- switch(axis_name,
-        "x" = scale_x_continuous,
-        "y" = scale_y_continuous,
+      # scale_fn <- switch(axis_name,
+      #   "x" = scale_x_continuous,
+      #   "y" = scale_y_continuous,
+      # )
+      #
+      scale_fn <- switch(class(scale_info$scale)[1],
+        "ScaleContinuousPosition" =
+          switch(axis_name, "x" = scale_x_continuous, "y" = scale_y_continuous),
+        "ScaleContinuousTime" =
+          switch(axis_name, "x" = scale_x_time, "y" = scale_y_time),
+        "ScaleContinuousDate" =
+          switch(axis_name, "x" = scale_x_date, "y" = scale_y_date),
+        "ScaleContinuousDatetime" =
+          switch(axis_name, "x" = scale_x_datetime, "y" = scale_y_datetime)
       )
 
       if (scale_type == "free") {
@@ -575,7 +587,8 @@ add_trelliscope_scale <- function(p, axis_name, scale_info, showWarnings = FALSE
         p <- p + scale_fn(limits = c(NA, NA))
         # "Use NA to refer to the existing minimum or maximum."
       } else if (scale_type == "same") {
-        p <- p + scale_fn(limits = scale_info$range)
+        # copy the same scale for each panel
+        p <- p + scale_info$scale$clone()
       } else if (scale_type == "sliced") {
         eval(p$mapping[[axis_name]], envir = p$data) %>%
           range(na.rm = TRUE) ->
