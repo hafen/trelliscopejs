@@ -13,7 +13,7 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param state the initial state the display will open in
 #' @param nrow the number of rows of panels to display by default
 #' @param ncol the number of columns of panels to display by default
-#' @param scales should Scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.
+#' @param scales should scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
 #' @param as_plotly should the panels be written as plotly objects?
 #' @param plotly_args optinal named list of arguments to send to \code{ggplotly}
@@ -25,6 +25,7 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @export
 #' @example man-roxygen/ex-facet_trelliscope.R
 #' @importFrom ggplot2 facet_wrap
+#' @importFrom utils head
 facet_trelliscope <- function(
   facets,
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
@@ -147,8 +148,9 @@ print.facet_trelliscope <- function(x, ...) {
   data$.id <- seq_len(nrow(data))
 
   cog_desc <- attr(data$auto_cogs, "cog_desc")
-
-  cog_df <- data %>% select(-one_of("data")) %>% tidyr::unnest()
+  # with dplyr 0.7, unnest can take result of "head" for some reason, but not original data...
+  cog_df <- data %>% select(-one_of("data")) %>%
+    utils::head(nrow(data)) %>% tidyr::unnest()
   cog_df <- as_cognostics(cog_df, cond_cols = facet_cols, cog_desc = cog_desc)
 
   # get ranges of all data

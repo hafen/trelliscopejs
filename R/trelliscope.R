@@ -104,18 +104,25 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
     })]
     if (auto_cog) {
       for (a in needs_auto) {
-        cogs[[length(cogs) + 1]] <- x[a] %>%
+        tmp <- x[a] %>%
           auto_cogs() %>%
-          select(-one_of(a)) %>%
-          unnest() %>%
+          dplyr::select(-one_of(a))
+        # with dplyr 0.7, unnest can take result of "head" for some reason
+        # but not original data...
+        cogs[[length(cogs) + 1]] <- utils::head(tmp, nrow(tmp)) %>%
+          tidyr::unnest() %>%
           as_cognostics(needs_key = FALSE, needs_cond = FALSE)
       }
     }
+
     no_needs_auto <- setdiff(usable, needs_auto)
     for (a in no_needs_auto) {
       one_row_attrs <- lapply(x[a][[1]][[1]], attributes)
-      tmp <- x[a] %>%
-        unnest()
+      # with dplyr 0.7, unnest can take result of "head" for some reason
+      # but not original data...
+      # suppress warning about attributes being lost
+      tmp <- suppressWarnings(utils::head(x[a], nrow(x[a])) %>%
+        tidyr::unnest())
       for (nm in names(tmp)) {
         cur_attrs <- one_row_attrs[[nm]]
         attributes(tmp[[nm]]) <- cur_attrs

@@ -18,7 +18,7 @@ facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
 
 \item{ncol}{the number of columns of panels to display by default}
 
-\item{scales}{should Scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.}
+\item{scales}{should scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.}
 
 \item{name}{name of the display}
 
