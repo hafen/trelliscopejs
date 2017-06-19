@@ -315,7 +315,7 @@ upgrade_scales_param <- function(scales, plot_facet) {
 
   list(
     x_info = list(name = "x", scale_type = scales[1]),
-    y_info = list(name = "y", scale_type = scales[1]))
+    y_info = list(name = "y", scale_type = scales[2]))
 }
 
 plot_gtable <- function(p) {
@@ -473,10 +473,6 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
     scale_plot_built <- ggplot_build(scale_plot)
 
     calculate_scale_info <- function(scale_info) {
-      if (scale_info$scale_type == "free") {
-        return(scale_info)
-      }
-
       plot_scales <- scale_plot_built$layout$panel_scales
       test_scale <- plot_scales[[scale_info$name]][[1]]
       scale_info$scale <- test_scale
@@ -489,6 +485,7 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
             "facet_trelliscope does not know how to handle a 'sliced' scale for discrete data. ",
             "Using 'free' type"
           )
+          scale_info$scale_type <- "free"
         } else {
           # isn't free, so can take first test_scale and reutrn range values
           scale_info$levels <- test_scale$range$range
@@ -583,12 +580,16 @@ add_trelliscope_scale <- function(p, axis_name, scale_info, showWarnings = FALSE
       )
 
       if (scale_type == "free") {
-        # do nothing
-        p <- p + scale_fn(limits = c(NA, NA))
         # "Use NA to refer to the existing minimum or maximum."
+        p <- p + scale_fn(limits = c(NA, NA))
+
       } else if (scale_type == "same") {
-        # copy the same scale for each panel
-        p <- p + scale_info$scale$clone()
+        # have to make the scale and set the information manually as dates are formatted as numeric
+        # p <- p + scale_fn(limits = c(NA, NA))
+        scale_item <- scale_fn()
+        scale_item$limits <- scale_info$range
+        p <- p + scale_item
+
       } else if (scale_type == "sliced") {
         eval(p$mapping[[axis_name]], envir = p$data) %>%
           range(na.rm = TRUE) ->
