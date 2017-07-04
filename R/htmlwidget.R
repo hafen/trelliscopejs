@@ -179,7 +179,7 @@ trelliscope_html_print <- function(html, www_dir = NULL, background = "white",
 #' @name Trelliscope-shiny
 #'
 #' @export
-trelliscopeOutput <- function(outputId, width = "100%", height = "400px"){
+trelliscopeOutput <- function(outputId, width = "100%", height = "400px") {
   htmlwidgets::shinyWidgetOutput(outputId, "trelliscopejs_widget", width, height,
     package = "trelliscopejs")
 }

@@ -69,6 +69,9 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
   if (in_knitr)
     spa <- FALSE # results are inline with others
 
+  if (shiny_running())
+    spa <- FALSE
+
   orig_path <- path
 
   if (is.null(path)) {
@@ -312,6 +315,21 @@ encode_png <- function(file) {
       readBin(file, "raw", n = file.info(file)$size)),
     sep = "")
 }
+
+shiny_running <- function() {
+  frames <- sys.frames()
+  calls <- lapply(sys.calls(), `[[`, 1)
+  call_name <- function(call)
+    if (is.function(call)) "<closure>" else deparse(call)
+  call_names <- vapply(calls, call_name, character(1))
+  target_call <- grep("^runApp$", call_names)
+  if (length(target_call) == 0)
+    return(FALSE)
+  target_frame <- frames[[target_call]]
+  namespace_frame <- parent.env(target_frame)
+  isNamespace(namespace_frame) && environmentName(namespace_frame) == "shiny"
+}
+
 
 # # useful if you want to use dplyr group_by to get to list of panels
 # to_list <- function(x) {
