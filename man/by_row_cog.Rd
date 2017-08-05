@@ -2,7 +2,7 @@
 % Please edit documentation in R/tidy.R
 \name{by_row_cog}
 \alias{by_row_cog}
-\title{Apply a function to each row of a data frame and return a data frame with new column of cognostics}
+\title{Apply a function to each row of a data frame and return a data frame with a new column of cognostics}
 \usage{
 by_row_cog(.d, ..f, .to = NULL)
 }
@@ -14,7 +14,7 @@ by_row_cog(.d, ..f, .to = NULL)
 \item{.to}{Name of output column (defaults to "cogs" or if "cogs" exists, "cogs1", etc.).}
 }
 \description{
-Apply a function to each row of a data frame and return a data frame with new column of cognostics
+Apply a function to each row of a data frame and return a data frame with a new column of cognostics
 }
 \details{
 See \code{\link[purrrlyr]{by_row}}

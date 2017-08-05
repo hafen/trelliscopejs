@@ -5,6 +5,10 @@ library(ggplot2)
 qplot(cty, hwy, data = mpg) +
   facet_trelliscope(~ class + manufacturer)
 
+# don't prerender the panels and have them served from R
+qplot(cty, hwy, data = mpg) +
+  facet_trelliscope(~ class + manufacturer, prerender = FALSE)
+
 # not required, but if you set labels, these will be added as
 # descriptions to the cognostics that are automatically computed
 mpg <- set_labels(mpg, mpg_labels)

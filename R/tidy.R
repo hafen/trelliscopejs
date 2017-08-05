@@ -1,35 +1,7 @@
-#' Panels Wrapper Function
-#'
-#' @param .x a list or atomic vector (see \code{\link[purrr]{map}} for details)
-#' @param .f a function, formula, or atomic vector (see \code{\link[purrr]{map}} for details)
-#' @param ... additional arguments passed on to .f (see \code{\link[purrr]{map}} for details)
-#' @details See \code{\link[purrr]{map}}
-#' @examples
-#' \dontrun{
-#' library(dplyr)
-#' library(tidyr)
-#' ggplot2::mpg %>%
-#'   group_by(manufacturer, class) %>%
-#'   nest() %>%
-#'   mutate(panel = map_plot(data,
-#'     ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
-#'         ly_points(cty, hwy, data = .x))) %>%
-#'   trelliscope(name = "city_vs_highway_mpg")
-#' }
-#' @export
-panels <- function(.x, .f, ...) {
-  warning("Note: The 'panels' function will be deprecated in the next release of this ",
-    "package. Please use the equivalent 'map_plot' instead.")
-  structure(
-    purrr::map(.x, .f, ...),
-    class = c("trelliscope_panels", "list")
-  )
-}
-
 #' Apply a function to each element of a vector and return a vector of plots
 #'
 #' @param .x a list or atomic vector (see \code{\link[purrr]{map}} for details)
-#' @param .f a function, formula, or atomic vector (see \code{\link[purrr]{map}} for details)
+#' @param .f a function, formula, or atomic vector that returns a plot object (see \code{\link[purrr]{map}} for details)
 #' @param ... additional arguments passed on to .f (see \code{\link[purrr]{map}} for details)
 #' @details See \code{\link[purrr]{map}}
 #' @examples
@@ -127,7 +99,7 @@ pmap_plot <- function(.l, .f, ...) {
   )
 }
 
-#' Apply a function to each row of a data frame and return a data frame with new column of plots
+#' Apply a function to each row of a data frame and return a data frame with a new column of plots
 #'
 #' @param .d A data frame.
 #' @param ..f A function to apply to each row. It should return a valid panel object (such as a ggplot2 / lattice / htmlwidget object).
@@ -141,7 +113,7 @@ pmap_plot <- function(.l, .f, ...) {
 #' iris %>%
 #'   nest(-Species) %>%
 #'   mutate(mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x))) %>%
-#'   by_row_panel(function(x) {
+#'   by_row_plot(function(x) {
 #'     figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
 #'       ly_points(x$data[[1]]$Sepal.Width, x$data[[1]]$Sepal.Length) %>%
 #'       ly_abline(x$mod[[1]])
@@ -153,38 +125,6 @@ by_row_plot <- function(.d, ..f, .to = "panel") {
   res <- purrrlyr::by_row(.d = .d, ..f = ..f, .to = .to)
   class(res[[.to]]) <- c("trelliscope_panels", "list")
   res
-}
-
-#' Cogs Wrapper Function
-#'
-#' @param .x a list or atomic vector (see \code{\link[purrr]{map}} for details)
-#' @param .f a function, formula, or atomic vector (see \code{\link[purrr]{map}} for details)
-#' @param ... additional arguments passed on to .f (see \code{\link[purrr]{map}} for details)
-#' @export
-#' @details See \code{\link[purrr]{map}}
-#' @examples
-#' \dontrun{
-#' library(dplyr)
-#' library(tidyr)
-#' ggplot2::mpg %>%
-#'   group_by(manufacturer, class) %>%
-#'   nest() %>%
-#'   mutate(
-#'     additional_cogs = map_cog(data,
-#'       ~ data_frame(
-#'         max_city_mpg = cog(max(.x$cty), desc = "Max city mpg"),
-#'         min_city_mpg = cog(min(.x$cty), desc = "Min city mpg"))),
-#'     panel = map_plot(data, ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
-#'       ly_points(cty, hwy, data = .x))) %>%
-#'   trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
-#' }
-cogs <- function(.x, .f, ...) {
-  warning("Note: The 'cogs' function will be deprecated in the next release of this ",
-    "package. Please use the equivalent 'map_cog' instead.")
-  structure(
-    purrr::map(.x, .f, ...),
-    class = c("trelliscope_cogs", "list")
-  )
 }
 
 #' Apply a function to each element of a vector and return a vector of cognostics data frames
@@ -253,7 +193,7 @@ pmap_cog <- function(.l, .f, ...) {
   )
 }
 
-#' Apply a function to each row of a data frame and return a data frame with new column of cognostics
+#' Apply a function to each row of a data frame and return a data frame with a new column of cognostics
 #'
 #' @param .d A data frame.
 #' @param ..f A function to apply to each row. It should return a single-row data frame of cognostics

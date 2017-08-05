@@ -320,7 +320,7 @@ shiny_running <- function() {
   frames <- sys.frames()
   calls <- lapply(sys.calls(), `[[`, 1)
   call_name <- function(call)
-    if (is.function(call)) "<closure>" else deparse(call)
+    if (is.function(call)) "<closure>" else deparse(call)[1]
   call_names <- vapply(calls, call_name, character(1))
   target_call <- grep("^runApp$", call_names)
   if (length(target_call) == 0)

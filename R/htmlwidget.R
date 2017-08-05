@@ -1,15 +1,17 @@
-trelliscope_widget <- function(id, config_info, www_dir, latest_display,
-  dependencies = NULL, self_contained, spa = TRUE, width = NULL, height = NULL,
-  sc_deps = NULL) {
+trelliscope_widget <- function(data, id, config_info, www_dir, latest_display,
+  dependencies = NULL, self_contained, prerendered = TRUE, spa = TRUE,
+  width = NULL, height = NULL, sc_deps = NULL) {
 
   # TODO: warn if width or height are too small
 
   # forward options using x
   x <- list(
+    data = data,
     id = id,
     config_info = config_info,
     self_contained = self_contained,
     latest_display = latest_display,
+    prerendered = prerendered,
     spa = spa,
     in_knitr = getOption("knitr.in.progress", FALSE),
     in_notebook = in_rmarkdown_notebook())
@@ -132,9 +134,30 @@ print.trelliscopejs_widget <- function(x, ..., view = interactive()) {
   # TODO: check if www_dir is in tempdir() or not and handle / warn appropriately
   # based on self_contained, etc.
 
+  # TODO!!! Need to sort out collections of displays vs. individual displays
+  # Should all be forced to use the same mode (json vs. jsonp, promise)?
+  #   Maybe whatever the first display uses is set, but panel mode can vary across displays
+  # Do we save the actual data?
+  # The panel server should accomodate different data sources for different displays
+  # Add a view function? So you can view(p) or view(p, "iris")
+  #   To do this, need to add "name"/"group" option to trelliscopeApp
+  # Should we store all this stuff as .rda files?
+  # Should we
+  if (!x$x$prerendered) {
+    # if all panels have already been rendered, change the mode and don't launch server
+    trelliscope_dir(x)
+  }
+
   # call html_print with the viewer
   el_tags <- htmltools::as.tags(x, standalone = FALSE)
   trelliscope_html_print(el_tags, www_dir = www_dir, viewer = if (view) viewerFunc)
+
+  if (view && !x$x$prerendered) {
+    if (x$x$in_notebook)
+      stop("Can't use panel promises if inside a notebook.", call. = FALSE)
+
+    launch_panel_server(x)
+  }
 
   # return value
   invisible(x)

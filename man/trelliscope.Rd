@@ -7,7 +7,7 @@
 trelliscope(x, name, group = "common", panel_col = NULL, desc = "",
   md_desc = "", path, height = 500, width = 500, auto_cog = TRUE,
   state = NULL, nrow = 1, ncol = 1, jsonp = TRUE,
-  self_contained = FALSE, thumb = FALSE)
+  self_contained = FALSE, thumb = FALSE, panel_port = 8000)
 }
 \arguments{
 \item{x}{an object to create at trelliscope display for}
@@ -41,6 +41,8 @@ trelliscope(x, name, group = "common", panel_col = NULL, desc = "",
 \item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
 
 \item{thumb}{should a thumbnail be created?}
+
+\item{panel_port}{port to serve panels from if using panel promises}
 }
 \description{
 Create a Trelliscope Display

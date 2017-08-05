@@ -175,6 +175,7 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @param panel_img_col which column (if any) is a panel image column?
 #' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param thumb should a thumbnail be created?
+#' @param panel_port port to serve panels from if using panel promises
 #' @template param-split-layout
 #' @template param-split-aspect
 #' @template param-has-legend
@@ -183,8 +184,9 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @export
 write_display_obj <- function(cogdf, panel_example, base_path, id, name, group = "common",
   desc = "", height = 500, width = 500, md_desc = "", state = NULL, jsonp = TRUE,
-  panel_img_col = NULL, self_contained = FALSE, thumb = TRUE, split_layout = FALSE,
-  split_aspect = NULL, has_legend = FALSE, pb = NULL) {
+  panel_img_col = NULL, self_contained = FALSE, prerendered = TRUE, thumb = TRUE,
+  split_layout = FALSE, split_aspect = NULL, has_legend = FALSE, panel_port = 8000,
+  pb = NULL) {
 
   display_path <- file.path(base_path, "displays", group, name)
   panel_path <- file.path(display_path, ifelse(jsonp, "jsonp", "json"))
@@ -203,10 +205,16 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
   if (!is.null(pb))
     pb$tick(tokens = list(what = "building display obj"))
 
-  panelInterface <- list()
+  panelInterface <- list(
+    port = panel_port,
+    base = "displays",
+    split_layout = split_layout,
+    split_aspect = split_aspect,
+    has_legend = has_legend
+  )
+
   if (inherits(panel_example, "htmlwidget")) {
-    panelInterface$type <- ifelse(inherits(panel_example, "htmlwidget"),
-      "htmlwidget", "image")
+    panelInterface$type <- "htmlwidget"
     panelInterface$deps <- get_and_write_widget_deps(panel_example, base_path, self_contained)
   } else if (inherits(panel_example, "img_panel")) {
     panelInterface$type <- "image_src"
@@ -214,6 +222,10 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
   } else {
     panelInterface$type <- "image"
   }
+
+  panelInterface$mode <- ifelse(jsonp, "jsonp", "json")
+  if (!prerendered)
+    panelInterface$mode <- "promise"
 
   disp_obj <- list(
     name = name,
@@ -224,15 +236,19 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
     n = nrow(cogdf),
     height = height,
     width = width,
-    has_legend = has_legend,
-    split_layout = split_layout,
-    split_aspect = split_aspect,
+    jsonp = jsonp,
     keySig = digest::digest(sort(cogdf$panelKey)), # nolint
     cogInterface = list(name = name, group = group, type = "JSON"),
     panelInterface = panelInterface,
     cogInfo = get_cog_info(cogdf),
     cogDistns = get_cog_distributions(cogdf)
   )
+
+  # cog_server = list(
+  #   type = server_type,
+  #   info = list(base = ifelse(self_contained, "__self__", "displays"))
+  # )
+
 
   # TODO: add state validation
   if (is.null(state))
@@ -293,6 +309,7 @@ prepare_display <- function(
   id,
   self_contained = FALSE,
   jsonp = TRUE,
+  prerendered = TRUE,
   pb = NULL
 ) {
 
@@ -308,7 +325,8 @@ prepare_display <- function(
     base_path,
     id = id,
     self_contained = self_contained,
-    jsonp = jsonp
+    jsonp = jsonp,
+    prerendered = prerendered
   )
 }
 
@@ -365,17 +383,12 @@ update_display_list <- function(base_path, jsonp = TRUE) {
 #' @template param-split-layout
 #' @template param-has-legend
 #' @export
-write_config <- function(base_path, id, self_contained = FALSE, jsonp = TRUE, split_layout = FALSE, has_legend = FALSE) {
+write_config <- function(base_path, id, self_contained = FALSE, jsonp = TRUE, split_layout = FALSE, has_legend = FALSE, prerendered = TRUE) {
+
   cfg <- as.character(jsonlite::toJSON(
     list(
       display_base = ifelse(self_contained, "__self__", "displays"),
-      data_type = ifelse(jsonp, "jsonp", "json"),
-      cog_server = list(
-        type = ifelse(jsonp, "jsonp", "json"),
-        info = list(base = ifelse(self_contained, "__self__", "displays"))
-      ),
-      split_layout = split_layout,
-      has_legend = has_legend
+      data_type = ifelse(jsonp, "jsonp", "json")
     ),
     pretty = TRUE,
     auto_unbox = TRUE

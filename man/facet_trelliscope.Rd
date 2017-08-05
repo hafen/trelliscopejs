@@ -7,46 +7,48 @@
 facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
   name = NULL, group = "common", desc = ggplot2::waiver(),
   md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
-  state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
-  self_contained = FALSE, thumb = TRUE, auto_cog_data = TRUE,
-  split_layout = FALSE)
+  prerender = TRUE, state = NULL, jsonp = TRUE, as_plotly = FALSE,
+  plotly_args = NULL, self_contained = FALSE, thumb = TRUE,
+  auto_cog_data = TRUE, split_layout = FALSE)
 }
 \arguments{
-\item{facets}{formula to facet the panels on. Similar to \code{ggplot2::\link[ggplot2]{facet_wrap}}'s \code{facets}}
+\item{facets}{Formula to facet the panels on. Similar to \code{ggplot2::\link[ggplot2]{facet_wrap}}'s \code{facets}.}
 
-\item{nrow}{the number of rows of panels to display by default}
+\item{nrow}{The number of rows of panels to display by default.}
 
-\item{ncol}{the number of columns of panels to display by default}
+\item{ncol}{The number of columns of panels to display by default.}
 
-\item{scales}{should scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.}
+\item{scales}{Should scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.}
 
 \item{name}{name of the display}
 
-\item{group}{group that the display belongs to}
+\item{group}{Group that the display belongs to.}
 
-\item{desc}{description of the display}
+\item{desc}{Description of the display.}
 
-\item{md_desc}{optional string of markdown that will be shown in the viewer for additional context about the display}
+\item{md_desc}{Optional string of markdown that will be shown in the viewer for additional context about the display.}
 
-\item{path}{the base directory of the trelliscope application}
+\item{path}{The base directory of the trelliscope application.}
 
-\item{height}{height in pixels of each panel}
+\item{height}{Height in pixels of each panel.}
 
-\item{width}{width in pixels of each panel}
+\item{width}{Width in pixels of each panel.}
 
-\item{state}{the initial state the display will open in}
+\item{prerender}{Should the panels be prerendered? (see note)}
 
-\item{jsonp}{should json for display object be jsonp (TRUE) or json (FALSE)?}
+\item{state}{The initial state the display will open in.}
 
-\item{as_plotly}{should the panels be written as plotly objects?}
+\item{jsonp}{Should json for display object be jsonp (TRUE) or json (FALSE)?}
 
-\item{plotly_args}{optinal named list of arguments to send to \code{ggplotly}}
+\item{as_plotly}{Should the panels be written as plotly objects?}
 
-\item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
+\item{plotly_args}{Optional named list of arguments to send to \code{ggplotly}.}
 
-\item{thumb}{should a thumbnail be created?}
+\item{self_contained}{Should the Trelliscope display be a self-contained html document? (see note)}
 
-\item{auto_cog_data}{boolean that determines if automatic cognostics are produces}
+\item{thumb}{Should a thumbnail be created?}
+
+\item{auto_cog_data}{Boolean that determines if automatic cognostics are produces}
 
 \item{split_layout}{boolean that determines if the layout is split into components like a facet_grid vs. individual panels like facet_wrap.  Only applies to ggplot2 plot objects.}
 }
@@ -54,6 +56,8 @@ facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
 Facet Trelliscope
 }
 \note{
+There is a tradeoff with prerendering panels. Prerendering has the benefit that the output is fully self-contained and can be easily shared with others, whereas when you don't prerender an R server must be running in the background to generate the panels on demand. However, especially with ggplot2, when there are many panels it can take a long time to prerender.
+
 Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 }
 \examples{

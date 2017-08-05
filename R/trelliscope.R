@@ -16,18 +16,20 @@
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
+#' @param panel_port port to serve panels from if using panel promises
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 #' @example man-roxygen/ex-trelliscope.R
 #' @export
 trelliscope <- function(x, name, group = "common", panel_col = NULL, desc = "",
   md_desc = "", path, height = 500, width = 500, auto_cog = TRUE, state = NULL,
-  nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = FALSE)
+  nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = FALSE, panel_port = 8000)
   UseMethod("trelliscope")
 
 #' @export
 trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
   desc = "", md_desc = "", path = NULL, height = 500, width = 500, auto_cog = TRUE,
-  state = NULL, nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = FALSE) {
+  state = NULL, nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = FALSE,
+  panel_port = 8000) {
 
   classes <- unlist(lapply(x, function(a) class(a)[1]))
 
@@ -50,6 +52,7 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
     }
   }
 
+  prerendered <- TRUE
   if (is.null(panel_col) && is.null(panel_img_col)) {
     panel_col <- names(which(classes == "trelliscope_panels"))
 
@@ -58,7 +61,15 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
       message("Multiple columns containing panels were found. Using ", panel_col, ".",
         "To explicitly specify which column to use, use the argument 'panel_col'.")
     }
+
+    if (length(panel_col) == 0) {
+      panel_col <- names(which(classes == "trelliscope_ppanels"))
+      prerendered <- FALSE
+    }
   }
+
+  if (!prerendered)
+    x$panelKey <- as.character(x$panel)
 
   if (length(panel_col) != 1 && length(panel_img_col) != 1)
     stop_nice("A column containing the panel to be plotted must be specified",
@@ -137,13 +148,18 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
   params <- resolve_app_params(path, self_contained, jsonp, name, group,
     state, nrow, ncol, thumb)
 
-  keys <- apply(x[cond_cols], 1, function(a) paste(a, collapse = "_")) %>%
-    sanitize()
-  x$panelKey <- keys # nolint
+  if (!prerendered) {
+    x$panelKey <- as.character(x$panel)
+  } else {
+    x$panelKey <- apply(x[cond_cols], 1, function(a) paste(a, collapse = "_")) %>%
+        sanitize()
+  }
 
-  if (length(panel_img_col) == 0) {
+  if (!prerendered) {
+    panels <- list(get_ppanel(x, row = 1))
+  } else if (length(panel_img_col) == 0) {
     panels <- x[[panel_col]]
-    names(panels) <- keys
+    names(panels) <- x$panelKey
   } else {
     # don't need to write panels because they are supplied with img_panel
     panels <- list(structure(list(), class = "img_panel"))
@@ -155,7 +171,7 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
     total = 5 + length(panels), width = getOption("width") - 8)
   pb$tick(0, tokens = list(what = "calculating         "))
 
-  if (length(panel_img_col) == 0) {
+  if (length(panel_img_col) == 0 && prerendered) {
     write_panels(
       panels,
       base_path = params$path,
@@ -185,22 +201,32 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
     state = params$state,
     jsonp = params$jsonp,
     self_contained = params$self_contained,
+    prerendered = prerendered,
     thumb = params$thumb,
+    panel_port = panel_port,
     pb = pb
   )
 
-  prepare_display(params$path, params$id, params$self_contained, params$jsonp, pb = pb)
+  prepare_display(params$path, params$id, params$self_contained, params$jsonp,
+    prerendered, pb = pb)
 
-  trelliscope_widget(
+  res <- trelliscope_widget(
+    data = x,
     id = params$id,
     www_dir = params$www_dir,
     latest_display = list(name = params$name, group = params$group),
     self_contained = params$self_contained,
+    prerendered = prerendered,
     dependencies = get_dependencies(panels[[1]]),
     config_info = params$config_path,
     spa = params$spa,
     sc_deps = get_dependencies(panels[[1]])
   )
+
+  if (!self_contained)
+    print(res, view = FALSE)
+
+  res
 }
 
 # hacky way to get cond_cols:

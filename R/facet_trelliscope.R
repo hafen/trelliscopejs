@@ -1,26 +1,28 @@
-utils::globalVariables(c(".", "ggplotly"))
+utils::globalVariables(c("."))
 
 #' Facet Trelliscope
 #'
-#' @param facets formula to facet the panels on. Similar to \code{ggplot2::\link[ggplot2]{facet_wrap}}'s \code{facets}
+#' @param facets Formula to facet the panels on. Similar to \code{ggplot2::\link[ggplot2]{facet_wrap}}'s \code{facets}.
 #' @param name name of the display
-#' @param group group that the display belongs to
-#' @param desc description of the display
-#' @param md_desc optional string of markdown that will be shown in the viewer for additional context about the display
-#' @param path the base directory of the trelliscope application
-#' @param height height in pixels of each panel
-#' @param width width in pixels of each panel
-#' @param state the initial state the display will open in
-#' @param nrow the number of rows of panels to display by default
-#' @param ncol the number of columns of panels to display by default
-#' @param scales should scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.
-#' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
-#' @param as_plotly should the panels be written as plotly objects?
-#' @param plotly_args optinal named list of arguments to send to \code{ggplotly}
-#' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
-#' @param thumb should a thumbnail be created?
-#' @param auto_cog_data boolean that determines if automatic cognostics are produces
+#' @param group Group that the display belongs to.
+#' @param desc Description of the display.
+#' @param md_desc Optional string of markdown that will be shown in the viewer for additional context about the display.
+#' @param path The base directory of the trelliscope application.
+#' @param height Height in pixels of each panel.
+#' @param width Width in pixels of each panel.
+#' @param prerender Should the panels be prerendered? (see note)
+#' @param state The initial state the display will open in.
+#' @param nrow The number of rows of panels to display by default.
+#' @param ncol The number of columns of panels to display by default.
+#' @param scales Should scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.
+#' @param jsonp Should json for display object be jsonp (TRUE) or json (FALSE)?
+#' @param as_plotly Should the panels be written as plotly objects?
+#' @param plotly_args Optional named list of arguments to send to \code{ggplotly}.
+#' @param self_contained Should the Trelliscope display be a self-contained html document? (see note)
+#' @param thumb Should a thumbnail be created?
+#' @param auto_cog_data Boolean that determines if automatic cognostics are produces
 #' @template param-split-layout
+#' @note There is a tradeoff with prerendering panels. Prerendering has the benefit that the output is fully self-contained and can be easily shared with others, whereas when you don't prerender an R server must be running in the background to generate the panels on demand. However, especially with ggplot2, when there are many panels it can take a long time to prerender.
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 #' @export
 #' @example man-roxygen/ex-facet_trelliscope.R
@@ -30,7 +32,7 @@ facet_trelliscope <- function(
   facets,
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
   desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
-  state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
+  prerender = TRUE, state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
   self_contained = FALSE, thumb = TRUE, auto_cog_data = TRUE,
   split_layout = FALSE
 ) {
@@ -53,6 +55,7 @@ facet_trelliscope <- function(
     md_desc = md_desc,
     height = height,
     width = width,
+    prerender = prerender,
     state = state,
     jsonp = jsonp,
     path = path,
@@ -80,9 +83,10 @@ facet_trelliscope <- function(
   if (inherits(e2, "facet_trelliscope")) {
 
     # e1 <- e1 %+% (e2$facet_wrap)
-    attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group", "desc", "md_desc",
-      "height", "width", "state", "jsonp", "self_contained", "path", "state", "nrow", "ncol",
-      "scales", "thumb", "as_plotly", "plotly_args", "auto_cog_data", "split_layout")]
+    attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group", "desc",
+      "md_desc", "height", "width", "prerender", "state", "jsonp", "self_contained",
+      "path", "state", "nrow", "ncol", "scales", "thumb", "as_plotly", "plotly_args",
+      "auto_cog_data", "split_layout")]
     class(e1) <- c("facet_trelliscope", class(e1))
     return(e1)
     # return(print(e1))
@@ -134,7 +138,7 @@ print.facet_trelliscope <- function(x, ...) {
     data <- attrs$auto_cog_data
   }
 
-  # character vect of facet columns
+  # character vector of facet columns
   # TODO need to work with facet_trelliscope(~ disp < 5)
   facet_cols <- unlist(lapply(attrs$facet_cols, as.character))
   if (!all(facet_cols %in% names(data))) {
@@ -151,6 +155,10 @@ print.facet_trelliscope <- function(x, ...) {
   # with dplyr 0.7, unnest can take result of "head" for some reason, but not original data...
   cog_df <- data %>% select(-one_of("data")) %>%
     utils::head(nrow(data)) %>% tidyr::unnest()
+
+  if (!attrs$prerender)
+    cog_df$panelKey <- as.character(seq_len(nrow(cog_df)))
+
   cog_df <- as_cognostics(cog_df, cond_cols = facet_cols, cog_desc = cog_desc)
 
   # get ranges of all data
@@ -163,24 +171,9 @@ print.facet_trelliscope <- function(x, ...) {
     q$data <- dt
     q <- add_trelliscope_scales(q, scales_info, showWarnings = (pos == 1))
     if (as_plotly)
-      q <- do.call(ggplotly, c(list(p = q), plotly_args))
+      q <- do.call(plotly::ggplotly, c(list(p = q), plotly_args))
     q
   }
-
-  panels <- (
-    data %>%
-      purrrlyr::by_row(~
-        make_plot_obj(
-          unnest(.x[c(facet_cols, "data")]),
-          as_plotly = attrs$as_plotly,
-          plotly_args = attrs$plotly_args,
-          pos = .$.id
-        ),
-        .labels = FALSE
-      )
-  )[[1]]
-
-  names(panels) <- cog_df$panelKey # nolint
 
   name <- attrs$name
   if (is.null(name))
@@ -191,20 +184,49 @@ print.facet_trelliscope <- function(x, ...) {
 
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",
-    total = 5 + length(panels), width = getOption("width") - 8)
+    total = 5 + nrow(data) * attrs$prerender, width = getOption("width") - 8)
   pb$tick(0, tokens = list(what = "calculating         "))
 
-  write_panels(
-    panels,
-    base_path = params$path,
-    name = params$name,
-    group = params$group,
-    width = attrs$width,
-    height = attrs$height,
-    jsonp = params$jsonp,
-    split_layout = params$split_layout,
-    pb = pb
-  )
+  if (attrs$prerender) {
+    panels <- (
+      data %>%
+        purrrlyr::by_row(~
+          make_plot_obj(
+            unnest(.x[c(facet_cols, "data")]),
+            as_plotly = attrs$as_plotly,
+            plotly_args = attrs$plotly_args,
+            pos = .$.id
+          ),
+          .labels = FALSE
+        )
+    )[[1]]
+    panel_example <- panels[[1]]
+
+    names(panels) <- cog_df$panelKey # nolint
+
+    write_panels(
+      panels,
+      base_path = params$path,
+      name = params$name,
+      group = params$group,
+      width = attrs$width,
+      height = attrs$height,
+      jsonp = params$jsonp,
+      split_layout = params$split_layout,
+      pb = pb
+    )
+  } else {
+    data <- data %>%
+      by_row_pplot(~
+        make_plot_obj(
+          unnest(.x[c(facet_cols, "data")]),
+          as_plotly = attrs$as_plotly,
+          plotly_args = attrs$plotly_args,
+          pos = .$.id
+        )
+      )
+    panel_example <- get_ppanel(data, row = 1)
+  }
 
   if (inherits(attrs$desc, "waiver"))
     attrs$desc <- ifelse(is.null(p$labels$title), "", p$labels$title)
@@ -213,7 +235,7 @@ print.facet_trelliscope <- function(x, ...) {
     attrs$md_desc <- ifelse(is.null(p$labels$subtitle), "", p$labels$subtitle)
 
   if (params$split_layout) {
-    has_legend <- "guide-box" %in% plot_gtable(panels[[1]])$layout$name
+    has_legend <- "guide-box" %in% plot_gtable(panel_example)$layout$name
   } else {
     # if it isn't split, we will say there is no legend to draw
     # as it will be drawn in the regular plot
@@ -223,8 +245,8 @@ print.facet_trelliscope <- function(x, ...) {
   split_aspect <- NULL
   if (params$split_layout) {
     # we need to store the aspect ratio of the axes if it's split
-    left_axis <- extract_axis_left(panels[[1]])
-    bottom_axis <- extract_axis_bottom(panels[[1]])
+    left_axis <- extract_axis_left(panel_example)
+    bottom_axis <- extract_axis_bottom(panel_example)
 
     lft <- get_png_units(axis_left_width(left_axis), attrs$height)
     bot <- get_png_units(attrs$width, axis_bottom_height(bottom_axis))
@@ -236,7 +258,7 @@ print.facet_trelliscope <- function(x, ...) {
 
   write_display_obj(
     cog_df,
-    panel_example = panels[[1]],
+    panel_example = panel_example,
     base_path = params$path,
     id = params$id,
     name = params$name,
@@ -247,6 +269,8 @@ print.facet_trelliscope <- function(x, ...) {
     md_desc = attrs$md_desc,
     state = params$state,
     jsonp = params$jsonp,
+    self_contained = params$self_contained,
+    prerendered = attrs$prerender,
     thumb = params$thumb,
     split_layout = params$split_layout,
     split_aspect = split_aspect,
@@ -255,16 +279,18 @@ print.facet_trelliscope <- function(x, ...) {
   )
 
   prepare_display(
-    params$path, params$id, params$self_contained, params$jsonp,
+    params$path, params$id, params$self_contained, params$jsonp, attrs$prerender,
     pb = pb
   )
 
   res <- trelliscope_widget(
+    data = data,
     id = params$id,
     www_dir = params$www_dir,
     latest_display = list(name = params$name, group = params$group),
     self_contained = params$self_contained,
-    dependencies = get_dependencies(panels[[1]]),
+    dependencies = get_dependencies(panel_example),
+    prerendered = attrs$prerender,
     config_info = params$config_path,
     spa = params$spa
   )
