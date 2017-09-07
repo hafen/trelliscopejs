@@ -197,7 +197,7 @@ as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
       if (!identical(group, "common")) {
         desc <- paste(group, ": ", desc, sep = "")
       }
-      
+
       if (all(grepl("https*://", x[[idx]]))) {
         x[[idx]] <- cog_href(x[[idx]], desc = paste(desc, "(link)"), group = group)
       } else {
@@ -216,4 +216,95 @@ as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
 
   class(x) <- c(class(x), "cognostics")
   x
+}
+
+
+
+
+
+cog_df_info <- function(x, panel_col, auto_cogs = FALSE) {
+
+  if (isTRUE(auto_cogs)) {
+    # x <- x %>% autocogs::add_panel_cogs(panel_col = panel_col)
+    x <- x %>% add_panel_cogs(panel_col = panel_col)
+  }
+
+  atomic_cols <- names(x)[sapply(x, is.atomic)]
+  non_atomic_cols <- setdiff(names(x), c(atomic_cols, panel_col))
+  is_nested <- length(non_atomic_cols) > 0
+
+  if (length(atomic_cols) == 0)
+    stop_nice("There must be at least one atomic column in the data frame passed in",
+      "to trelliscope.data.frame")
+
+  cond_cols <- find_cond_cols(x[atomic_cols], is_nested)
+
+  # if we are no longer sorted by a cond_col but are sorted by something else
+  # and if sort state is not already specified, then set that as state
+  if (is.unsorted(x[[cond_cols[1]]])) {
+    sort_cols <- find_sort_cols(x[setdiff(atomic_cols, cond_cols)])
+
+    if (nrow(sort_cols) > 0) {
+      cond_not_sorted <- !sort_cols$name %in% cond_cols
+      other_sorted <- setdiff(sort_cols$name, cond_cols)
+      if (is.null(state$sort) && cond_not_sorted && length(other_sorted) > 0) {
+        if (is.null(state))
+          state <- list()
+        state$sort <- lapply(other_sorted, function(a) {
+          list(name = a, dir = sort_cols$dir[sort_cols$name == a])
+        })
+        if (is.null(state$labels)) {
+          state$labels <- c(cond_cols, other_sorted)
+        }
+      }
+    }
+  }
+
+  cogs <- list(as_cognostics(x[atomic_cols], cond_cols))
+  if (length(non_atomic_cols) > 0) {
+    usable <- non_atomic_cols[sapply(x[non_atomic_cols],
+      function(a) is.data.frame(a[[1]]))]
+    needs_auto <- usable[sapply(x[usable], function(a) {
+      any(sapply(a, nrow) > 1)
+    })]
+
+    no_needs_auto <- setdiff(usable, needs_auto)
+    for (a in no_needs_auto) {
+      z <- x[a]
+      one_row_attrs <- lapply(z[[1]][[1]], attributes)
+      if (inherits(z[[a]], "trelliscope_cogs")) {
+        class(z[[a]]) <- "list"
+      }
+
+      # retrieve autocog description (or any other desc)
+      first_non_null <- min(c(-1, which(!is.null(z[[a]]))))
+      if (first_non_null > 0) {
+        cog_desc = lapply(z[[a]][[1]], function(z_val) attr(z_val, "desc"))
+      } else {
+        cog_desc <- list()
+      }
+
+      tmp <- bind_rows(z[[a]])
+      for (nm in names(tmp)) {
+        cur_attrs <- one_row_attrs[[nm]]
+        attributes(tmp[[nm]]) <- cur_attrs
+      }
+
+      cogs[[length(cogs) + 1]] <- tmp %>%
+        as_cognostics(
+          needs_key = FALSE, needs_cond = FALSE,
+          group = a,
+          cog_desc = cog_desc
+      )
+    }
+  }
+
+  cog_df <- bind_cols(cogs)
+
+  list(
+    cog_df = cog_df,
+    cond_cols = cond_cols,
+    atomic_cols = atomic_cols,
+    non_atomic_cols = non_atomic_cols
+  )
 }
