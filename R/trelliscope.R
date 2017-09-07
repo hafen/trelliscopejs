@@ -29,8 +29,6 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
   desc = "", md_desc = "", path = NULL, height = 500, width = 500, auto_cog = FALSE,
   state = NULL, nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = FALSE) {
 
-  classes <- unlist(lapply(x, function(a) class(a)[1]))
-
   panel_img_col <- names(which(unlist(lapply(x, function(a) {
     tp <- attr(a, "cog_attrs")$type
     if (is.null(tp))
@@ -51,6 +49,7 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
   }
 
   if (is.null(panel_col) && is.null(panel_img_col)) {
+    classes <- unlist(lapply(x, function(a) class(a)[1]))
     panel_col <- names(which(classes == "trelliscope_panels"))
 
     if (length(panel_col) > 1) {
