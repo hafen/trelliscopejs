@@ -122,7 +122,7 @@ print.facet_trelliscope <- function(x, ...) {
     }
   }
 
-  if (isTRUE(attrs$auto_cog_data)) {
+  if (inherits(attrs$data, "waiver")) {
     message("using data from the first layer")
     # data <- ggplot2::layer_data(p, 1) # first layer data # this is computed data
     data <- p$layers[[1]]$data # first layer data
@@ -130,9 +130,13 @@ print.facet_trelliscope <- function(x, ...) {
       # retrieve plot data
       data <- p$data
     }
+  } else {
+    # user supplied
+    data <- attrs$data
+  }
 
-  } else if (is.data.frame(attrs$auto_cog_data)) {
-    data <- attrs$auto_cog_data
+  if (is.null(data)) {
+    stop("non-NULL data must be provided either in the first plot layer or in the 'data' parameter")
   }
 
   # character vect of facet columns
