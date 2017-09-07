@@ -132,8 +132,8 @@ test_that("examples run without barfing", {
 
   p <- qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
     facet_trelliscope(~ class, ncol = 7, height = 800, width = 200,
-      state = list(sort = list(sort_spec("cty_mean"))), path = "_test",
-      scales = c("free", "same")) +
+      state = list(sort = list(sort_spec("mean"))), path = "_test",
+      scales = c("free", "same"), auto_cog = c(T, F)) +
     theme_bw()
   print(p)
 
