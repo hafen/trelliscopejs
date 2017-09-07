@@ -124,7 +124,7 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
 
   prepare_display(params$path, params$id, params$self_contained, params$jsonp, pb = pb)
 
-  trelliscope_widget(
+  res <- trelliscope_widget(
     id = params$id,
     www_dir = params$www_dir,
     latest_display = list(name = params$name, group = params$group),
@@ -134,6 +134,12 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
     spa = params$spa,
     sc_deps = get_dependencies(panels[[1]])
   )
+
+  if (params$in_knitr) {
+    return(res)
+  }
+
+  print(res)
 }
 
 # hacky way to get cond_cols:
