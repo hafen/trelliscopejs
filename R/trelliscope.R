@@ -63,9 +63,15 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
     stop_nice("A column containing the panel to be plotted must be specified",
       "using panel() or img_panel().")
 
-  cog_info <- cog_df_info(x, panel_col = panel_col, auto_cog = auto_cog)
+  cog_info <- cog_df_info(
+    x,
+    panel_col = panel_col,
+    state = state,
+    auto_cog = auto_cog
+  )
   cog_df <- cog_info$cog_df
   cond_cols <- cog_info$cond_cols
+  state <- cog_info$state
 
   params <- resolve_app_params(path, self_contained, jsonp, name, group,
     state, nrow, ncol, thumb)

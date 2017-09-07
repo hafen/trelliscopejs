@@ -222,7 +222,7 @@ as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
 
 
 #' @importFrom autocogs add_panel_cogs
-cog_df_info <- function(x, panel_col, auto_cog = FALSE) {
+cog_df_info <- function(x, panel_col, state, auto_cog = FALSE) {
 
   if (isTRUE(auto_cog)) {
     x <- x %>% add_panel_cogs(panel_col = panel_col)
@@ -304,6 +304,7 @@ cog_df_info <- function(x, panel_col, auto_cog = FALSE) {
     cog_df = cog_df,
     cond_cols = cond_cols,
     atomic_cols = atomic_cols,
-    non_atomic_cols = non_atomic_cols
+    non_atomic_cols = non_atomic_cols,
+    state = state
   )
 }

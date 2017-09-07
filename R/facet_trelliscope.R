@@ -171,10 +171,12 @@ print.facet_trelliscope <- function(x, ...) {
     )
 
   cog_info <- panel_data %>% cog_df_info(
-    auto_cog = attrs$auto_cog,
-    panel_col = "panel"
+    panel_col = "panel",
+    state = attrs$state,
+    auto_cog = attrs$auto_cog
   )
   cog_df <- cog_info$cog_df
+  attrs$state <- cog_info$state
 
   panels <- panel_data$panel
 
