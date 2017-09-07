@@ -221,11 +221,9 @@ as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
 
 
 
+cog_df_info <- function(x, panel_col, auto_cog = FALSE) {
 
-cog_df_info <- function(x, panel_col, auto_cogs = FALSE) {
-
-  if (isTRUE(auto_cogs)) {
-    # x <- x %>% autocogs::add_panel_cogs(panel_col = panel_col)
+  if (isTRUE(auto_cog)) {
     x <- x %>% add_panel_cogs(panel_col = panel_col)
   }
 

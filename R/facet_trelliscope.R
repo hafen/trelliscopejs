@@ -19,7 +19,7 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param plotly_args optinal named list of arguments to send to \code{ggplotly}
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
-#' @param auto_cogs boolean that determines if automatic cognostics are produced
+#' @param auto_cog should auto cogs be computed (if possible)?
 #' @param data data used for faceting. Defaults to the first layer data
 #' @template param-split-layout
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
@@ -31,7 +31,7 @@ facet_trelliscope <- function(
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
   desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
   state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
-  self_contained = FALSE, thumb = TRUE, auto_cogs = TRUE,
+  self_contained = FALSE, thumb = TRUE, auto_cog = TRUE,
   split_layout = FALSE, data = ggplot2::waiver()
 ) {
 
@@ -63,7 +63,7 @@ facet_trelliscope <- function(
     thumb = thumb,
     as_plotly = as_plotly,
     plotly_args = plotly_args,
-    auto_cogs = auto_cogs,
+    auto_cog = auto_cog,
     split_layout = split_layout,
     data = data
   )
@@ -83,7 +83,7 @@ facet_trelliscope <- function(
     # e1 <- e1 %+% (e2$facet_wrap)
     attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group", "desc", "md_desc",
       "height", "width", "state", "jsonp", "self_contained", "path", "state", "nrow", "ncol",
-      "scales", "thumb", "as_plotly", "plotly_args", "auto_cogs", "split_layout", "data")]
+      "scales", "thumb", "as_plotly", "plotly_args", "auto_cog", "split_layout", "data")]
     class(e1) <- c("facet_trelliscope", class(e1))
     return(e1)
     # return(print(e1))
@@ -171,7 +171,7 @@ print.facet_trelliscope <- function(x, ...) {
     )
 
   cog_info <- panel_data %>% cog_df_info(
-    auto_cogs = attrs$auto_cogs,
+    auto_cog = attrs$auto_cog,
     panel_col = "panel"
   )
   cog_df <- cog_info$cog_df
