@@ -156,7 +156,7 @@ cog_href <- function(x, desc = "link", group = "common",
 #' @param needs_cond does the result need to have conditioning variable columns?
 #' @export
 as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
-  needs_key = TRUE, needs_cond = TRUE) {
+  needs_key = TRUE, needs_cond = TRUE, group = "common") {
   # make each column a true cognostic so things are consistent downstream
 
   if (needs_key) {
@@ -192,10 +192,16 @@ as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
       desc <- cog_desc[[nms[idx]]]
       if (!is.character(desc))
         desc <- nms[idx]
+
+      #  TODO keep until groups are handled in viewer
+      if (!identical(group, "common")) {
+        desc <- paste(group, ": ", desc, sep = "")
+      }
+      
       if (all(grepl("https*://", x[[idx]]))) {
-        x[[idx]] <- cog_href(x[[idx]], desc = paste(desc, "(link)"))
+        x[[idx]] <- cog_href(x[[idx]], desc = paste(desc, "(link)"), group = group)
       } else {
-        x[[idx]] <- cog(x[[idx]], desc = desc)
+        x[[idx]] <- cog(x[[idx]], desc = desc, group = group)
       }
     }
   }
