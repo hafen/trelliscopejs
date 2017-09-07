@@ -8,8 +8,8 @@ facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
   name = NULL, group = "common", desc = ggplot2::waiver(),
   md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
   state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
-  self_contained = FALSE, thumb = TRUE, auto_cog_data = TRUE,
-  split_layout = FALSE)
+  self_contained = FALSE, thumb = TRUE, auto_cog = TRUE,
+  split_layout = FALSE, data = ggplot2::waiver())
 }
 \arguments{
 \item{facets}{formula to facet the panels on. Similar to \code{ggplot2::\link[ggplot2]{facet_wrap}}'s \code{facets}}
@@ -46,9 +46,11 @@ facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
 
 \item{thumb}{should a thumbnail be created?}
 
-\item{auto_cog_data}{boolean that determines if automatic cognostics are produces}
+\item{auto_cog}{should auto cogs be computed (if possible)?}
 
 \item{split_layout}{boolean that determines if the layout is split into components like a facet_grid vs. individual panels like facet_wrap.  Only applies to ggplot2 plot objects.}
+
+\item{data}{data used for faceting. Defaults to the first layer data}
 }
 \description{
 Facet Trelliscope
