@@ -278,7 +278,7 @@ cog_df_info <- function(x, panel_col, auto_cog = FALSE) {
       # retrieve autocog description (or any other desc)
       first_non_null <- min(c(-1, which(!is.null(z[[a]]))))
       if (first_non_null > 0) {
-        cog_desc = lapply(z[[a]][[1]], function(z_val) attr(z_val, "desc"))
+        cog_desc <- lapply(z[[a]][[1]], function(z_val) attr(z_val, "desc"))
       } else {
         cog_desc <- list()
       }

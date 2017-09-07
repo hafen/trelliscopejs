@@ -161,7 +161,7 @@ print.facet_trelliscope <- function(x, ...) {
   make_plot_obj <- function(dt, pos = -1) {
     q <- p
     q$data <- dt
-    q <- add_trelliscope_scales(q, scales_info, showWarnings = (pos == 1))
+    q <- add_trelliscope_scales(q, scales_info, show_warnings = (pos == 1))
     q
   }
 
@@ -338,20 +338,20 @@ str_detect <- function(x, pattern) {
   grepl(pattern, x)
 }
 
-axis_left_width <- function(pg, unitTo = "cm") {
-  grid::convertWidth(sum(grid::convertWidth(pg$widths, unitTo = unitTo)), unitTo = unitTo)
+axis_left_width <- function(pg, unit_to = "cm") {
+  grid::convertWidth(sum(grid::convertWidth(pg$widths, unitTo = unit_to)), unitTo = unit_to)
 }
 
-axis_bottom_height <- function(pg, unitTo = "cm") {
-  grid::convertHeight(sum(grid::convertHeight(pg$heights, unitTo = unitTo)), unitTo = unitTo)
+axis_bottom_height <- function(pg, unit_to = "cm") {
+  grid::convertHeight(sum(grid::convertHeight(pg$heights, unitTo = unit_to)), unitTo = unit_to)
 }
 
-legend_width_or_height <- function(pg, section, default_value, unitTo = "cm") {
-  val <- grid::convertHeight(pg[[section]][1], unitTo = unitTo, valueOnly = TRUE)
+legend_width_or_height <- function(pg, section, default_value, unit_to = "cm") {
+  val <- grid::convertHeight(pg[[section]][1], unitTo = unit_to, valueOnly = TRUE)
   if (val == 0) {
     default_value
   } else {
-    grid::unit(val, unitTo)
+    grid::unit(val, unit_to)
   }
 }
 
@@ -543,7 +543,7 @@ add_trelliscope_scales <- function(p, scales_info, ...) {
 
 # the goal is to add a scale if a scale doesn't already exist.
 # if a scale exists, we should NOT overwrite it.
-add_trelliscope_scale <- function(p, axis_name, scale_info, showWarnings = FALSE) {
+add_trelliscope_scale <- function(p, axis_name, scale_info, show_warnings = FALSE) {
   axis_scales <- p$scales$get_scales(axis_name)
   if (!is.null(axis_scales$limits)) {
     # return if there already is a limit set for this axis
@@ -557,7 +557,7 @@ add_trelliscope_scale <- function(p, axis_name, scale_info, showWarnings = FALSE
   ) {
     # this is a possibly calculated axis, leave alone
     if (
-      isTRUE(showWarnings) &&
+      isTRUE(show_warnings) &&
       scale_type != "free" &&
       is.null(p$scales$get_scales(axis_name))
     ) {
@@ -619,7 +619,7 @@ add_trelliscope_scale <- function(p, axis_name, scale_info, showWarnings = FALSE
         }
       }
     } else if (scale_info$data_type == "discrete") {
-      data_column <- eval(p$mapping[[axis_name]], envir = p$data)
+      # data_column <- eval(p$mapping[[axis_name]], envir = p$data)
 
       scale_fn <- switch(axis_name,
         "x" = scale_x_discrete,
