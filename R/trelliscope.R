@@ -63,75 +63,9 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
     stop_nice("A column containing the panel to be plotted must be specified",
       "using panel() or img_panel().")
 
-  atomic_cols <- names(x)[sapply(x, is.atomic)]
-  non_atomic_cols <- setdiff(names(x), c(atomic_cols, panel_col))
-  is_nested <- length(non_atomic_cols) > 0
-
-  if (length(atomic_cols) == 0)
-    stop_nice("There must be at least one atomic column in the data frame passed in",
-      "to trelliscope.data.frame")
-
-  cond_cols <- find_cond_cols(x[atomic_cols], is_nested)
-
-  # if we are no longer sorted by a cond_col but are sorted by something else
-  # and if sort state is not already specified, then set that as state
-  if (is.unsorted(x[[cond_cols[1]]])) {
-    sort_cols <- find_sort_cols(x[setdiff(atomic_cols, cond_cols)])
-
-    if (nrow(sort_cols) > 0) {
-      cond_not_sorted <- !sort_cols$name %in% cond_cols
-      other_sorted <- setdiff(sort_cols$name, cond_cols)
-      if (is.null(state$sort) && cond_not_sorted && length(other_sorted) > 0) {
-        if (is.null(state))
-          state <- list()
-        state$sort <- lapply(other_sorted, function(a) {
-          list(name = a, dir = sort_cols$dir[sort_cols$name == a])
-        })
-        if (is.null(state$labels)) {
-          state$labels <- c(cond_cols, other_sorted)
-        }
-      }
-    }
-  }
-
-  cogs <- list(as_cognostics(x[atomic_cols], cond_cols))
-  if (length(non_atomic_cols) > 0) {
-    usable <- non_atomic_cols[sapply(x[non_atomic_cols],
-      function(a) is.data.frame(a[[1]]))]
-    needs_auto <- usable[sapply(x[usable], function(a) {
-      any(sapply(a, nrow) > 1)
-    })]
-    if (auto_cog) {
-      for (a in needs_auto) {
-        tmp <- x[a] %>%
-          auto_cogs() %>%
-          dplyr::select(-one_of(a))
-        # with dplyr 0.7, unnest can take result of "head" for some reason
-        # but not original data...
-        cogs[[length(cogs) + 1]] <- utils::head(tmp, nrow(tmp)) %>%
-          tidyr::unnest() %>%
-          as_cognostics(needs_key = FALSE, needs_cond = FALSE)
-      }
-    }
-
-    no_needs_auto <- setdiff(usable, needs_auto)
-    for (a in no_needs_auto) {
-      one_row_attrs <- lapply(x[a][[1]][[1]], attributes)
-      # with dplyr 0.7, unnest can take result of "head" for some reason
-      # but not original data...
-      # suppress warning about attributes being lost
-      tmp <- suppressWarnings(utils::head(x[a], nrow(x[a])) %>%
-        tidyr::unnest())
-      for (nm in names(tmp)) {
-        cur_attrs <- one_row_attrs[[nm]]
-        attributes(tmp[[nm]]) <- cur_attrs
-      }
-      cogs[[length(cogs) + 1]] <- tmp %>%
-        as_cognostics(needs_key = FALSE, needs_cond = FALSE)
-    }
-  }
-
-  cog_df <- bind_cols(cogs)
+  cog_info <- cog_df_info(x, panel_col = panel_col, auto_cog = auto_cog)
+  cog_df <- cog_info$cog_df
+  cond_cols <- cog_info$cond_cols
 
   params <- resolve_app_params(path, self_contained, jsonp, name, group,
     state, nrow, ncol, thumb)
