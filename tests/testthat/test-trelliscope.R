@@ -118,7 +118,7 @@ test_that("examples run without barfing", {
   ##---------------------------------------------------------
 
   p <- qplot(cty, hwy, data = mpg) +
-    facet_trelliscope(~ class + manufacturer, self_contained = TRUE)
+    facet_trelliscope(~ class, self_contained = TRUE)
   print(p)
 
   # not required, but if you set labels, these will be added as
@@ -127,7 +127,7 @@ test_that("examples run without barfing", {
 
   p <- qplot(cty, hwy, data = mpg) +
     theme_bw() +
-    facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4)
+    facet_trelliscope(~ class, nrow = 2, ncol = 4)
   print(p)
 
   p <- qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
