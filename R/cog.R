@@ -221,6 +221,7 @@ as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
 
 
 
+#' @importFrom autocogs add_panel_cogs
 cog_df_info <- function(x, panel_col, auto_cog = FALSE) {
 
   if (isTRUE(auto_cog)) {
