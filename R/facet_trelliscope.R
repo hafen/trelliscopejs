@@ -148,42 +148,43 @@ print.facet_trelliscope <- function(x, ...) {
 
   # group by all the facets
   data <- data %>%
-    group_by_(.dots = lapply(facet_cols, as.symbol)) %>%
-    auto_cogs()
-  data$.id <- seq_len(nrow(data))
-
-  cog_desc <- attr(data$auto_cogs, "cog_desc")
-  # with dplyr 0.7, unnest can take result of "head" for some reason, but not original data...
-  cog_df <- data %>% select(-one_of("data")) %>%
-    utils::head(nrow(data)) %>% tidyr::unnest()
-  cog_df <- as_cognostics(cog_df, cond_cols = facet_cols, cog_desc = cog_desc)
+    mutate(
+      .id = seq_len(nrow(data))
+    ) %>%
+    group_by_(.dots = lapply(facet_cols, as.symbol))
 
   # get ranges of all data
   scales_info <- upgrade_scales_param(attrs$scales, p$facet)
   scales_info <- add_range_info_to_scales(p, scales_info, attrs$facet_cols)
 
   # wrapper function that swaps out the data with a subset and removes the facet
-  make_plot_obj <- function(dt, as_plotly = FALSE, plotly_args = NULL, pos = -1) {
+  make_plot_obj <- function(dt, pos = -1) {
     q <- p
     q$data <- dt
     q <- add_trelliscope_scales(q, scales_info, showWarnings = (pos == 1))
-    if (as_plotly)
-      q <- do.call(ggplotly, c(list(p = q), plotly_args))
     q
   }
 
-  panels <- (
-    data %>%
-      purrrlyr::by_row(~
-        make_plot_obj(
-          unnest(.x[c(facet_cols, "data")]),
-          as_plotly = attrs$as_plotly,
-          plotly_args = attrs$plotly_args,
-          pos = .$.id
-        ),
-        .labels = FALSE
-      )
-  )[[1]]
+  panel_data <- data %>%
+    do(
+      panel = make_plot_obj(., unique(.$.id))
+    )
+
+  cog_info <- panel_data %>% cog_df_info(
+    auto_cogs = attrs$auto_cogs,
+    panel_col = "panel"
+  )
+  cog_df <- cog_info$cog_df
+
+  panels <- panel_data$panel
+
+  if (isTRUE(attrs$as_plotly)) {
+    plotly_args <- attrs$plotly_args
+    panels <- panels %>%
+      lapply(function(q) {
+        do.call(ggplotly, c(list(p = q), plotly_args))
+      })
+  }
 
   names(panels) <- cog_df$panelKey # nolint
 
@@ -280,6 +281,10 @@ print.facet_trelliscope <- function(x, ...) {
 
   print(res)
 }
+
+
+
+
 
 upgrade_scales_param <- function(scales, plot_facet) {
   if (length(scales) > 2)
