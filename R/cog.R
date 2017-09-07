@@ -283,7 +283,7 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE) {
         cog_desc <- list()
       }
 
-      tmp <- bind_rows(z[[a]])
+      tmp <- suppressWarnings(bind_rows(z[[a]]))
       for (nm in names(tmp)) {
         cur_attrs <- one_row_attrs[[nm]]
         attributes(tmp[[nm]]) <- cur_attrs
