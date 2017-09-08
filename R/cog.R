@@ -154,6 +154,7 @@ cog_href <- function(x, desc = "link", group = "common",
 #' @param cog_desc an optional named list of descriptions for the cognostics columns
 #' @param needs_key does the result need to have a "key" column?
 #' @param needs_cond does the result need to have conditioning variable columns?
+#' @param group value to be used in the \code{\link{cog}} group
 #' @export
 as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
   needs_key = TRUE, needs_cond = TRUE, group = "common") {
