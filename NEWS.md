@@ -1,5 +1,6 @@
 # trelliscopejs 0.1
 
+- Update trelliscopejs-lib to avoid double slashes in urls (0.1.10)
 - Fix issue in checking for Shiny (0.1.9)
 - Use `by_row()` from purrrlyr (0.1.8)
 - Use webshot for thumbnails and don't create thumbnails by default (0.1.8)
