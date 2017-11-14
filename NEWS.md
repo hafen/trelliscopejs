@@ -1,5 +1,6 @@
 # trelliscopejs 0.1
 
+- Add `plotly_cfg` argument to `facet_trelliscope()` (0.1.11)
 - Update trelliscopejs-lib to avoid double slashes in urls (0.1.10)
 - Fix issue in checking for Shiny (0.1.9)
 - Use `by_row()` from purrrlyr (0.1.8)

@@ -8,8 +8,8 @@ facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
   name = NULL, group = "common", desc = ggplot2::waiver(),
   md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
   state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
-  self_contained = FALSE, thumb = TRUE, auto_cog_data = TRUE,
-  split_layout = FALSE)
+  plotly_cfg = NULL, self_contained = FALSE, thumb = TRUE,
+  auto_cog_data = TRUE, split_layout = FALSE)
 }
 \arguments{
 \item{facets}{formula to facet the panels on. Similar to \code{ggplot2::\link[ggplot2]{facet_wrap}}'s \code{facets}}
@@ -40,7 +40,9 @@ facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
 
 \item{as_plotly}{should the panels be written as plotly objects?}
 
-\item{plotly_args}{optinal named list of arguments to send to \code{ggplotly}}
+\item{plotly_args}{optional named list of arguments to send to \code{ggplotly}}
+
+\item{plotly_cfg}{optional named list of arguments to send to plotly's \code{config} method}
 
 \item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
 
@@ -82,5 +84,12 @@ qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
   facet_trelliscope(~ class, ncol = 7, height = 800, width = 200,
     state = list(sort = list(sort_spec("cty_mean")))) +
   theme_bw()
+
+library(gapminder)
+qplot(year, lifeExp, data = gapminder) +
+  xlim(1948, 2011) + ylim(10, 95) + theme_bw() +
+  facet_trelliscope(~ country + continent, nrow = 2, ncol = 7,
+    width = 300, as_plotly = TRUE,
+    plotly_cfg = list(displayModeBar = FALSE))
 }
 }

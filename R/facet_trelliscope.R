@@ -16,7 +16,8 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param scales should scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
 #' @param as_plotly should the panels be written as plotly objects?
-#' @param plotly_args optinal named list of arguments to send to \code{ggplotly}
+#' @param plotly_args optional named list of arguments to send to \code{ggplotly}
+#' @param plotly_cfg optional named list of arguments to send to plotly's \code{config} method
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
 #' @param auto_cog_data boolean that determines if automatic cognostics are produces
@@ -30,7 +31,7 @@ facet_trelliscope <- function(
   facets,
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
   desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
-  state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
+  state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL, plotly_cfg = NULL,
   self_contained = FALSE, thumb = TRUE, auto_cog_data = TRUE,
   split_layout = FALSE
 ) {
@@ -63,6 +64,7 @@ facet_trelliscope <- function(
     thumb = thumb,
     as_plotly = as_plotly,
     plotly_args = plotly_args,
+    plotly_cfg = plotly_cfg,
     auto_cog_data = auto_cog_data,
     split_layout = split_layout
   )
@@ -82,7 +84,8 @@ facet_trelliscope <- function(
     # e1 <- e1 %+% (e2$facet_wrap)
     attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group", "desc", "md_desc",
       "height", "width", "state", "jsonp", "self_contained", "path", "state", "nrow", "ncol",
-      "scales", "thumb", "as_plotly", "plotly_args", "auto_cog_data", "split_layout")]
+      "scales", "thumb", "as_plotly", "plotly_args", "plotly_cfg", "auto_cog_data",
+      "split_layout")]
     class(e1) <- c("facet_trelliscope", class(e1))
     return(e1)
     # return(print(e1))
@@ -158,12 +161,18 @@ print.facet_trelliscope <- function(x, ...) {
   scales_info <- add_range_info_to_scales(p, scales_info, attrs$facet_cols)
 
   # wrapper function that swaps out the data with a subset and removes the facet
-  make_plot_obj <- function(dt, as_plotly = FALSE, plotly_args = NULL, pos = -1) {
+  make_plot_obj <- function(dt, as_plotly = FALSE, plotly_args = NULL,
+    plotly_cfg = NULL, pos = -1) {
+
     q <- p
     q$data <- dt
     q <- add_trelliscope_scales(q, scales_info, showWarnings = (pos == 1))
-    if (as_plotly)
-      q <- do.call(ggplotly, c(list(p = q), plotly_args))
+    if (as_plotly) {
+      q <- do.call(plotly::ggplotly, c(list(p = q), plotly_args))
+      if (!is.null(plotly_cfg)) {
+        q <- do.call(plotly::config, c(list(p = q), plotly_cfg))
+      }
+    }
     q
   }
 
@@ -174,6 +183,7 @@ print.facet_trelliscope <- function(x, ...) {
           unnest(.x[c(facet_cols, "data")]),
           as_plotly = attrs$as_plotly,
           plotly_args = attrs$plotly_args,
+          plotly_cfg = attrs$plotly_cfg,
           pos = .$.id
         ),
         .labels = FALSE
