@@ -484,9 +484,8 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
 
     scale_plot_built <- ggplot_build(scale_plot)
 
-    calculate_scale_info <- function(scale_info) {
-      plot_scales <- scale_plot_built$layout$panel_scales
-      test_scale <- plot_scales[[scale_info$name]][[1]]
+    calculate_scale_info <- function(scale_info, plot_scales) {
+      test_scale <- plot_scales[[1]]
       scale_info$scale <- test_scale
 
       if (inherits(test_scale, "ScaleDiscrete")) {
@@ -514,7 +513,7 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
         # Behavior for relation="sliced" is similar, except that the length (max - min)
         # of the scales are constrained to remain the same across panels."
         if (scale_info$scale_type == "sliced") {
-          range_list <- lapply(plot_scales[[scale_info$name]], function(ps) {
+          range_list <- lapply(plot_scales, function(ps) {
             ps$range$range
           })
           diffs <- unlist(lapply(range_list, diff))
@@ -528,8 +527,26 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
       return(scale_info)
     }
 
-    scales_info$x_info <- calculate_scale_info(scales_info$x_info)
-    scales_info$y_info <- calculate_scale_info(scales_info$y_info)
+    if (packageVersion("ggplot2") > "2.2.1") {
+      scales_info$x_info <- calculate_scale_info(
+        scales_info$x_info,
+        scale_plot_built$layout$panel_scales_x
+      )
+      scales_info$y_info <- calculate_scale_info(
+        scales_info$y_info,
+        scale_plot_built$layout$panel_scales_y
+      )
+    } else {
+      scales_info$x_info <- calculate_scale_info(
+        scales_info$x_info,
+        scale_plot_built$layout$panel_scales[[scales_info$y_info$name]]
+      )
+      scales_info$y_info <- calculate_scale_info(
+        scales_info$y_info,
+        scale_plot_built$layout$panel_scales[[scales_info$y_info$name]]
+      )
+
+    }
   }
 
   scales_info
@@ -571,7 +588,6 @@ add_trelliscope_scale <- function(p, axis_name, scale_info, showWarnings = FALSE
 
     return(p)
   }
-
   if (scale_type != "free") {
 
     if (scale_info$data_type == "continuous") {
