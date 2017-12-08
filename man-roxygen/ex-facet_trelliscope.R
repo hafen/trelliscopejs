@@ -23,4 +23,11 @@ qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
   facet_trelliscope(~ class, ncol = 7, height = 800, width = 200,
     state = list(sort = list(sort_spec("cty_mean")))) +
   theme_bw()
+
+library(gapminder)
+qplot(year, lifeExp, data = gapminder) +
+  xlim(1948, 2011) + ylim(10, 95) + theme_bw() +
+  facet_trelliscope(~ country + continent, nrow = 2, ncol = 7,
+    width = 300, as_plotly = TRUE,
+    plotly_cfg = list(displayModeBar = FALSE))
 }

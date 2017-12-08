@@ -16,7 +16,8 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param scales should scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
 #' @param as_plotly should the panels be written as plotly objects?
-#' @param plotly_args optinal named list of arguments to send to \code{ggplotly}
+#' @param plotly_args optional named list of arguments to send to \code{ggplotly}
+#' @param plotly_cfg optional named list of arguments to send to plotly's \code{config} method
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
 #' @param auto_cog should auto cogs be computed (if possible)?
@@ -30,7 +31,7 @@ facet_trelliscope <- function(
   facets,
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
   desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
-  state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
+  state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL, plotly_cfg = NULL,
   self_contained = FALSE, thumb = TRUE, auto_cog = TRUE,
   split_layout = FALSE, data = ggplot2::waiver()
 ) {
@@ -63,6 +64,7 @@ facet_trelliscope <- function(
     thumb = thumb,
     as_plotly = as_plotly,
     plotly_args = plotly_args,
+    plotly_cfg = plotly_cfg,
     auto_cog = auto_cog,
     split_layout = split_layout,
     data = data
@@ -83,7 +85,8 @@ facet_trelliscope <- function(
     # e1 <- e1 %+% (e2$facet_wrap)
     attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group", "desc", "md_desc",
       "height", "width", "state", "jsonp", "self_contained", "path", "state", "nrow", "ncol",
-      "scales", "thumb", "as_plotly", "plotly_args", "auto_cog", "split_layout", "data")]
+      "scales", "thumb", "as_plotly", "plotly_args", "plotly_cfg", "auto_cog", "split_layout",
+      "data")]
     class(e1) <- c("facet_trelliscope", class(e1))
     return(e1)
     # return(print(e1))
@@ -186,6 +189,12 @@ print.facet_trelliscope <- function(x, ...) {
       lapply(function(q) {
         do.call(ggplotly, c(list(p = q), plotly_args))
       })
+    if (!is.null(plotly_cfg)) {
+      panels <- panels %>%
+        lapply(function(q) {
+          do.call(plotly::config, c(list(p = q), plotly_cfg))
+        })
+    }
   }
 
   names(panels) <- cog_df$panelKey # nolint
@@ -486,9 +495,8 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
 
     scale_plot_built <- ggplot_build(scale_plot)
 
-    calculate_scale_info <- function(scale_info) {
-      plot_scales <- scale_plot_built$layout$panel_scales
-      test_scale <- plot_scales[[scale_info$name]][[1]]
+    calculate_scale_info <- function(scale_info, plot_scales) {
+      test_scale <- plot_scales[[1]]
       scale_info$scale <- test_scale
 
       if (inherits(test_scale, "ScaleDiscrete")) {
@@ -516,7 +524,7 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
         # Behavior for relation="sliced" is similar, except that the length (max - min)
         # of the scales are constrained to remain the same across panels."
         if (scale_info$scale_type == "sliced") {
-          range_list <- lapply(plot_scales[[scale_info$name]], function(ps) {
+          range_list <- lapply(plot_scales, function(ps) {
             ps$range$range
           })
           diffs <- unlist(lapply(range_list, diff))
@@ -530,8 +538,26 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
       return(scale_info)
     }
 
-    scales_info$x_info <- calculate_scale_info(scales_info$x_info)
-    scales_info$y_info <- calculate_scale_info(scales_info$y_info)
+    if (packageVersion("ggplot2") > "2.2.1") {
+      scales_info$x_info <- calculate_scale_info(
+        scales_info$x_info,
+        scale_plot_built$layout$panel_scales_x
+      )
+      scales_info$y_info <- calculate_scale_info(
+        scales_info$y_info,
+        scale_plot_built$layout$panel_scales_y
+      )
+    } else {
+      scales_info$x_info <- calculate_scale_info(
+        scales_info$x_info,
+        scale_plot_built$layout$panel_scales[[scales_info$y_info$name]]
+      )
+      scales_info$y_info <- calculate_scale_info(
+        scales_info$y_info,
+        scale_plot_built$layout$panel_scales[[scales_info$y_info$name]]
+      )
+
+    }
   }
 
   scales_info
@@ -573,7 +599,6 @@ add_trelliscope_scale <- function(p, axis_name, scale_info, show_warnings = FALS
 
     return(p)
   }
-
   if (scale_type != "free") {
 
     if (scale_info$data_type == "continuous") {
