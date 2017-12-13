@@ -550,7 +550,7 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
     } else {
       scales_info$x_info <- calculate_scale_info(
         scales_info$x_info,
-        scale_plot_built$layout$panel_scales[[scales_info$y_info$name]]
+        scale_plot_built$layout$panel_scales[[scales_info$x_info$name]]
       )
       scales_info$y_info <- calculate_scale_info(
         scales_info$y_info,
