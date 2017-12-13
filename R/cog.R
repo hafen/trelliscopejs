@@ -226,7 +226,7 @@ as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
 cog_df_info <- function(x, panel_col, state, auto_cog = FALSE) {
 
   if (!(identical(auto_cog, FALSE) || is.null(auto_cog))) {
-    x <- x %>% add_panel_cogs(panel_col = panel_col, layers = auto_cog)
+    x <- add_panel_cogs(x, panel_col = panel_col, layers = auto_cog)
   }
 
   atomic_cols <- names(x)[sapply(x, is.atomic)]
