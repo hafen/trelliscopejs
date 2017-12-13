@@ -189,7 +189,8 @@ print.facet_trelliscope <- function(x, ...) {
       lapply(function(q) {
         do.call(ggplotly, c(list(p = q), plotly_args))
       })
-    if (!is.null(plotly_cfg)) {
+    if (!is.null(attrs$plotly_cfg)) {
+      plotly_cfg <- attrs$plotly_cfg
       panels <- panels %>%
         lapply(function(q) {
           do.call(plotly::config, c(list(p = q), plotly_cfg))
