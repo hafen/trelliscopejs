@@ -2,11 +2,11 @@ context("trelliscope")
 
 test_that("examples run without barfing", {
 
-  library(dplyr)
-  library(tidyr)
-  library(purrr)
-  library(rbokeh)
-  library(ggplot2)
+  suppressPackageStartupMessages(library(dplyr))
+  suppressPackageStartupMessages(library(tidyr))
+  suppressPackageStartupMessages(library(purrr))
+  suppressPackageStartupMessages(library(rbokeh))
+  suppressPackageStartupMessages(library(ggplot2))
 
   # tidyverse + rbokeh
   d <- mpg %>%
