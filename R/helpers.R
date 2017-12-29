@@ -105,7 +105,24 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
 
   if (is.null(state))
     state <- list()
-  state$layout <- list(nrow = nrow, ncol = ncol, arrange = "row")
+  check_n_val <- function(val, val_name) {
+    stop_val <- function() {
+      stop_nice(paste0(
+        "Parameter: '", val_name, "' should be a single, positive numeric integer. ",
+        "Received: ", val
+      ))
+    }
+    if (length(val) != 1) stop_val()
+    if (!is.numeric(val)) stop_val()
+    if (!isTRUE(all.equal(val, floor(val)))) stop_val()
+    if (val <= 0) stop_val()
+    val
+  }
+  state$layout <- list(
+    nrow = check_n_val(nrow, "nrow"),
+    ncol = check_n_val(ncol, "ncol"),
+    arrange = "row"
+  )
 
   # make sure split_layout is a boolean
   split_layout <- isTRUE(split_layout)

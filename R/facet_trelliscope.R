@@ -176,7 +176,8 @@ print.facet_trelliscope <- function(x, ...) {
   cog_info <- panel_data %>% cog_df_info(
     panel_col = "panel",
     state = attrs$state,
-    auto_cog = attrs$auto_cog
+    auto_cog = attrs$auto_cog,
+    nested_data_list = nest(data)$data
   )
   cog_df <- cog_info$cog_df
   attrs$state <- cog_info$state
@@ -456,6 +457,7 @@ extract_legend <- function(p, pg = plot_gtable(p)) {
 
 plot_clone <- utils::getFromNamespace("plot_clone", "ggplot2")
 
+#' @importFrom utils packageVersion
 add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
   x_scale_type <- scales_info$x_info$scale_type
   y_scale_type <- scales_info$y_info$scale_type

@@ -196,4 +196,38 @@ test_that("examples run without barfing", {
     trelliscope(name = "iris", thumb = FALSE)
   print(p)
 
+
+  iris_sample <- iris %>% mutate(sample = sample(Species, 150))
+  expect_error({
+    p <- qplot(Sepal.Width, Sepal.Length, data = iris_sample) +
+      facet_trelliscope(~ Species, "iris_sample", auto_cog = TRUE)
+    print(p)
+  })
+  expect_error({
+    p <- qplot(Sepal.Width, Sepal.Length, data = iris_sample) +
+      facet_trelliscope(~ Species, 1, "iris_sample", auto_cog = TRUE)
+    print(p)
+  })
+  expect_error({
+    p <- qplot(Sepal.Width, Sepal.Length, data = iris_sample) +
+      facet_trelliscope(~ Species, 1:10, name = "iris_sample", auto_cog = TRUE)
+    print(p)
+  })
+  expect_error({
+    p <- qplot(Sepal.Width, Sepal.Length, data = iris_sample) +
+      facet_trelliscope(~ Species, 2.3, name = "iris_sample", auto_cog = TRUE)
+    print(p)
+  })
+  expect_error({
+    p <- qplot(Sepal.Width, Sepal.Length, data = iris_sample) +
+      facet_trelliscope(~ Species, 0, name = "iris_sample", auto_cog = TRUE)
+    print(p)
+  })
+  p <- qplot(Sepal.Width, Sepal.Length, data = iris_sample) +
+    facet_trelliscope(~ Species, name = "iris_sample", auto_cog = TRUE)
+  print(p)
+
+
+
+
 })
