@@ -17,7 +17,7 @@ sections:
     - cog
     - cog_href
     - cogs
-    - auto_cogs
+    # - auto_cogs
 
 -
   section_name: Helpers

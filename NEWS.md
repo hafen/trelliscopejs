@@ -48,7 +48,7 @@
 - Make default sorting on conditional variables rather than default labels
 - Add cog_href
 - Rename to trelliscopejs
-- Add auto_cogs function and update functions to use it
+<!-- - Add auto_cogs function and update functions to use it -->
 - Remove unnecessary dependencies
 - Minor bug fixes and more test coverage
 - Add code coverage to travis
