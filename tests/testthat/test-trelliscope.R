@@ -117,6 +117,10 @@ test_that("examples run without barfing", {
   ## ggplot2
   ##---------------------------------------------------------
 
+  # library(ggplot2)
+  # qplot(cty, hwy, data = mpg) +
+  #   facet_trelliscope(~ class, auto_cog = FALSE)
+
   p <- qplot(cty, hwy, data = mpg) +
     facet_trelliscope(~ class, self_contained = TRUE)
   print(p)
