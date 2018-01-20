@@ -120,11 +120,9 @@ write_ggplot2_component <- function(
   plot_component, width, height, key, jsonp, panel_path,
   file = tempfile()
 ) {
-
-  # TODO change back to listen to file arg
-  # ff <- tempfile()
-  dir.create(file.path(".", "_ignore", "_pics"), showWarnings = FALSE, recursive = TRUE)
-  ff <- file.path(".", "_ignore", "_pics", paste0(key, ".png"))
+  ff <- file
+  # dir.create(file.path(".", "_ignore", "_pics"), showWarnings = FALSE, recursive = TRUE)
+  # ff <- file.path(".", "_ignore", "_pics", paste0(key, ".png"))
   make_png(p = plot_component, file = ff,
     width = width, height = height)
   dat <- paste0("\"", encode_png(ff), "\"")
