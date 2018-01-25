@@ -239,7 +239,7 @@ get_cog_distributions <- function(cogdf, cat_cutoff = 5000) {
         )
       )
       res$log_default <- FALSE
-      if (!is.nan(skw) && skw > 1.5 && all(x >= 0, na.rm = TRUE)) {
+      if (!is.nan(skw) && skw > 1.5 && all(x >= 0, na.rm = TRUE) && length(x[x > 0]) > 1) {
         # log <- TRUE
         x <- x[x > 0]
         x2 <- log10(x)
