@@ -20,20 +20,20 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param plotly_cfg optional named list of arguments to send to plotly's \code{config} method
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
-#' @param auto_cog_data boolean that determines if automatic cognostics are produces
+#' @param auto_cog should auto cogs be computed (if possible)?
+#' @param data data used for faceting. Defaults to the first layer data
 #' @template param-split-layout
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 #' @export
 #' @example man-roxygen/ex-facet_trelliscope.R
 #' @importFrom ggplot2 facet_wrap
-#' @importFrom utils head
 facet_trelliscope <- function(
   facets,
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
   desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
   state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL, plotly_cfg = NULL,
-  self_contained = FALSE, thumb = TRUE, auto_cog_data = TRUE,
-  split_layout = FALSE
+  self_contained = FALSE, thumb = TRUE, auto_cog = FALSE,
+  split_layout = FALSE, data = ggplot2::waiver()
 ) {
 
   if (split_layout)
@@ -65,8 +65,9 @@ facet_trelliscope <- function(
     as_plotly = as_plotly,
     plotly_args = plotly_args,
     plotly_cfg = plotly_cfg,
-    auto_cog_data = auto_cog_data,
-    split_layout = split_layout
+    auto_cog = auto_cog,
+    split_layout = split_layout,
+    data = data
   )
 
   class(ret) <- "facet_trelliscope"
@@ -84,8 +85,8 @@ facet_trelliscope <- function(
     # e1 <- e1 %+% (e2$facet_wrap)
     attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group", "desc", "md_desc",
       "height", "width", "state", "jsonp", "self_contained", "path", "state", "nrow", "ncol",
-      "scales", "thumb", "as_plotly", "plotly_args", "plotly_cfg", "auto_cog_data",
-      "split_layout")]
+      "scales", "thumb", "as_plotly", "plotly_args", "plotly_cfg", "auto_cog", "split_layout",
+      "data")]
     class(e1) <- c("facet_trelliscope", class(e1))
     return(e1)
     # return(print(e1))
@@ -124,7 +125,7 @@ print.facet_trelliscope <- function(x, ...) {
     }
   }
 
-  if (isTRUE(attrs$auto_cog_data)) {
+  if (inherits(attrs$data, "waiver")) {
     message("using data from the first layer")
     # data <- ggplot2::layer_data(p, 1) # first layer data # this is computed data
     data <- p$layers[[1]]$data # first layer data
@@ -132,9 +133,13 @@ print.facet_trelliscope <- function(x, ...) {
       # retrieve plot data
       data <- p$data
     }
+  } else {
+    # user supplied
+    data <- attrs$data
+  }
 
-  } else if (is.data.frame(attrs$auto_cog_data)) {
-    data <- attrs$auto_cog_data
+  if (is.null(data)) {
+    stop("non-NULL data must be provided either in the first plot layer or in the 'data' parameter")
   }
 
   # character vect of facet columns
@@ -146,49 +151,53 @@ print.facet_trelliscope <- function(x, ...) {
 
   # group by all the facets
   data <- data %>%
-    group_by_(.dots = lapply(facet_cols, as.symbol)) %>%
-    auto_cogs()
-  data$.id <- seq_len(nrow(data))
-
-  cog_desc <- attr(data$auto_cogs, "cog_desc")
-  # with dplyr 0.7, unnest can take result of "head" for some reason, but not original data...
-  cog_df <- data %>% select(-one_of("data")) %>%
-    utils::head(nrow(data)) %>% tidyr::unnest()
-  cog_df <- as_cognostics(cog_df, cond_cols = facet_cols, cog_desc = cog_desc)
+    mutate(
+      .id = seq_len(nrow(data))
+    ) %>%
+    group_by_(.dots = lapply(facet_cols, as.symbol))
 
   # get ranges of all data
   scales_info <- upgrade_scales_param(attrs$scales, p$facet)
   scales_info <- add_range_info_to_scales(p, scales_info, attrs$facet_cols)
 
   # wrapper function that swaps out the data with a subset and removes the facet
-  make_plot_obj <- function(dt, as_plotly = FALSE, plotly_args = NULL,
-    plotly_cfg = NULL, pos = -1) {
-
+  make_plot_obj <- function(dt, pos = -1) {
     q <- p
     q$data <- dt
-    q <- add_trelliscope_scales(q, scales_info, showWarnings = (pos == 1))
-    if (as_plotly) {
-      q <- do.call(plotly::ggplotly, c(list(p = q), plotly_args))
-      if (!is.null(plotly_cfg)) {
-        q <- do.call(plotly::config, c(list(p = q), plotly_cfg))
-      }
-    }
+    q <- add_trelliscope_scales(q, scales_info, show_warnings = (pos == 1))
     q
   }
 
-  panels <- (
-    data %>%
-      purrrlyr::by_row(~
-        make_plot_obj(
-          unnest(.x[c(facet_cols, "data")]),
-          as_plotly = attrs$as_plotly,
-          plotly_args = attrs$plotly_args,
-          plotly_cfg = attrs$plotly_cfg,
-          pos = .$.id
-        ),
-        .labels = FALSE
-      )
-  )[[1]]
+  panel_data <- data %>%
+    do(
+      panel = make_plot_obj(., unique(.$.id))
+    )
+
+  cog_info <- panel_data %>% cog_df_info(
+    panel_col = "panel",
+    state = attrs$state,
+    auto_cog = attrs$auto_cog,
+    nested_data_list = nest(data)$data
+  )
+  cog_df <- cog_info$cog_df
+  attrs$state <- cog_info$state
+
+  panels <- panel_data$panel
+
+  if (isTRUE(attrs$as_plotly)) {
+    plotly_args <- attrs$plotly_args
+    panels <- panels %>%
+      lapply(function(q) {
+        do.call(ggplotly, c(list(p = q), plotly_args))
+      })
+    if (!is.null(attrs$plotly_cfg)) {
+      plotly_cfg <- attrs$plotly_cfg
+      panels <- panels %>%
+        lapply(function(q) {
+          do.call(plotly::config, c(list(p = q), plotly_cfg))
+        })
+    }
+  }
 
   names(panels) <- cog_df$panelKey # nolint
 
@@ -286,6 +295,10 @@ print.facet_trelliscope <- function(x, ...) {
   print(res)
 }
 
+
+
+
+
 upgrade_scales_param <- function(scales, plot_facet) {
   if (length(scales) > 2)
     stop("scales must not be longer than length 2")
@@ -338,20 +351,20 @@ str_detect <- function(x, pattern) {
   grepl(pattern, x)
 }
 
-axis_left_width <- function(pg, unitTo = "cm") {
-  grid::convertWidth(sum(grid::convertWidth(pg$widths, unitTo = unitTo)), unitTo = unitTo)
+axis_left_width <- function(pg, unit_to = "cm") {
+  grid::convertWidth(sum(grid::convertWidth(pg$widths, unitTo = unit_to)), unitTo = unit_to)
 }
 
-axis_bottom_height <- function(pg, unitTo = "cm") {
-  grid::convertHeight(sum(grid::convertHeight(pg$heights, unitTo = unitTo)), unitTo = unitTo)
+axis_bottom_height <- function(pg, unit_to = "cm") {
+  grid::convertHeight(sum(grid::convertHeight(pg$heights, unitTo = unit_to)), unitTo = unit_to)
 }
 
-legend_width_or_height <- function(pg, section, default_value, unitTo = "cm") {
-  val <- grid::convertHeight(pg[[section]][1], unitTo = unitTo, valueOnly = TRUE)
+legend_width_or_height <- function(pg, section, default_value, unit_to = "cm") {
+  val <- grid::convertHeight(pg[[section]][1], unitTo = unit_to, valueOnly = TRUE)
   if (val == 0) {
     default_value
   } else {
-    grid::unit(val, unitTo)
+    grid::unit(val, unit_to)
   }
 }
 
@@ -444,6 +457,7 @@ extract_legend <- function(p, pg = plot_gtable(p)) {
 
 plot_clone <- utils::getFromNamespace("plot_clone", "ggplot2")
 
+#' @importFrom utils packageVersion
 add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
   x_scale_type <- scales_info$x_info$scale_type
   y_scale_type <- scales_info$y_info$scale_type
@@ -560,7 +574,7 @@ add_trelliscope_scales <- function(p, scales_info, ...) {
 
 # the goal is to add a scale if a scale doesn't already exist.
 # if a scale exists, we should NOT overwrite it.
-add_trelliscope_scale <- function(p, axis_name, scale_info, showWarnings = FALSE) {
+add_trelliscope_scale <- function(p, axis_name, scale_info, show_warnings = FALSE) {
   axis_scales <- p$scales$get_scales(axis_name)
   if (!is.null(axis_scales$limits)) {
     # return if there already is a limit set for this axis
@@ -574,7 +588,7 @@ add_trelliscope_scale <- function(p, axis_name, scale_info, showWarnings = FALSE
   ) {
     # this is a possibly calculated axis, leave alone
     if (
-      isTRUE(showWarnings) &&
+      isTRUE(show_warnings) &&
       scale_type != "free" &&
       is.null(p$scales$get_scales(axis_name))
     ) {
@@ -635,7 +649,7 @@ add_trelliscope_scale <- function(p, axis_name, scale_info, showWarnings = FALSE
         }
       }
     } else if (scale_info$data_type == "discrete") {
-      data_column <- eval(p$mapping[[axis_name]], envir = p$data)
+      # data_column <- eval(p$mapping[[axis_name]], envir = p$data)
 
       scale_fn <- switch(axis_name,
         "x" = scale_x_discrete,

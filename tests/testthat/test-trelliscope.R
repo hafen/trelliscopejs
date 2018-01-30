@@ -2,11 +2,11 @@ context("trelliscope")
 
 test_that("examples run without barfing", {
 
-  library(dplyr)
-  library(tidyr)
-  library(purrr)
-  library(rbokeh)
-  library(ggplot2)
+  suppressPackageStartupMessages(library(dplyr))
+  suppressPackageStartupMessages(library(tidyr))
+  suppressPackageStartupMessages(library(purrr))
+  suppressPackageStartupMessages(library(rbokeh))
+  suppressPackageStartupMessages(library(ggplot2))
 
   # tidyverse + rbokeh
   d <- mpg %>%
@@ -117,8 +117,12 @@ test_that("examples run without barfing", {
   ## ggplot2
   ##---------------------------------------------------------
 
+  # library(ggplot2)
+  # qplot(cty, hwy, data = mpg) +
+  #   facet_trelliscope(~ class, auto_cog = FALSE)
+
   p <- qplot(cty, hwy, data = mpg) +
-    facet_trelliscope(~ class + manufacturer, self_contained = TRUE)
+    facet_trelliscope(~ class, self_contained = TRUE)
   print(p)
 
   # not required, but if you set labels, these will be added as
@@ -127,13 +131,13 @@ test_that("examples run without barfing", {
 
   p <- qplot(cty, hwy, data = mpg) +
     theme_bw() +
-    facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4)
+    facet_trelliscope(~ class, nrow = 2, ncol = 4)
   print(p)
 
   p <- qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
     facet_trelliscope(~ class, ncol = 7, height = 800, width = 200,
-      state = list(sort = list(sort_spec("cty_mean"))), path = "_test",
-      scales = c("free", "same")) +
+      state = list(sort = list(sort_spec("mean"))), path = "_test",
+      scales = c("free", "same"), auto_cog = c(T, F)) +
     theme_bw()
   print(p)
 
@@ -195,5 +199,39 @@ test_that("examples run without barfing", {
       })) %>%
     trelliscope(name = "iris", thumb = FALSE)
   print(p)
+
+
+  iris_sample <- iris %>% mutate(sample = sample(Species, 150))
+  expect_error({
+    p <- qplot(Sepal.Width, Sepal.Length, data = iris_sample) +
+      facet_trelliscope(~ Species, "iris_sample", auto_cog = TRUE)
+    print(p)
+  })
+  expect_error({
+    p <- qplot(Sepal.Width, Sepal.Length, data = iris_sample) +
+      facet_trelliscope(~ Species, 1, "iris_sample", auto_cog = TRUE)
+    print(p)
+  })
+  expect_error({
+    p <- qplot(Sepal.Width, Sepal.Length, data = iris_sample) +
+      facet_trelliscope(~ Species, 1:10, name = "iris_sample", auto_cog = TRUE)
+    print(p)
+  })
+  expect_error({
+    p <- qplot(Sepal.Width, Sepal.Length, data = iris_sample) +
+      facet_trelliscope(~ Species, 2.3, name = "iris_sample", auto_cog = TRUE)
+    print(p)
+  })
+  expect_error({
+    p <- qplot(Sepal.Width, Sepal.Length, data = iris_sample) +
+      facet_trelliscope(~ Species, 0, name = "iris_sample", auto_cog = TRUE)
+    print(p)
+  })
+  p <- qplot(Sepal.Width, Sepal.Length, data = iris_sample) +
+    facet_trelliscope(~ Species, name = "iris_sample", auto_cog = TRUE)
+  print(p)
+
+
+
 
 })

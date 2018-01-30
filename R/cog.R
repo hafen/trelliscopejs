@@ -154,9 +154,10 @@ cog_href <- function(x, desc = "link", group = "common",
 #' @param cog_desc an optional named list of descriptions for the cognostics columns
 #' @param needs_key does the result need to have a "key" column?
 #' @param needs_cond does the result need to have conditioning variable columns?
+#' @param group value to be used in the \code{\link{cog}} group
 #' @export
 as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
-  needs_key = TRUE, needs_cond = TRUE) {
+  needs_key = TRUE, needs_cond = TRUE, group = "common") {
   # make each column a true cognostic so things are consistent downstream
 
   if (needs_key) {
@@ -187,15 +188,17 @@ as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
   # any variables that aren't cogs, fill them in...
   has_no_cog <- which(!sapply(x, function(x) inherits(x, "cog")))
   nms <- names(x)
+
   if (length(has_no_cog) > 0) {
     for (idx in has_no_cog) {
       desc <- cog_desc[[nms[idx]]]
       if (!is.character(desc))
         desc <- nms[idx]
+
       if (all(grepl("https*://", x[[idx]]))) {
-        x[[idx]] <- cog_href(x[[idx]], desc = paste(desc, "(link)"))
+        x[[idx]] <- cog_href(x[[idx]], desc = paste(desc, "(link)"), group = group)
       } else {
-        x[[idx]] <- cog(x[[idx]], desc = desc)
+        x[[idx]] <- cog(x[[idx]], desc = desc, group = group)
       }
     }
   }
@@ -210,4 +213,172 @@ as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
 
   class(x) <- c(class(x), "cognostics")
   x
+}
+
+
+
+
+#' @importFrom autocogs panel_cogs
+cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list = NULL) {
+
+  atomic_cols <- names(x)[sapply(x, is.atomic)]
+  non_atomic_cols <- setdiff(names(x), c(atomic_cols, panel_col))
+  is_nested <- length(non_atomic_cols) > 0
+
+  if (length(atomic_cols) == 0)
+    stop_nice("There must be at least one atomic column in the data frame passed in",
+      "to trelliscope.data.frame")
+
+  cond_cols <- find_cond_cols(x[atomic_cols], is_nested)
+
+  # if we are no longer sorted by a cond_col but are sorted by something else
+  # and if sort state is not already specified, then set that as state
+  if (is.unsorted(x[[cond_cols[1]]])) {
+    sort_cols <- find_sort_cols(x[setdiff(atomic_cols, cond_cols)])
+
+    if (nrow(sort_cols) > 0) {
+      cond_not_sorted <- !sort_cols$name %in% cond_cols
+      other_sorted <- setdiff(sort_cols$name, cond_cols)
+      if (is.null(state$sort) && cond_not_sorted && length(other_sorted) > 0) {
+        if (is.null(state))
+          state <- list()
+        state$sort <- lapply(other_sorted, function(a) {
+          list(name = a, dir = sort_cols$dir[sort_cols$name == a])
+        })
+        if (is.null(state$labels)) {
+          state$labels <- c(cond_cols, other_sorted)
+        }
+      }
+    }
+  }
+
+  cogs <- list(as_cognostics(x[atomic_cols], cond_cols))
+
+  if (!is.null(nested_data_list)) {
+    # add unique data within nested data
+    distinct_counts <- nested_data_list %>% purrr::map_df(. %>% summarise_all(n_distinct))
+    unique_cols <- names(distinct_counts)[sapply(distinct_counts, function(x) all(x == 1))]
+    if (length(unique_cols) > 0) {
+      cogs[[length(cogs) + 1]] <- nested_data_list %>%
+        lapply(function(sub_dt) {
+          sub_dt[1, unique_cols]
+        }) %>%
+        bind_rows() %>%
+        as_cognostics(
+          needs_key = FALSE, needs_cond = FALSE,
+          group = "_data",
+          cog_desc = NULL
+        )
+    }
+
+    # calculate non unique cognostics
+    non_unique_cols <- setdiff(names(distinct_counts), c(unique_cols, ".id"))
+    if (length(non_unique_cols) > 1) {
+
+      data_cogs <- non_unique_cols %>%
+        lapply(function(non_unique_col) {
+          res <- lapply(nested_data_list, function(sub_dt) {
+            column <- sub_dt[[non_unique_col]]
+            if (is.character(column) || is.factor(column)) {
+              autocogs::autocog_univariate_discrete(as.character(column))
+            } else if (is.numeric(column)) {
+              autocogs::autocog_univariate_continuous(column)
+            } else {
+              NULL
+            }
+          }) %>%
+            bind_rows()
+
+          # add the name to make it extra discriptive
+          # TODO remove once visual grouping is done
+          colnames(res) <- paste0(non_unique_col, "_", colnames(res))
+          res
+        })
+
+      # run a loop over all non_unique_cols
+      for (i in seq_along(non_unique_cols)) {
+        non_unique_col <- non_unique_cols[i]
+        data_cog <- data_cogs[[i]]
+        cogs[[length(cogs) + 1]] <- as_cognostics(
+            data_cog,
+            needs_key = FALSE, needs_cond = FALSE,
+            group = non_unique_col,
+            cog_desc = NULL
+          )
+      }
+    }
+  }
+
+  if (length(non_atomic_cols) > 0) {
+    usable <- non_atomic_cols[sapply(x[non_atomic_cols],
+      function(a) is.data.frame(a[[1]]))]
+    needs_auto <- usable[sapply(x[usable], function(a) {
+      any(sapply(a, nrow) > 1)
+    })]
+
+    no_needs_auto <- setdiff(usable, needs_auto)
+    for (a in no_needs_auto) {
+      to_auto_list <- x[[a]]
+      if (inherits(to_auto_list, "trelliscope_cogs")) {
+        class(to_auto_list) <- "list"
+      }
+
+      # retrieve autocog description (or any other desc)
+      non_null_pos <- ! unlist(lapply(to_auto_list, is.null))
+
+      tmp <- suppressWarnings(bind_rows(to_auto_list))
+
+      # retrieve the first non null cognostic descriptions
+      #   from each nested cog data
+      cog_desc <- list()
+      if (sum(non_null_pos) > 0) {
+        # get first non null attr
+        non_null_row_dt <- to_auto_list[non_null_pos][[1]]
+
+        # get attributes
+        one_row_attrs <- lapply(non_null_row_dt, attributes)
+
+        # extract description attrs
+        cog_desc <- lapply(one_row_attrs, `[[`, "desc")
+
+        # store attributes of each column of first non null info
+        for (nm in names(tmp)) {
+          attributes(tmp[[nm]]) <- one_row_attrs[[nm]]
+        }
+      }
+
+      cogs[[length(cogs) + 1]] <- tmp %>%
+        as_cognostics(
+          needs_key = FALSE, needs_cond = FALSE,
+          group = a,
+          cog_desc = cog_desc
+      )
+    }
+  }
+
+  # add automatic cognostics from autocogs
+  if (!(identical(auto_cog, FALSE) || is.null(auto_cog))) {
+    panel_cog_list <- panel_cogs(x, panel_col = panel_col, layers = auto_cog)
+    for (nm in names(panel_cog_list)) {
+      panel_cog_dt <- panel_cog_list[[nm]] %>% bind_rows()
+      colnames(panel_cog_dt) <- paste0(nm, "_", colnames(panel_cog_dt))
+      cogs[[length(cogs) + 1]] <- as_cognostics(
+          panel_cog_dt,
+          needs_key = FALSE, needs_cond = FALSE,
+          group = nm,
+          cog_desc = NULL
+      )
+
+    }
+  }
+
+  cog_df <- bind_cols(cogs)
+
+  list(
+    cog_df = cog_df,
+    cond_cols = cond_cols,
+    atomic_cols = atomic_cols,
+    non_atomic_cols = non_atomic_cols,
+    state = state
+  )
 }

@@ -30,7 +30,8 @@ Imports:
     progress,
     utils,
     knitr,
-    webshot
+    webshot,
+    autocogs
 Suggests:
     rbokeh,
     plotly,
@@ -40,6 +41,8 @@ Suggests:
     gapminder,
     housingData,
     packagedocs
+Remotes:
+    schloerke/autocogs
 RoxygenNote: 6.0.1
 URL: https://github.com/hafen/trelliscopejs
 BugReports: https://github.com/hafen/trelliscopejs/issues

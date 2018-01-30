@@ -20,21 +20,19 @@
 - Don't import plotly explicitly since it's optional (0.1.4)
 - Experimental initial support for ggplotly with facet_trelliscope (0.1.4)
 - Update tests (0.1.3)
-- Make as_cognostics not always require key and cond_cols (0.1.3)
+- Make `as_cognostics()` not always require key and `cond_cols` (0.1.3)
 - Fix issue where cog data is written to 'pretty' json when it shouldn't be (0.1.3)
 - Fix bug in self_contained where cogs aren't parsed correctly (0.1.3)
-- Make as_cognostics not always require key and cond_cols
 - Fix issue where cog data is written to 'pretty' json when it shouldn't be
 - Fix bug in self_contained where cogs aren't parsed correctly
-- Make as_cognostics not always require key and cond_cols
 - Make nested cogs preserve attributes
 - Fix progress bar issue introduced with img_panel
-- Add example for cogs()
+- Add example for `cogs()`
 - Add img_panel function
 - Update cogs to support panelSrc and make cog_href automatic if URLs detected
 - Update trelliscopejs-lib
 - Make auto_cog ignore already-computed cognostics
-- Add auto_cog option to trelliscope()
+- Add auto_cog option to `trelliscope()`
 - Update vignettes
 - Update docs
 - http -> https
@@ -48,7 +46,6 @@
 - Make default sorting on conditional variables rather than default labels
 - Add cog_href
 - Rename to trelliscopejs
-- Add auto_cogs function and update functions to use it
 - Remove unnecessary dependencies
 - Minor bug fixes and more test coverage
 - Add code coverage to travis

@@ -5,7 +5,7 @@
 \title{Cast a data frame as a cognostics data frame}
 \usage{
 as_cognostics(x, cond_cols, key_col = NULL, cog_desc = NULL,
-  needs_key = TRUE, needs_cond = TRUE)
+  needs_key = TRUE, needs_cond = TRUE, group = "common")
 }
 \arguments{
 \item{x}{a data frame}
@@ -19,6 +19,8 @@ as_cognostics(x, cond_cols, key_col = NULL, cog_desc = NULL,
 \item{needs_key}{does the result need to have a "key" column?}
 
 \item{needs_cond}{does the result need to have conditioning variable columns?}
+
+\item{group}{value to be used in the \code{\link{cog}} group}
 }
 \description{
 Cast a data frame as a cognostics data frame
