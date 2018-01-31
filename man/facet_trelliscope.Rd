@@ -9,7 +9,7 @@ facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
   md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
   state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL,
   plotly_cfg = NULL, self_contained = FALSE, thumb = TRUE,
-  auto_cog = TRUE, split_layout = FALSE, data = ggplot2::waiver())
+  auto_cog = FALSE, split_layout = FALSE, data = ggplot2::waiver())
 }
 \arguments{
 \item{facets}{formula to facet the panels on. Similar to \code{ggplot2::\link[ggplot2]{facet_wrap}}'s \code{facets}}
