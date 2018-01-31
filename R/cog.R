@@ -217,6 +217,37 @@ as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
 
 
 
+bind_cog_list_and_descs <- function(cog_list) {
+  # retrieve autocog description (or any other desc)
+  non_null_pos <- ! unlist(lapply(cog_list, is.null))
+
+  res <- suppressWarnings(bind_rows(cog_list))
+
+  # retrieve the first non null cognostic descriptions
+  #   from each nested cog data
+  cog_desc <- list()
+  if (sum(non_null_pos) > 0) {
+    # get first non null attr
+    non_null_row_dt <- cog_list[non_null_pos][[1]]
+
+    # get attributes
+    one_row_attrs <- lapply(non_null_row_dt, attributes)
+
+    # extract description attrs
+    cog_desc <- lapply(one_row_attrs, `[[`, "desc")
+
+    # store attributes of each column of first non null info
+    for (nm in names(res)) {
+      attributes(res[[nm]]) <- one_row_attrs[[nm]]
+    }
+  }
+
+  list(
+    cog_df = res,
+    cog_desc = cog_desc
+  )
+}
+
 
 #' @importFrom autocogs panel_cogs
 cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list = NULL) {
@@ -275,35 +306,35 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list 
     non_unique_cols <- setdiff(names(distinct_counts), c(unique_cols, ".id"))
     if (length(non_unique_cols) > 1) {
 
-      data_cogs <- non_unique_cols %>%
-        lapply(function(non_unique_col) {
-          res <- lapply(nested_data_list, function(sub_dt) {
-            column <- sub_dt[[non_unique_col]]
-            if (is.character(column) || is.factor(column)) {
-              autocogs::autocog_univariate_discrete(as.character(column))
-            } else if (is.numeric(column)) {
-              autocogs::autocog_univariate_continuous(column)
-            } else {
-              NULL
-            }
-          }) %>%
-            bind_rows()
-
-          # add the name to make it extra discriptive
-          # TODO remove once visual grouping is done
-          colnames(res) <- paste0(non_unique_col, "_", colnames(res))
-          res
-        })
-
       # run a loop over all non_unique_cols
       for (i in seq_along(non_unique_cols)) {
-        non_unique_col <- non_unique_cols[i]
-        data_cog <- data_cogs[[i]]
+        non_unique_col <- non_unique_cols[[i]]
+
+        non_unique_cog_i <- lapply(nested_data_list, function(sub_dt) {
+          column <- sub_dt[[non_unique_col]]
+          if (is.character(column) || is.factor(column)) {
+            autocogs::autocog_univariate_discrete(as.character(column))
+          } else if (is.numeric(column)) {
+            autocogs::autocog_univariate_continuous(column)
+          } else {
+            NULL
+          }
+        })
+
+        tmp <- bind_cog_list_and_descs(non_unique_cog_i)
+        non_unique_cog_df <- tmp$cog_df
+        cog_desc <- tmp$cog_desc
+
+        # add the name to make it extra discriptive
+        # TODO remove once visual grouping is done
+        names(cog_desc) <- paste0(non_unique_col, "_", names(cog_desc))
+        colnames(non_unique_cog_df) <- paste0(non_unique_col, "_", colnames(non_unique_cog_df))
+
         cogs[[length(cogs) + 1]] <- as_cognostics(
-            data_cog,
+            non_unique_cog_df,
             needs_key = FALSE, needs_cond = FALSE,
             group = non_unique_col,
-            cog_desc = NULL
+            cog_desc = cog_desc
           )
       }
     }
@@ -323,31 +354,11 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list 
         class(to_auto_list) <- "list"
       }
 
-      # retrieve autocog description (or any other desc)
-      non_null_pos <- ! unlist(lapply(to_auto_list, is.null))
+      tmp <- bind_cog_list_and_descs(to_auto_list)
+      auto_df <- tmp$cog_df
+      cog_desc <- tmp$cog_desc
 
-      tmp <- suppressWarnings(bind_rows(to_auto_list))
-
-      # retrieve the first non null cognostic descriptions
-      #   from each nested cog data
-      cog_desc <- list()
-      if (sum(non_null_pos) > 0) {
-        # get first non null attr
-        non_null_row_dt <- to_auto_list[non_null_pos][[1]]
-
-        # get attributes
-        one_row_attrs <- lapply(non_null_row_dt, attributes)
-
-        # extract description attrs
-        cog_desc <- lapply(one_row_attrs, `[[`, "desc")
-
-        # store attributes of each column of first non null info
-        for (nm in names(tmp)) {
-          attributes(tmp[[nm]]) <- one_row_attrs[[nm]]
-        }
-      }
-
-      cogs[[length(cogs) + 1]] <- tmp %>%
+      cogs[[length(cogs) + 1]] <- auto_df %>%
         as_cognostics(
           needs_key = FALSE, needs_cond = FALSE,
           group = a,
@@ -360,13 +371,16 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list 
   if (!(identical(auto_cog, FALSE) || is.null(auto_cog))) {
     panel_cog_list <- panel_cogs(x, panel_col = panel_col, layers = auto_cog)
     for (nm in names(panel_cog_list)) {
-      panel_cog_dt <- panel_cog_list[[nm]] %>% bind_rows()
+      tmp <- bind_cog_list_and_descs(panel_cog_list[[nm]])
+      panel_cog_dt <- tmp$cog_df
+      cog_desc <- tmp$cog_desc
+      names(cog_desc) <- paste0(nm, "_", names(cog_desc))
       colnames(panel_cog_dt) <- paste0(nm, "_", colnames(panel_cog_dt))
       cogs[[length(cogs) + 1]] <- as_cognostics(
           panel_cog_dt,
           needs_key = FALSE, needs_cond = FALSE,
           group = nm,
-          cog_desc = NULL
+          cog_desc = cog_desc
       )
 
     }

@@ -288,6 +288,7 @@ print.facet_trelliscope <- function(x, ...) {
     spa = params$spa
   )
 
+  # return early for knitr
   if (params$in_knitr) {
     return(res)
   }
