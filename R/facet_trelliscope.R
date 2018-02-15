@@ -126,7 +126,7 @@ print.facet_trelliscope <- function(x, ...) {
   }
 
   if (inherits(attrs$data, "waiver")) {
-    message("using data from the first layer")
+    # message("using data from the first layer")
     # data <- ggplot2::layer_data(p, 1) # first layer data # this is computed data
     data <- p$layers[[1]]$data # first layer data
     if (inherits(data, "waiver")) {
@@ -140,6 +140,10 @@ print.facet_trelliscope <- function(x, ...) {
 
   if (is.null(data)) {
     stop("non-NULL data must be provided either in the first plot layer or in the 'data' parameter")
+  }
+
+  if (inherits(data, "grouped_df")) {
+    data <- dplyr::ungroup(data)
   }
 
   # character vect of facet columns
@@ -165,6 +169,7 @@ print.facet_trelliscope <- function(x, ...) {
     q <- p
     q$data <- dt
     q <- add_trelliscope_scales(q, scales_info, show_warnings = (pos == 1))
+    attr(q, "trelliscope") <- NULL
     q
   }
 
@@ -173,13 +178,27 @@ print.facet_trelliscope <- function(x, ...) {
       panel = make_plot_obj(., unique(.$.id))
     )
 
+  # before nesting the data, pull out any predefined cog attrs
+  cog_attrs <- lapply(data, function(x) attr(x, "cog_attrs"))
+
   cog_info <- panel_data %>% cog_df_info(
     panel_col = "panel",
     state = attrs$state,
     auto_cog = attrs$auto_cog,
-    nested_data_list = nest(data)$data
+    nested_data_list = tidyr::nest(data)$data
   )
   cog_df <- cog_info$cog_df
+
+  # apply attributes back to cog_df if they exist
+  for (atr in names(cog_attrs)) {
+    if (!is.null(cog_df[[atr]]) && !is.null(cog_attrs[[atr]])) {
+      cur_attr <- attr(cog_df[[atr]], "cog_attrs")
+      cog_attrs[[atr]]$group <- cur_attr$group
+      cog_attrs[[atr]]$type <- cur_attr$type
+      attr(cog_df[[atr]], "cog_attrs") <- cog_attrs[[atr]]
+    }
+  }
+
   attrs$state <- cog_info$state
 
   panels <- panel_data$panel

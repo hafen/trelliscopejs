@@ -7,20 +7,47 @@
 #' @export
 write_panels <- function(plot_list, ..., pb = NULL) {
 
+  if (is.null(pb))
+    pb <- progress::progress_bar$new(
+      total = length(plot_list), width = getOption("width") - 5,
+      format = ":what [:bar] :percent :current/:total eta::eta")
+
+  # if a cached version of the plots exists, use that
+  cache_dir <- getOption("TRELLISCOPE_PANEL_CACHE_DIR", NULL)
+  opts <- list(...)
+  jsonp <- ifelse(opts$jsonp, "jsonp", "json")
+  panel_path <- file.path(opts$base_path, "displays", opts$group, opts$name, jsonp)
+  cache_fp <- NULL
+  if (!is.null(cache_dir)) {
+    if (dir.exists(cache_dir)) {
+      plot_digest <- paste(digest::digest(plot_list), jsonp, sep = "_")
+      cache_fp <- file.path(cache_dir, paste0(plot_digest, ".zip"))
+      if (file.exists(cache_fp)) {
+        pb$tick(len = length(plot_list), tokens = list(what = "unzip cached panels "))
+        unzip(cache_fp, exdir = panel_path, junkpaths = TRUE)
+        return(invisible(NULL))
+      }
+    } else {
+      stop("Cache directory ", cache_dir, " was specified but not found.")
+    }
+  }
+
+  # write the plots
   nms <- names(plot_list)
   if (length(nms) == 0) {
     stop_nice("panels must be a named list, with the names being used as the panel key")
   }
 
-  if (is.null(pb))
-    pb <- progress::progress_bar$new(
-      total = length(nms), width = getOption("width") - 5,
-      format = ":what [:bar] :percent :current/:total eta::eta")
-
   lapply(nms, function(nm) {
     pb$tick(tokens = list(what = "writing panels      "))
     write_panel(plot_list[[nm]], key = nm, ...)
   })
+
+  do_cache <- getOption("TRELLISCOPE_PANELS_DO_CACHE", FALSE)
+  if (!is.null(cache_fp) && do_cache) {
+    pb$tick(tokens = list(what = "zip & cache panels  "))
+    utils::zip(cache_fp, list.files(panel_path, full.names = TRUE))
+  }
 
   invisible(NULL)
 }

@@ -28,7 +28,10 @@ get_png_units <- function(width, height, orig_width = width, res = 72,
 
 #' @importFrom grDevices png
 make_png <- function(p, file, width, height, orig_width = width, res = 72,
-  base_point_size = 12, pixelratio = 2) {
+  base_point_size = 12, pixelratio = NULL) {
+
+  if (is.null(pixelratio))
+    pixelratio <- getOption("TRELLISCOPE_PANEL_PIXEL_RATIO", 2)
 
   if (capabilities("aqua")) {
     pngfun <- grDevices::png
