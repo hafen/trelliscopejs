@@ -4,6 +4,7 @@
 #' @param pb optional progress bar object to pass in and use to report progress
 #' @param ... params passed directly to \code{\link{write_panel}}
 #' @import progress
+#' @importFrom utils zip unzip
 #' @export
 write_panels <- function(plot_list, ..., pb = NULL) {
 
@@ -24,7 +25,7 @@ write_panels <- function(plot_list, ..., pb = NULL) {
       cache_fp <- file.path(cache_dir, paste0(plot_digest, ".zip"))
       if (file.exists(cache_fp)) {
         pb$tick(len = length(plot_list), tokens = list(what = "unzip cached panels "))
-        unzip(cache_fp, exdir = panel_path, junkpaths = TRUE)
+        utils::unzip(cache_fp, exdir = panel_path, junkpaths = TRUE)
         return(invisible(NULL))
       }
     } else {
