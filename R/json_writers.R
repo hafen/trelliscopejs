@@ -22,7 +22,15 @@ write_panels <- function(plot_list, ..., pb = NULL) {
   cache_fp <- NULL
   if (!is.null(cache_dir)) {
     if (dir.exists(cache_dir)) {
-      plot_digest <- paste(digest::digest(plot_list), jsonp, sep = "_")
+      # assume a facet_trelliscope plot is uniquely defined by the output of
+      # its first panel and the collection of panel keys
+      p1key <- names(plot_list)[1]
+      write_panel(plot_list[[1]], key = p1key, ...)
+      fp <- file.path(opts$base_path, "displays", opts$group, opts$name,
+        ifelse(opts$jsonp, "jsonp", "json"),
+        paste(p1key, ".", ifelse(opts$jsonp, "jsonp", "json"), sep = ""))
+      p1digest <- digest::digest(readLines(fp, warn = FALSE))
+      plot_digest <- digest::digest(c(p1digest, names(plot_list)))
       cache_fp <- file.path(cache_dir, paste0(plot_digest, ".zip"))
       if (file.exists(cache_fp)) {
         pb$tick(len = length(plot_list), tokens = list(what = "unzip cached panels "))
