@@ -5,6 +5,7 @@
 #' @param ... params passed directly to \code{\link{write_panel}}
 #' @import progress
 #' @importFrom utils zip unzip
+#' @importFrom withr with_dir
 #' @export
 write_panels <- function(plot_list, ..., pb = NULL) {
 
@@ -25,7 +26,7 @@ write_panels <- function(plot_list, ..., pb = NULL) {
       cache_fp <- file.path(cache_dir, paste0(plot_digest, ".zip"))
       if (file.exists(cache_fp)) {
         pb$tick(len = length(plot_list), tokens = list(what = "unzip cached panels "))
-        utils::unzip(cache_fp, exdir = panel_path, junkpaths = TRUE)
+        utils::unzip(cache_fp, exdir = panel_path)
         return(invisible(NULL))
       }
     } else {
@@ -47,7 +48,7 @@ write_panels <- function(plot_list, ..., pb = NULL) {
   do_cache <- getOption("TRELLISCOPE_PANELS_DO_CACHE", FALSE)
   if (!is.null(cache_fp) && do_cache) {
     pb$tick(tokens = list(what = "zip & cache panels  "))
-    utils::zip(cache_fp, list.files(panel_path, full.names = TRUE))
+    withr::with_dir(panel_path, utils::zip(cache_fp, list.files(panel_path)))
   }
 
   invisible(NULL)
