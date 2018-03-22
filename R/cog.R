@@ -294,7 +294,7 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list 
         lapply(function(sub_dt) {
           sub_dt[1, unique_cols]
         }) %>%
-        bind_rows() %>%
+        dplyr::bind_rows() %>%
         as_cognostics(
           needs_key = FALSE, needs_cond = FALSE,
           group = "_data",

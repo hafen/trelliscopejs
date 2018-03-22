@@ -155,28 +155,34 @@ print.facet_trelliscope <- function(x, ...) {
 
   # group by all the facets
   data <- data %>%
-    mutate(
+    dplyr::mutate(
       .id = seq_len(nrow(data))
     ) %>%
-    group_by_(.dots = lapply(facet_cols, as.symbol))
+    dplyr::group_by_(.dots = lapply(facet_cols, as.symbol))
 
   # get ranges of all data
   scales_info <- upgrade_scales_param(attrs$scales, p$facet)
   scales_info <- add_range_info_to_scales(p, scales_info, attrs$facet_cols)
 
   # wrapper function that swaps out the data with a subset and removes the facet
-  make_plot_obj <- function(dt, pos = -1) {
+  make_plot_obj <- function(dt) {
     q <- p
     q$data <- dt
-    q <- add_trelliscope_scales(q, scales_info, show_warnings = (pos == 1))
+    q <- add_trelliscope_scales(q, scales_info, show_warnings = (dt$.id == 1))
     attr(q, "trelliscope") <- NULL
     q
   }
 
-  panel_data <- data %>%
-    do(
-      panel = make_plot_obj(., unique(.$.id))
-    )
+  # # this reorders things...
+  # panel_data <- data %>%
+  #   dplyr::do(
+  #     panel = make_plot_obj(., unique(.$.id))
+  #   )
+
+  panel_data  <- data %>%
+    tidyr::nest() %>%
+    mutate(panel = purrr::map(data, make_plot_obj)) %>%
+    select(-data)
 
   # before nesting the data, pull out any predefined cog attrs
   cog_attrs <- lapply(data, function(x) attr(x, "cog_attrs"))
