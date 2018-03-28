@@ -106,6 +106,11 @@ facet_trelliscope <- function(
 #' @export
 print.facet_trelliscope <- function(x, ...) {
 
+  if (Sys.getenv("DATACAMP_NO_PRINT") == "1") {
+    message("Printing trelliscope inside datacamp editor is disabled.")
+    return()
+  }
+
   attrs <- attr(x, "trelliscope")
 
   # copy for better name
