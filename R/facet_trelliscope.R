@@ -30,8 +30,10 @@ utils::globalVariables(c(".", "ggplotly"))
 facet_trelliscope <- function(
   facets,
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
-  desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL, height = 500, width = 500,
-  state = NULL, jsonp = TRUE, as_plotly = FALSE, plotly_args = NULL, plotly_cfg = NULL,
+  desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL,
+  height = 500, width = 500,
+  state = NULL, jsonp = TRUE, as_plotly = FALSE,
+  plotly_args = NULL, plotly_cfg = NULL,
   self_contained = FALSE, thumb = TRUE, auto_cog = FALSE,
   split_layout = FALSE, data = ggplot2::waiver()
 ) {
@@ -83,10 +85,10 @@ facet_trelliscope <- function(
   if (inherits(e2, "facet_trelliscope")) {
 
     # e1 <- e1 %+% (e2$facet_wrap)
-    attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group", "desc", "md_desc",
-      "height", "width", "state", "jsonp", "self_contained", "path", "state", "nrow", "ncol",
-      "scales", "thumb", "as_plotly", "plotly_args", "plotly_cfg", "auto_cog", "split_layout",
-      "data")]
+    attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group",
+      "desc", "md_desc", "height", "width", "state", "jsonp", "self_contained",
+      "path", "state", "nrow", "ncol", "scales", "thumb", "as_plotly",
+      "plotly_args", "plotly_cfg", "auto_cog", "split_layout", "data")]
     class(e1) <- c("facet_trelliscope", class(e1))
     return(e1)
     # return(print(e1))
@@ -103,6 +105,7 @@ facet_trelliscope <- function(
 #' @import dplyr
 #' @importFrom stats as.formula
 #' @importFrom tidyr nest nest_ unnest
+#' @importFrom ggplot2 ggplot_build
 #' @export
 print.facet_trelliscope <- function(x, ...) {
 
@@ -118,7 +121,7 @@ print.facet_trelliscope <- function(x, ...) {
   # remove special class
   class(p) <- setdiff(class(p), "facet_trelliscope")
 
-  pp <- ggplot_build(p)
+  pp <- ggplot2::ggplot_build(p)
 
   if (isTRUE(attrs$split_layout)) {
     first_panel_scales <- pp$layout$get_scales(1)
@@ -144,14 +147,16 @@ print.facet_trelliscope <- function(x, ...) {
   }
 
   if (is.null(data)) {
-    stop("non-NULL data must be provided either in the first plot layer or in the 'data' parameter")
+    stop("non-NULL data must be provided either in the first plot layer ",
+      "or in the 'data' parameter")
   }
 
   # character vect of facet columns
   # TODO need to work with facet_trelliscope(~ disp < 5)
   facet_cols <- unlist(lapply(attrs$facet_cols, as.character))
   if (!all(facet_cols %in% names(data))) {
-    stop("all facet_trelliscope facet columns must be found in the data being used")
+    stop("all facet_trelliscope facet columns must be found in the ",
+      "data being used")
   }
 
   # group by all the facets
@@ -193,7 +198,7 @@ print.facet_trelliscope <- function(x, ...) {
     plotly_args <- attrs$plotly_args
     panels <- panels %>%
       lapply(function(q) {
-        do.call(ggplotly, c(list(p = q), plotly_args))
+        do.call(plotly::ggplotly, c(list(p = q), plotly_args))
       })
     if (!is.null(attrs$plotly_cfg)) {
       plotly_cfg <- attrs$plotly_cfg
@@ -211,7 +216,8 @@ print.facet_trelliscope <- function(x, ...) {
     name <- paste("by_", paste(facet_cols, collapse = "_"), sep = "")
 
   params <- resolve_app_params(attrs$path, attrs$self_contained, attrs$jsonp,
-    name, attrs$group, attrs$state, attrs$nrow, attrs$ncol, attrs$thumb, attrs$split_layout)
+    name, attrs$group, attrs$state, attrs$nrow, attrs$ncol, attrs$thumb,
+    attrs$split_layout)
 
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",
@@ -350,7 +356,7 @@ upgrade_scales_param <- function(scales, plot_facet) {
 }
 
 plot_gtable <- function(p) {
-  ggplot_gtable(ggplot_build(p))
+  ggplot2::ggplot_gtable(ggplot2::ggplot_build(p))
 }
 
 str_detect <- function(x, pattern) {
@@ -358,15 +364,18 @@ str_detect <- function(x, pattern) {
 }
 
 axis_left_width <- function(pg, unit_to = "cm") {
-  grid::convertWidth(sum(grid::convertWidth(pg$widths, unitTo = unit_to)), unitTo = unit_to)
+  grid::convertWidth(sum(grid::convertWidth(pg$widths, unitTo = unit_to)),
+    unitTo = unit_to)
 }
 
 axis_bottom_height <- function(pg, unit_to = "cm") {
-  grid::convertHeight(sum(grid::convertHeight(pg$heights, unitTo = unit_to)), unitTo = unit_to)
+  grid::convertHeight(sum(grid::convertHeight(pg$heights, unitTo = unit_to)),
+    unitTo = unit_to)
 }
 
 legend_width_or_height <- function(pg, section, default_value, unit_to = "cm") {
-  val <- grid::convertHeight(pg[[section]][1], unitTo = unit_to, valueOnly = TRUE)
+  val <- grid::convertHeight(pg[[section]][1], unitTo = unit_to,
+    valueOnly = TRUE)
   if (val == 0) {
     default_value
   } else {

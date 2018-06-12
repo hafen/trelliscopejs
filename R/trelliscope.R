@@ -1,4 +1,4 @@
-#' Create a Trelliscope Display
+f#' Create a Trelliscope Display
 #'
 #' @param x an object to create at trelliscope display for
 #' @param name name of the display
