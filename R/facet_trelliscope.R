@@ -47,6 +47,9 @@ facet_trelliscope <- function(
         call. = FALSE)
   }
 
+  # facets_list <- ggplot2:::as_facets_list(facets)
+  # facets <- rlang::flatten_if(facets_list, rlang::is_list)
+
   ret <- list(
     facets = facets,
     facet_cols = facet_wrap(facets)$params$facets,
@@ -109,11 +112,6 @@ facet_trelliscope <- function(
 #' @export
 print.facet_trelliscope <- function(x, ...) {
 
-  if (getOption("DATACAMP_NO_PRINT", "") == "1") {
-    message("Printing trelliscope inside datacamp editor is disabled.")
-    return()
-  }
-
   attrs <- attr(x, "trelliscope")
 
   # copy for better name
@@ -154,6 +152,7 @@ print.facet_trelliscope <- function(x, ...) {
   # character vect of facet columns
   # TODO need to work with facet_trelliscope(~ disp < 5)
   facet_cols <- unlist(lapply(attrs$facet_cols, as.character))
+  facet_cols <- setdiff(facet_cols, "~")
   if (!all(facet_cols %in% names(data))) {
     stop("all facet_trelliscope facet columns must be found in the ",
       "data being used")
@@ -161,10 +160,9 @@ print.facet_trelliscope <- function(x, ...) {
 
   # group by all the facets
   data <- data %>%
-    mutate(
-      .id = seq_len(nrow(data))
-    ) %>%
-    group_by_(.dots = lapply(facet_cols, as.symbol))
+    dplyr::mutate(.id = seq_len(nrow(data))) %>%
+    dplyr::group_by_at(facet_cols) %>%
+    tidyr::nest()
 
   # get ranges of all data
   scales_info <- upgrade_scales_param(attrs$scales, p$facet)
@@ -173,21 +171,20 @@ print.facet_trelliscope <- function(x, ...) {
   # wrapper function that swaps out the data with a subset and removes the facet
   make_plot_obj <- function(dt, pos = -1) {
     q <- p
-    q$data <- dt
+    q$data <- tidyr::unnest(dt)
     q <- add_trelliscope_scales(q, scales_info, show_warnings = (pos == 1))
     q
   }
 
   panel_data <- data %>%
-    do(
-      panel = make_plot_obj(., unique(.$.id))
-    )
+    purrrlyr::by_row(make_plot_obj, .to = "panel") %>%
+    select(-data)
 
   cog_info <- panel_data %>% cog_df_info(
     panel_col = "panel",
     state = attrs$state,
     auto_cog = attrs$auto_cog,
-    nested_data_list = nest(data)$data
+    nested_data_list = data$data
   )
   cog_df <- cog_info$cog_df
   attrs$state <- cog_info$state
@@ -491,7 +488,12 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
       sliced = switch(y_scale_type, same = "free_x", "free"),
       same = switch(y_scale_type, same = "fixed", "free_y")
     )
-    facet_part <- facet_wrap(~ ., scales = scales_val)
+
+    if (packageVersion("ggplot2") > "2.2.1") {
+      facet_part <- facet_wrap(vars(facet_cols), scales = scales_val)
+    } else {
+      facet_part <- facet_wrap(~ ., scales = scales_val)
+    }
 
     if (inherits(scale_plot$facet, "FacetNull")) {
       # add a facet_wrap with scales == free and get limits
