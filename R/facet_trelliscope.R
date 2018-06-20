@@ -493,7 +493,7 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
     if (packageVersion("ggplot2") > "2.2.1") {
       facet_part <- facet_wrap(vars(facet_cols), scales = scales_val)
     } else {
-      facet_part <- facet_wrap(~ ., scales = scales_val)
+      facet_part <- facet_wrap(facet_cols, scales = scales_val)
     }
 
     if (inherits(scale_plot$facet, "FacetNull")) {

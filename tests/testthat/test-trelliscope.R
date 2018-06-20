@@ -144,9 +144,18 @@ test_that("examples run without barfing", {
     facet_trelliscope(vars(class), nrow = 2, ncol = 4)
   print(p)
 
-  p <- qplot(cty, hwy, data = mpg) +
-    theme_bw() +
-    facet_trelliscope(vars(class, manufacturer), nrow = 2, ncol = 4)
+  if (utils::packageVersion("ggplot2") > "2.2.1") {
+    p <- qplot(cty, hwy, data = mpg) +
+      theme_bw() +
+      facet_trelliscope(vars(class, manufacturer), nrow = 2, ncol = 4)
+    print(p)
+  }
+
+  p <- qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
+    facet_trelliscope(~ class + manufacturer, ncol = 7, height = 800, width = 200,
+      state = list(sort = list(sort_spec("cty_mean"))),
+      scales = c("free", "same")) +
+    theme_bw()
   print(p)
 
   p <- qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
