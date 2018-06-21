@@ -139,12 +139,12 @@ test_that("examples run without barfing", {
     facet_trelliscope(~ class + manufacturer, nrow = 2, ncol = 4)
   print(p)
 
-  p <- qplot(cty, hwy, data = mpg) +
-    theme_bw() +
-    facet_trelliscope(vars(class), nrow = 2, ncol = 4)
-  print(p)
-
   if (utils::packageVersion("ggplot2") > "2.2.1") {
+    p <- qplot(cty, hwy, data = mpg) +
+      theme_bw() +
+      facet_trelliscope(vars(class), nrow = 2, ncol = 4)
+    print(p)
+
     p <- qplot(cty, hwy, data = mpg) +
       theme_bw() +
       facet_trelliscope(vars(class, manufacturer), nrow = 2, ncol = 4)
@@ -182,17 +182,6 @@ test_that("examples run without barfing", {
   print(p)
 
   ## other tidyverse functions
-
-  p <- iris %>%
-    nest(-Species) %>%
-    mutate(mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x))) %>%
-    by_row_plot(function(x) {
-      figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
-        ly_points(x$data[[1]]$Sepal.Width, x$data[[1]]$Sepal.Length) %>%
-        ly_abline(x$mod[[1]])
-    }) %>%
-    trelliscope(name = "iris", thumb = FALSE)
-  print(p)
 
   p <- iris %>%
     nest(-Species) %>%
@@ -254,8 +243,5 @@ test_that("examples run without barfing", {
   p <- qplot(Sepal.Width, Sepal.Length, data = iris_sample) +
     facet_trelliscope(~ Species, name = "iris_sample", auto_cog = TRUE)
   print(p)
-
-
-
 
 })
