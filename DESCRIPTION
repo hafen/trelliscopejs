@@ -14,7 +14,6 @@ LazyData: true
 Imports:
     dplyr,
     purrr,
-    purrrlyr,
     tidyr,
     grid,
     htmltools,

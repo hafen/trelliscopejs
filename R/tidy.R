@@ -127,33 +127,33 @@ pmap_plot <- function(.l, .f, ...) {
   )
 }
 
-#' Apply a function to each row of a data frame and return a data frame with new column of plots
-#'
-#' @param .d A data frame.
-#' @param ..f A function to apply to each row. It should return a valid panel object (such as a ggplot2 / lattice / htmlwidget object).
-#' @param .to Name of output column (defaults to "panel").
-#' @details See \code{\link[purrrlyr]{by_row}}
-#' @examples
-#' \dontrun{
-#' library(tidyr)
-#' library(purrr)
-#' library(rbokeh)
-#' iris %>%
-#'   nest(-Species) %>%
-#'   mutate(mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x))) %>%
-#'   by_row_panel(function(x) {
-#'     figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
-#'       ly_points(x$data[[1]]$Sepal.Width, x$data[[1]]$Sepal.Length) %>%
-#'       ly_abline(x$mod[[1]])
-#'   }) %>%
-#'   trelliscope(name = "iris")
-#' }
-#' @export
-by_row_plot <- function(.d, ..f, .to = "panel") {
-  res <- purrrlyr::by_row(.d = .d, ..f = ..f, .to = .to)
-  class(res[[.to]]) <- c("trelliscope_panels", "list")
-  res
-}
+# #' Apply a function to each row of a data frame and return a data frame with new column of plots
+# #'
+# #' @param .d A data frame.
+# #' @param ..f A function to apply to each row. It should return a valid panel object (such as a ggplot2 / lattice / htmlwidget object).
+# #' @param .to Name of output column (defaults to "panel").
+# #' @details See \code{\link[purrrlyr]{by_row}}
+# #' @examples
+# #' \dontrun{
+# #' library(tidyr)
+# #' library(purrr)
+# #' library(rbokeh)
+# #' iris %>%
+# #'   nest(-Species) %>%
+# #'   mutate(mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x))) %>%
+# #'   by_row_panel(function(x) {
+# #'     figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
+# #'       ly_points(x$data[[1]]$Sepal.Width, x$data[[1]]$Sepal.Length) %>%
+# #'       ly_abline(x$mod[[1]])
+# #'   }) %>%
+# #'   trelliscope(name = "iris")
+# #' }
+# #' @export
+# by_row_plot <- function(.d, ..f, .to = "panel") {
+#   res <- purrrlyr::by_row(.d = .d, ..f = ..f, .to = .to)
+#   class(res[[.to]]) <- c("trelliscope_panels", "list")
+#   res
+# }
 
 #' Cogs Wrapper Function
 #'
@@ -253,41 +253,41 @@ pmap_cog <- function(.l, .f, ...) {
   )
 }
 
-#' Apply a function to each row of a data frame and return a data frame with new column of cognostics
-#'
-#' @param .d A data frame.
-#' @param ..f A function to apply to each row. It should return a single-row data frame of cognostics
-#' @param .to Name of output column (defaults to "cogs" or if "cogs" exists, "cogs1", etc.).
-#' @details See \code{\link[purrrlyr]{by_row}}
-#' @examples
-#' \dontrun{
-#' library(tidyr)
-#' library(purrr)
-#' library(rbokeh)
-#' iris %>%
-#'   nest(-Species) %>%
-#'   mutate(mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x))) %>%
-#'   panels_by_row(function(x) {
-#'     figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
-#'       ly_points(x$data[[1]]$Sepal.Width, x$data[[1]]$Sepal.Length) %>%
-#'       ly_abline(x$mod[[1]])
-#'   }) %>%
-#'   trelliscope(name = "iris")
-#' }
-#' @export
-by_row_cog <- function(.d, ..f, .to = NULL) {
-  if (is.null(.to)) {
-    nms <- names(.d)
-    nms <- nms[grepl("^cogs[0-9]*$", nms)]
-    if (length(nms) > 0) {
-      nums <- as.integer(gsub("cogs", "", nms))
-      nums[is.na(nums)] <- 0
-      .to <- paste0("cogs", max(nums) + 1)
-    } else {
-      .to <- "cogs"
-    }
-  }
-  res <- purrrlyr::by_row(.d = .d, ..f = ..f, .to = .to)
-  class(res[[.to]]) <- c("trelliscope_cogs", "list")
-  res
-}
+# #' Apply a function to each row of a data frame and return a data frame with new column of cognostics
+# #'
+# #' @param .d A data frame.
+# #' @param ..f A function to apply to each row. It should return a single-row data frame of cognostics
+# #' @param .to Name of output column (defaults to "cogs" or if "cogs" exists, "cogs1", etc.).
+# #' @details See \code{\link[purrrlyr]{by_row}}
+# #' @examples
+# #' \dontrun{
+# #' library(tidyr)
+# #' library(purrr)
+# #' library(rbokeh)
+# #' iris %>%
+# #'   nest(-Species) %>%
+# #'   mutate(mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x))) %>%
+# #'   panels_by_row(function(x) {
+# #'     figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
+# #'       ly_points(x$data[[1]]$Sepal.Width, x$data[[1]]$Sepal.Length) %>%
+# #'       ly_abline(x$mod[[1]])
+# #'   }) %>%
+# #'   trelliscope(name = "iris")
+# #' }
+# #' @export
+# by_row_cog <- function(.d, ..f, .to = NULL) {
+#   if (is.null(.to)) {
+#     nms <- names(.d)
+#     nms <- nms[grepl("^cogs[0-9]*$", nms)]
+#     if (length(nms) > 0) {
+#       nums <- as.integer(gsub("cogs", "", nms))
+#       nums[is.na(nums)] <- 0
+#       .to <- paste0("cogs", max(nums) + 1)
+#     } else {
+#       .to <- "cogs"
+#     }
+#   }
+#   res <- purrrlyr::by_row(.d = .d, ..f = ..f, .to = .to)
+#   class(res[[.to]]) <- c("trelliscope_cogs", "list")
+#   res
+# }

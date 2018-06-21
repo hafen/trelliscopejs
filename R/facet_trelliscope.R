@@ -177,11 +177,11 @@ print.facet_trelliscope <- function(x, ...) {
     q
   }
 
-  panel_data <- data %>%
-    purrrlyr::by_row(make_plot_obj, .to = "panel") %>%
-    select(-data)
+  data$panel <- lapply(seq_len(nrow(data)), function(i) {
+    make_plot_obj(data[i, ])
+  })
 
-  cog_info <- panel_data %>% cog_df_info(
+  cog_info <- select(data, -data) %>% cog_df_info(
     panel_col = "panel",
     state = attrs$state,
     auto_cog = attrs$auto_cog,
@@ -190,7 +190,7 @@ print.facet_trelliscope <- function(x, ...) {
   cog_df <- cog_info$cog_df
   attrs$state <- cog_info$state
 
-  panels <- panel_data$panel
+  panels <- data$panel
 
   if (isTRUE(attrs$as_plotly)) {
     plotly_args <- attrs$plotly_args
