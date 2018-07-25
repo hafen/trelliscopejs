@@ -262,8 +262,8 @@ get_cog_distributions <- function(cogdf, cat_cutoff = 5000) {
         x2 <- log10(x)
         rng <- range(x2, na.rm = TRUE)
         brks <- 10 ^ seq(rng[1], rng[2], length = grDevices::nclass.Sturges(x))
-        brks[1] <- min(min(x), brks[1])
-        brks[length(brks)] <- max(max(x), brks[length(brks)])
+        brks[1] <- min(min(x, na.rm = TRUE), brks[1])
+        brks[length(brks)] <- max(max(x, na.rm = TRUE), brks[length(brks)])
         lhst <- hist(x, breaks = brks, plot = FALSE)
         res$dist$log <- list(
           breaks = lhst$breaks,
