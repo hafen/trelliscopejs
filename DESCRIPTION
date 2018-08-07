@@ -30,7 +30,8 @@ Imports:
     utils,
     knitr,
     webshot,
-    autocogs
+    autocogs,
+    rlang
 Suggests:
     rbokeh,
     plotly,

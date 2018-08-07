@@ -577,7 +577,6 @@ add_range_info_to_scales <- function(plot, scales_info, facet_cols) {
         scales_info$y_info,
         scale_plot_built$layout$panel_scales[[scales_info$y_info$name]]
       )
-
     }
   }
 
@@ -590,6 +589,7 @@ add_trelliscope_scales <- function(p, scales_info, ...) {
     add_trelliscope_scale(scales_info$y_info$name, scales_info$y_info, ...)
 }
 
+#' @importFrom rlang eval_tidy
 # the goal is to add a scale if a scale doesn't already exist.
 # if a scale exists, we should NOT overwrite it.
 add_trelliscope_scale <- function(p, axis_name, scale_info, show_warnings = FALSE) {
@@ -651,9 +651,13 @@ add_trelliscope_scale <- function(p, axis_name, scale_info, show_warnings = FALS
         p <- p + scale_item
 
       } else if (scale_type == "sliced") {
-        eval(p$mapping[[axis_name]], envir = p$data) %>%
-          range(na.rm = TRUE) ->
-        dt_range
+        if (packageVersion("ggplot2") > "2.2.1") {
+          dt_range <- rlang::eval_tidy(p$mapping[[axis_name]], data = p$data) %>%
+            range(na.rm = TRUE)
+        } else {
+          dt_range <- eval(p$mapping[[axis_name]], envir = p$data) %>%
+            range(na.rm = TRUE)
+        }
 
         mid_range_val <- mean(dt_range)
 
