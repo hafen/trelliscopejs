@@ -158,6 +158,10 @@ print.facet_trelliscope <- function(x, ...) {
       "data being used")
   }
 
+  data_cog_attrs <- lapply(data, function(x) {
+    attr(x, "cog_attrs")
+  })
+
   # group by all the facets
   data <- data %>%
     ungroup() %>%
@@ -185,7 +189,8 @@ print.facet_trelliscope <- function(x, ...) {
     panel_col = "panel",
     state = attrs$state,
     auto_cog = attrs$auto_cog,
-    nested_data_list = data$data
+    nested_data_list = data$data,
+    nested_cog_attrs = data_cog_attrs
   )
   cog_df <- cog_info$cog_df
   attrs$state <- cog_info$state

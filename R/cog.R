@@ -250,7 +250,8 @@ bind_cog_list_and_descs <- function(cog_list) {
 
 
 #' @importFrom autocogs panel_cogs
-cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list = NULL) {
+cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list = NULL,
+  nested_cog_attrs = NULL) {
 
   atomic_cols <- names(x)[sapply(x, is.atomic)]
   non_atomic_cols <- setdiff(names(x), c(atomic_cols, panel_col))
@@ -290,16 +291,27 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list 
     distinct_counts <- nested_data_list %>% purrr::map_df(. %>% summarise_all(n_distinct))
     unique_cols <- names(distinct_counts)[sapply(distinct_counts, function(x) all(x == 1))]
     if (length(unique_cols) > 0) {
-      cogs[[length(cogs) + 1]] <- nested_data_list %>%
+      tmp <- nested_data_list %>%
         lapply(function(sub_dt) {
           sub_dt[1, unique_cols]
         }) %>%
-        bind_rows() %>%
-        as_cognostics(
-          needs_key = FALSE, needs_cond = FALSE,
-          group = "_data",
-          cog_desc = NULL
-        )
+        bind_rows()
+
+      # add nested cog attrs back in, if specified
+      for (nm in names(tmp)) {
+        ca <- nested_cog_attrs[[nm]]
+        if (!is.null(ca)) {
+          attr(tmp[[nm]], "cog_attrs") <- ca
+          class(tmp[[nm]]) <- c(class(nm), "cog")
+        }
+      }
+
+      cogs[[length(cogs) + 1]] <-  as_cognostics(
+        tmp,
+        needs_key = FALSE, needs_cond = FALSE,
+        group = "_data",
+        cog_desc = NULL
+      )
     }
 
     # calculate non unique cognostics
@@ -331,11 +343,11 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list 
         colnames(non_unique_cog_df) <- paste0(non_unique_col, "_", colnames(non_unique_cog_df))
 
         cogs[[length(cogs) + 1]] <- as_cognostics(
-            non_unique_cog_df,
-            needs_key = FALSE, needs_cond = FALSE,
-            group = non_unique_col,
-            cog_desc = cog_desc
-          )
+          non_unique_cog_df,
+          needs_key = FALSE, needs_cond = FALSE,
+          group = non_unique_col,
+          cog_desc = cog_desc
+        )
       }
     }
   }

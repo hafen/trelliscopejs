@@ -4,11 +4,11 @@
 \alias{write_display_obj}
 \title{Write a "display object" file for a Trelliscope app}
 \usage{
-write_display_obj(cogdf, panel_example, base_path, id, name, group = "common",
-  desc = "", height = 500, width = 500, md_desc = "", state = NULL,
-  jsonp = TRUE, panel_img_col = NULL, self_contained = FALSE,
-  thumb = TRUE, split_layout = FALSE, split_aspect = NULL,
-  has_legend = FALSE, pb = NULL)
+write_display_obj(cogdf, panel_example, base_path, id, name,
+  group = "common", desc = "", height = 500, width = 500,
+  md_desc = "", state = NULL, jsonp = TRUE, panel_img_col = NULL,
+  self_contained = FALSE, thumb = TRUE, split_layout = FALSE,
+  split_aspect = NULL, has_legend = FALSE, pb = NULL)
 }
 \arguments{
 \item{cogdf}{a data frame of cognostics, prepared with \code{\link{as_cognostics}}}
