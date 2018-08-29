@@ -38,18 +38,19 @@ cog <- function(val = NULL, desc = "", group = "common",
   filterable = TRUE, sortable = TRUE, log = NULL) {
 
   cog_types <- list(
-    key      = as.character,
-    integer  = as.integer,
-    numeric  = as.numeric,
-    factor   = as.character,
-    date     = as.Date,
-    time     = as.POSIXct,
-    panelSrc = as.character,
-    # color    = as.character,
-    # geo      = as.cogGeo,
-    # rel      = as.cogRel,
-    # hier     = as.cogHier,
-    href     = as.character
+    key           = as.character,
+    integer       = as.integer,
+    numeric       = as.numeric,
+    factor        = as.character,
+    date          = as.Date,
+    time          = as.POSIXct,
+    panelSrc      = as.character,
+    panelSrcLocal = as.character,
+    # color       = as.character,
+    # geo         = as.cogGeo,
+    # rel         = as.cogRel,
+    # hier        = as.cogHier,
+    href          = as.character
   )
 
   types <- names(cog_types)

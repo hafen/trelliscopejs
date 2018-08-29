@@ -29,6 +29,8 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
   desc = "", md_desc = "", path = NULL, height = 500, width = 500, auto_cog = FALSE,
   state = NULL, nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = FALSE) {
 
+  img_local <- FALSE
+
   panel_img_col <- names(which(unlist(lapply(x, function(a) {
     tp <- attr(a, "cog_attrs")$type
     if (is.null(tp))
@@ -36,8 +38,24 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
     if (tp == "panelSrc")
       return(TRUE)
   }))))
+
   if (length(panel_img_col) == 0)
     panel_img_col <- NULL
+
+  panel_img_local_col <- names(which(unlist(lapply(x, function(a) {
+    tp <- attr(a, "cog_attrs")$type
+    if (is.null(tp))
+      return(FALSE)
+    if (tp == "panelSrcLocal")
+      return(TRUE)
+  }))))
+
+  if (length(panel_img_local_col) == 0) {
+    panel_img_local_col <- NULL
+  } else {
+    panel_img_col <- panel_img_local_col
+    img_local <- TRUE
+  }
 
   # if the user specified panel_col, ignore panel_img_col unless they're the same
   if (!is.null(panel_col) && !is.null(panel_img_col)) {
@@ -106,6 +124,15 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
       pb = pb
     )
   } else {
+    if (img_local) {
+      ff <- list.files(params$www_dir, recursive = TRUE)
+      pths <- cog_df[[panel_img_col]]
+      chk <- length(which(pths %in% ff)) / length(pths)
+      if (chk < 0.5)
+        warning("Only found ", round(chk * 100), "% of specified local image in ",
+          params$www_dir, ". Please double check your path specified for local images.")
+    }
+
     pb$tick(tokens = list(what = "writing panels      "))
   }
 

@@ -27,6 +27,22 @@ img_panel <- function(x) {
     filterable = FALSE, sortable = FALSE)
 }
 
+#' Cast a vector of URLs pointing to local images as an image panel source
+#'
+#' @param x a vector of URLs pointing to images
+#' @export
+#' @examples
+#' @note \code{x} must be paths relative to the \code{path} argument passed to \code{\link{trelliscope}}.
+#' \dontrun{
+#' pokemon$img <- img_panel_local(paste0("images/", basename(pokemon$url_image)))
+#' trelliscope(pokemon, name = "pokemon", path = "_ignore/pokemon_local")
+#' }
+img_panel_local <- function(x) {
+  cog(x, desc = "panel image source URL", type = "panelSrcLocal",
+    filterable = FALSE, sortable = FALSE)
+}
+
+
 #' Set labels for a data frame
 #'
 #' @param dat a data frame to apply labels to
