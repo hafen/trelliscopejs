@@ -31,8 +31,8 @@ img_panel <- function(x) {
 #'
 #' @param x a vector of URLs pointing to images
 #' @export
-#' @examples
 #' @note \code{x} must be paths relative to the \code{path} argument passed to \code{\link{trelliscope}}.
+#' @examples
 #' \dontrun{
 #' pokemon$img <- img_panel_local(paste0("images/", basename(pokemon$url_image)))
 #' trelliscope(pokemon, name = "pokemon", path = "_ignore/pokemon_local")
