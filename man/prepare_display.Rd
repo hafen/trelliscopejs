@@ -2,7 +2,7 @@
 % Please edit documentation in R/json_writers.R
 \name{prepare_display}
 \alias{prepare_display}
-\title{Set up all auxilliary files needed for a Trelliscope app}
+\title{Set up all auxiliary files needed for a Trelliscope app}
 \usage{
 prepare_display(base_path, id, self_contained = FALSE, jsonp = TRUE,
   pb = NULL)
@@ -19,5 +19,5 @@ prepare_display(base_path, id, self_contained = FALSE, jsonp = TRUE,
 \item{pb}{optional progress bar object to pass in and use to report progress}
 }
 \description{
-Set up all auxilliary files needed for a Trelliscope app
+Set up all auxiliary files needed for a Trelliscope app
 }

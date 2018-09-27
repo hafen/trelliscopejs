@@ -2,7 +2,7 @@
 #'
 #' Cast a column of a cognostics data frame as a cognostic object
 #'
-#' @param val a scalar value (numeric, characer, date, etc.)
+#' @param val a scalar value (numeric, character, date, etc.)
 #' @param desc a description for this cognostic value
 #' @param group optional categorization of the cognostic for organizational purposes in the viewer (currently not implemented in the viewer)
 #' @param type the desired type of cognostic you would like to compute (see details)

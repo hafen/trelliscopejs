@@ -9,7 +9,7 @@ cog(val = NULL, desc = "", group = "common", type = NULL,
   sortable = TRUE, log = NULL)
 }
 \arguments{
-\item{val}{a scalar value (numeric, characer, date, etc.)}
+\item{val}{a scalar value (numeric, character, date, etc.)}
 
 \item{desc}{a description for this cognostic value}
 

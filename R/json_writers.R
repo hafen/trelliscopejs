@@ -278,7 +278,7 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
     thumb = thumb)
 }
 
-#' Set up all auxilliary files needed for a Trelliscope app
+#' Set up all auxiliary files needed for a Trelliscope app
 #'
 #' @param base_path the base directory of the trelliscope application
 #' @param id a unique id for the application
