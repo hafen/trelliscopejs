@@ -43,7 +43,7 @@ write_display_obj(cogdf, panel_example, base_path, id, name,
 
 \item{split_layout}{boolean that determines if the layout is split into components like a facet_grid vs. individual panels like facet_wrap.  Only applies to ggplot2 plot objects.}
 
-\item{split_aspect}{list indicating aspect ratios of axes for a split layour.  Only applies to ggplot2 plot objects.}
+\item{split_aspect}{list indicating aspect ratios of axes for a split layout.  Only applies to ggplot2 plot objects.}
 
 \item{has_legend}{should a legend be reported for split_layout}
 
