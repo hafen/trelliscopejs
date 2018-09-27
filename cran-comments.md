@@ -1,4 +1,7 @@
-This is a new submission
+This is a re-submission of a new submission.
+
+- ORGANIZATION was added to the BSD-3 license
+- A reference to the Trelliscope method was added to the DESCRIPTION
 
 ## Test environments
 * local OS X install, R 3.5.1
