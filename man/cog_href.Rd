@@ -17,7 +17,7 @@ cog_href(x, desc = "link", group = "common", default_label = FALSE,
 Create href to be used as cognostics in a trelliscope display
 }
 \examples{
-\dontrun{
+\donttest{
 library(dplyr)
 library(rbokeh)
 iris \%>\%

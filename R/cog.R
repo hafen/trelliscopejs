@@ -18,21 +18,30 @@
 #'
 #' @export
 #' @examples
-#' \dontrun{
-#' mpg %>%
+#' library(dplyr)
+#' library(tidyr)
+#' library(purrr)
+#' library(ggplot2)
+#' library(rbokeh)
+#' 
+#' mpg_cog <- mpg %>%
 #'   group_by(manufacturer, class) %>%
-#'   summarise(
-#'     mean_city_mpg = cog(mean(cty), desc = "Mean city mpg"),
-#'     mean_hwy_mpg = cog(mean(hwy), desc = "Mean highway mpg"),
-#'     most_common_drv = cog(tail(names(table(drv)), 1), desc = "Most common drive type"),
-#'     panel = panel(
-#'       figure(xlab = "City mpg", ylab = "Highway mpg",
+#'   nest() %>%
+#'   mutate(
+#'     cogs = map_cog(data, ~ data_frame(
+#'       mean_city_mpg = cog(mean(.$cty), desc = "Mean city mpg"),
+#'       mean_hwy_mpg = cog(mean(.$hwy), desc = "Mean highway mpg"),
+#'       most_common_drv = cog(tail(names(table(.$drv)), 1), desc = "Most common drive type")
+#'     )),
+#'     panel = map_plot(data, ~
+#'       figure(., xlab = "City mpg", ylab = "Highway mpg",
 #'         xlim = c(9, 47), ylim = c(7, 37)) %>%
 #'         ly_points(cty, hwy,
-#'           hover = data_frame(model = paste(year, model),
-#'           cty = cty, hwy = hwy)))) %>%
-#'   trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
-#' }
+#'           hover = list(year, model))
+#'     )
+#'   )
+#' 
+#' trelliscope(mpg_cog, name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
 cog <- function(val = NULL, desc = "", group = "common",
   type = NULL, default_label = FALSE, default_active = TRUE,
   filterable = TRUE, sortable = TRUE, log = NULL) {
@@ -124,7 +133,7 @@ infer_cog_type <- function(val) {
 #'
 #' @seealso \code{\link{cog}}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(dplyr)
 #' library(rbokeh)
 #' iris %>%

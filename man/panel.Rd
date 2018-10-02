@@ -15,7 +15,7 @@ Panel Wrapper Function
 Wrapper function to specify a plot object for a panel for use in dplyr summarise()
 }
 \examples{
-\dontrun{
+\donttest{
 library(rbokeh)
 library(dplyr)
 ggplot2::mpg \%>\%

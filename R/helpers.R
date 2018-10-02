@@ -3,7 +3,7 @@
 #'
 #' @param x a plot object
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(rbokeh)
 #' library(dplyr)
 #' ggplot2::mpg %>%
@@ -34,8 +34,9 @@ img_panel <- function(x) {
 #' @note \code{x} must be paths relative to the \code{path} argument passed to \code{\link{trelliscope}}.
 #' @examples
 #' \dontrun{
+#' # assuming images are available locally in relative path pokemon_local/images
 #' pokemon$img <- img_panel_local(paste0("images/", basename(pokemon$url_image)))
-#' trelliscope(pokemon, name = "pokemon", path = "_ignore/pokemon_local")
+#' trelliscope(pokemon, name = "pokemon", path = "pokemon_local")
 #' }
 img_panel_local <- function(x) {
   cog(x, desc = "panel image source URL", type = "panelSrcLocal",

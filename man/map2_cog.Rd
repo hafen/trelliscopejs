@@ -25,7 +25,12 @@ Map over multiple inputs simultaneously and return a vector of cognostics data f
 See \code{\link[purrr]{map2}}
 }
 \examples{
-\dontrun{
+\donttest{
+library(tidyr)
+library(purrr)
+library(rbokeh)
+library(dplyr)
+
 iris \%>\%
   nest(-Species) \%>\%
   mutate(

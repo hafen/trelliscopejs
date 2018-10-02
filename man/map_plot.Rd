@@ -20,7 +20,7 @@ Apply a function to each element of a vector and return a vector of plots
 See \code{\link[purrr]{map}}
 }
 \examples{
-\dontrun{
+\donttest{
 library(dplyr)
 library(tidyr)
 library(purrr)
@@ -43,8 +43,7 @@ by_country <- by_country \%>\% mutate(
 by_country \%>\%
   trelliscope("gapminder", nrow = 2, ncol = 7)
 
-library(dplyr)
-library(tidyr)
+# example using mpg data
 ggplot2::mpg \%>\%
   group_by(manufacturer, class) \%>\%
   nest() \%>\%

@@ -25,7 +25,7 @@ Map over multiple inputs simultaneously and return a vector of plots
 See \code{\link[purrr]{map2}}
 }
 \examples{
-\dontrun{
+\donttest{
 library(tidyr)
 library(purrr)
 library(rbokeh)

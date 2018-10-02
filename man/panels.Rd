@@ -20,9 +20,10 @@ Panels Wrapper Function
 See \code{\link[purrr]{map}}
 }
 \examples{
-\dontrun{
+\donttest{
 library(dplyr)
 library(tidyr)
+library(rbokeh)
 ggplot2::mpg \%>\%
   group_by(manufacturer, class) \%>\%
   nest() \%>\%

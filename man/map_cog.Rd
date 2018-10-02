@@ -20,9 +20,10 @@ Apply a function to each element of a vector and return a vector of cognostics d
 See \code{\link[purrr]{map}}
 }
 \examples{
-\dontrun{
+\donttest{
 library(dplyr)
 library(tidyr)
+library(rbokeh)
 ggplot2::mpg \%>\%
   group_by(manufacturer, class) \%>\%
   nest() \%>\%

@@ -37,19 +37,28 @@ Cast a column of a cognostics data frame as a cognostic object
 Different types of cognostics can be specified through the \code{type} argument that will affect how the user is able to interact with those cognostics in the viewer.  This can usually be ignored because it will be inferred from the implicit data type of \code{val}.  But there are special types of cognostics, such as geographic coordinates and relations (not implemented) that can be specified as well.  Current possibilities for \code{type} are "key", "integer", "numeric", "factor", "date", "time", "href".
 }
 \examples{
-\dontrun{
-mpg \%>\%
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(ggplot2)
+library(rbokeh)
+
+mpg_cog <- mpg \%>\%
   group_by(manufacturer, class) \%>\%
-  summarise(
-    mean_city_mpg = cog(mean(cty), desc = "Mean city mpg"),
-    mean_hwy_mpg = cog(mean(hwy), desc = "Mean highway mpg"),
-    most_common_drv = cog(tail(names(table(drv)), 1), desc = "Most common drive type"),
-    panel = panel(
-      figure(xlab = "City mpg", ylab = "Highway mpg",
+  nest() \%>\%
+  mutate(
+    cogs = map_cog(data, ~ data_frame(
+      mean_city_mpg = cog(mean(.$cty), desc = "Mean city mpg"),
+      mean_hwy_mpg = cog(mean(.$hwy), desc = "Mean highway mpg"),
+      most_common_drv = cog(tail(names(table(.$drv)), 1), desc = "Most common drive type")
+    )),
+    panel = map_plot(data, ~
+      figure(., xlab = "City mpg", ylab = "Highway mpg",
         xlim = c(9, 47), ylim = c(7, 37)) \%>\%
         ly_points(cty, hwy,
-          hover = data_frame(model = paste(year, model),
-          cty = cty, hwy = hwy)))) \%>\%
-  trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
-}
+          hover = list(year, model))
+    )
+  )
+
+trelliscope(mpg_cog, name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
 }

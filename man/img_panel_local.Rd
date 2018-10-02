@@ -17,7 +17,8 @@ Cast a vector of URLs pointing to local images as an image panel source
 }
 \examples{
 \dontrun{
+# assuming images are available locally in relative path pokemon_local/images
 pokemon$img <- img_panel_local(paste0("images/", basename(pokemon$url_image)))
-trelliscope(pokemon, name = "pokemon", path = "_ignore/pokemon_local")
+trelliscope(pokemon, name = "pokemon", path = "pokemon_local")
 }
 }

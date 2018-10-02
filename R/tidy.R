@@ -5,9 +5,10 @@
 #' @param ... additional arguments passed on to .f (see \code{\link[purrr]{map}} for details)
 #' @details See \code{\link[purrr]{map}}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(dplyr)
 #' library(tidyr)
+#' library(rbokeh)
 #' ggplot2::mpg %>%
 #'   group_by(manufacturer, class) %>%
 #'   nest() %>%
@@ -33,7 +34,7 @@ panels <- function(.x, .f, ...) {
 #' @param ... additional arguments passed on to .f (see \code{\link[purrr]{map}} for details)
 #' @details See \code{\link[purrr]{map}}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(dplyr)
 #' library(tidyr)
 #' library(purrr)
@@ -56,8 +57,7 @@ panels <- function(.x, .f, ...) {
 #' by_country %>%
 #'   trelliscope("gapminder", nrow = 2, ncol = 7)
 #'
-#' library(dplyr)
-#' library(tidyr)
+#' # example using mpg data
 #' ggplot2::mpg %>%
 #'   group_by(manufacturer, class) %>%
 #'   nest() %>%
@@ -82,7 +82,7 @@ map_plot <- function(.x, .f, ...) {
 #' @param .l A list of lists. The length of .l determines the number of arguments that .f will be called with. List names will be used if present.
 #' @details See \code{\link[purrr]{map2}}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(tidyr)
 #' library(purrr)
 #' library(rbokeh)
@@ -163,9 +163,10 @@ pmap_plot <- function(.l, .f, ...) {
 #' @export
 #' @details See \code{\link[purrr]{map}}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(dplyr)
 #' library(tidyr)
+#' library(rbokeh)
 #' ggplot2::mpg %>%
 #'   group_by(manufacturer, class) %>%
 #'   nest() %>%
@@ -194,9 +195,10 @@ cogs <- function(.x, .f, ...) {
 #' @param ... additional arguments passed on to .f (see \code{\link[purrr]{map}} for details)
 #' @details See \code{\link[purrr]{map}}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(dplyr)
 #' library(tidyr)
+#' library(rbokeh)
 #' ggplot2::mpg %>%
 #'   group_by(manufacturer, class) %>%
 #'   nest() %>%
@@ -221,7 +223,12 @@ map_cog <- function(.x, .f, ...) {
 #' @param .l A list of lists. The length of .l determines the number of arguments that .f will be called with. List names will be used if present.
 #' @details See \code{\link[purrr]{map2}}
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' library(tidyr)
+#' library(purrr)
+#' library(rbokeh)
+#' library(dplyr)
+#'
 #' iris %>%
 #'   nest(-Species) %>%
 #'   mutate(

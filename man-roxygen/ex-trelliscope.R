@@ -1,4 +1,4 @@
-\dontrun{
+\donttest{
 library(dplyr)
 library(tidyr)
 library(purrr)
