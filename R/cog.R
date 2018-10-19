@@ -312,7 +312,7 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list 
         ca <- nested_cog_attrs[[nm]]
         if (!is.null(ca)) {
           attr(tmp[[nm]], "cog_attrs") <- ca
-          class(tmp[[nm]]) <- c(class(nm), "cog")
+          class(tmp[[nm]]) <- c(class(tmp[[nm]]), "cog")
         }
       }
 

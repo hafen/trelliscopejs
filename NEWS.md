@@ -1,5 +1,6 @@
 # trelliscopejs 0.1
 
+- Fix bug in cognostics types not carrying over correctly, fixes #66 (0.1.15)
 - Update internals to work with latest ggplot2 (0.1.12)
 - Add `plotly_cfg` argument to `facet_trelliscope()` (0.1.11)
 - Update trelliscopejs-lib to avoid double slashes in urls (0.1.10)
