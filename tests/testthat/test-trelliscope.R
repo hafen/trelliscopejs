@@ -120,8 +120,13 @@ test_that("examples run without barfing", {
   # library(ggplot2)
   # qplot(cty, hwy, data = mpg) +
   #   facet_trelliscope(~ class, auto_cog = FALSE)
+  
+  # update variable with cog()
+  mpg2 <- mpg
+  mpg2$class2 <- as.integer(factor(mpg2$class))
+  mpg2$class2 <- cog(mpg2$class2, desc = "custom cognostic label test")
 
-  p <- qplot(cty, hwy, data = mpg) +
+  p <- qplot(cty, hwy, data = mpg2) +
     facet_trelliscope(~ class, self_contained = TRUE)
   print(p)
 
