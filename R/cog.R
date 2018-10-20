@@ -347,17 +347,19 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list 
         non_unique_cog_df <- tmp$cog_df
         cog_desc <- tmp$cog_desc
 
-        # add the name to make it extra discriptive
-        # TODO remove once visual grouping is done
-        names(cog_desc) <- paste0(non_unique_col, "_", names(cog_desc))
-        colnames(non_unique_cog_df) <- paste0(non_unique_col, "_", colnames(non_unique_cog_df))
+        if (nrow(non_unique_cog_df) > 0) {
+          # add the name to make it extra descriptive
+          # TODO remove once visual grouping is done
+          names(cog_desc) <- paste0(non_unique_col, "_", names(cog_desc))
+          colnames(non_unique_cog_df) <- paste0(non_unique_col, "_", colnames(non_unique_cog_df))
 
-        cogs[[length(cogs) + 1]] <- as_cognostics(
-          non_unique_cog_df,
-          needs_key = FALSE, needs_cond = FALSE,
-          group = non_unique_col,
-          cog_desc = cog_desc
-        )
+          cogs[[length(cogs) + 1]] <- as_cognostics(
+            non_unique_cog_df,
+            needs_key = FALSE, needs_cond = FALSE,
+            group = non_unique_col,
+            cog_desc = cog_desc
+          )
+        }
       }
     }
   }
