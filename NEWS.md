@@ -1,5 +1,6 @@
 # trelliscopejs 0.1
 
+- Fix issue with preserving custom panel column class when sorting and filtering with dplyr (0.1.17)
 - Fix bug in auto cognostics with non-numeric/character types, fixes #63 (0.1.16)
 - Fix bug in cognostics types not carrying over correctly, fixes #66 (0.1.15)
 - Update internals to work with latest ggplot2 (0.1.12)

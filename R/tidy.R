@@ -260,6 +260,28 @@ pmap_cog <- function(.l, .f, ...) {
   )
 }
 
+#' @export
+`[.trelliscope_panels` <- function(x, i, j, ..., drop = TRUE) {
+  cls <- class(x)
+  x <- NextMethod()
+  structure(x, class = cls)
+}
+
+#' @export
+`[.trelliscope_cogs` <- function(x, i, j, ..., drop = TRUE) {
+  cls <- class(x)
+  x <- NextMethod()
+  structure(x, class = cls)
+}
+
+#' @export
+`[.panel_promise` <- function(x, i, j, ..., drop = TRUE) {
+  cls <- class(x)
+  x <- NextMethod()
+  structure(x, class = cls)
+}
+
+
 # #' Apply a function to each row of a data frame and return a data frame with new column of cognostics
 # #'
 # #' @param .d A data frame.
