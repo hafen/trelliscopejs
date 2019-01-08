@@ -323,7 +323,7 @@ upgrade_scales_param <- function(scales, plot_facet) {
   if (length(scales) > 2)
     stop("scales must not be longer than length 2")
 
-  if (is.na(scales) || is.null(scales) || length(scales) == 0)
+  if (any(is.na(scales)) || is.null(scales) || length(scales) == 0)
     stop("scales must be a character vector of size 1 or 2")
 
   if (length(scales) == 1) {
