@@ -111,7 +111,11 @@ cog <- function(val = NULL, desc = "", group = "common",
 
 infer_cog_type <- function(val) {
   if (is.factor(val) || is.character(val)) {
-    type <- "factor"
+    if (all(grepl("^http://|^https://", val))) {
+      type <- "href"
+    } else {
+      type <- "factor"
+    }
   } else if (is.numeric(val)) {
     type <- "numeric"
   } else if (inherits(val, "Date")) {
@@ -231,7 +235,13 @@ bind_cog_list_and_descs <- function(cog_list) {
   # retrieve autocog description (or any other desc)
   non_null_pos <- ! unlist(lapply(cog_list, is.null))
 
-  res <- suppressWarnings(bind_rows(cog_list))
+  has_factor <- any(unlist(lapply(cog_list[[1]], is.factor)))
+  if (!inherits(cog_list[[1]], "tibble") && has_factor)
+    message(
+      "Note: it is advised to use tibble() when creating cognostic columns, ",
+      "to avoid issues that arise with data.frame and stringsAsFactors = TRUE.")
+
+  res <- suppressWarnings(dplyr::bind_rows(cog_list))
 
   # retrieve the first non null cognostic descriptions
   #   from each nested cog data
@@ -241,14 +251,20 @@ bind_cog_list_and_descs <- function(cog_list) {
     non_null_row_dt <- cog_list[non_null_pos][[1]]
 
     # get attributes
-    one_row_attrs <- lapply(non_null_row_dt, attributes)
+    one_row_attrs <- lapply(non_null_row_dt, function(x) attr(x, "cog_attrs"))
+    one_row_class <- lapply(non_null_row_dt, function(x) {
+      res <- class(x)
+      res[res == "factor"] <- "character"
+      res
+    })
 
     # extract description attrs
     cog_desc <- lapply(one_row_attrs, `[[`, "desc")
 
     # store attributes of each column of first non null info
     for (nm in names(res)) {
-      attributes(res[[nm]]) <- one_row_attrs[[nm]]
+      attr(res[[nm]], "cog_attrs") <- one_row_attrs[[nm]]
+      class(res[[nm]]) <- one_row_class[[nm]]
     }
   }
 
