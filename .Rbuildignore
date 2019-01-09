@@ -19,3 +19,4 @@ cran-comments.md
 _test/
 ^codecov\.yml$
 ^_gh-pages$
+^revdep$
