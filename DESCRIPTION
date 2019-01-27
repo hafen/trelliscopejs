@@ -31,7 +31,8 @@ Imports:
     knitr,
     webshot,
     autocogs,
-    rlang
+    rlang,
+    ggedit
 Suggests:
     rbokeh,
     plotly,

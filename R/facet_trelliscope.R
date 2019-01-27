@@ -109,6 +109,7 @@ facet_trelliscope <- function(
 #' @importFrom stats as.formula
 #' @importFrom tidyr nest nest_ unnest
 #' @importFrom ggplot2 ggplot_build
+#' @importFrom ggedit cloneLayer
 #' @export
 print.facet_trelliscope <- function(x, ...) {
 
@@ -179,15 +180,35 @@ print.facet_trelliscope <- function(x, ...) {
   scales_info <- add_range_info_to_scales(p, scales_info, attrs$facet_cols)
 
   # wrapper function that swaps out the data with a subset and removes the facet
-  make_plot_obj <- function(dt, pos = -1) {
+  make_plot_obj <- function(dt, facet_vals, pos = -1) {
     q <- p
     q$data <- tidyr::unnest(dt)
+
+    # if layers have their own data specified, filter to only
+    # data relevant to the facet vars being plotted
+    for (ii in seq_along(q$layers)) {
+      curdat <- q$layers[[ii]]$data
+      if (!inherits(curdat, "waiver") && is.data.frame(curdat)) {
+        q$layers[[ii]] <- ggedit::cloneLayer(q$layers[[ii]])
+        for (el in facet_vals) {
+          curdat <- dplyr::filter(curdat, get(el$var) == el$val)
+        }
+        q$layers[[ii]]$data <- curdat
+      }
+    }
+
     q <- add_trelliscope_scales(q, scales_info, show_warnings = (pos == 1))
     q
   }
 
   data$panel <- lapply(seq_len(nrow(data)), function(i) {
-    make_plot_obj(data[i, ])
+    facet_vals <- lapply(facet_cols, function(a) {
+      list(
+        var = a,
+        val = data[[a]][i]
+      )
+    })
+    make_plot_obj(data[i, ], facet_vals)
   })
 
   cog_info <- select(data, -data) %>% cog_df_info(
