@@ -60,19 +60,19 @@ write_panel <- function(plot_object, key, base_path, name, group = "common",
       plot_content <- extract_plot_content(pg = pg)
 
       write_ggplot2_component(
-        plot_content, width = width, height = height, key = paste0(key, "_plot"),
+        plot_content, width = width, height = height, key = paste0(key, "_plot"), name = name,
         jsonp, panel_path
       )
       write_ggplot2_component(
         left_axis,
         width = axis_left_width(left_axis),
-        height = height, key = paste0(key, "_axis_left"),
+        height = height, key = paste0(key, "_axis_left"), name = name,
         jsonp, panel_path
       )
       write_ggplot2_component(
         bottom_axis, width = width,
         height = axis_bottom_height(bottom_axis),
-        key = paste0(key, "_axis_bottom"),
+        key = paste0(key, "_axis_bottom"), name = name,
         jsonp, panel_path
       )
 
@@ -87,20 +87,21 @@ write_panel <- function(plot_object, key, base_path, name, group = "common",
           width = legend_width,
           height = legend_height,
           key = paste0(key, "_legend"),
+          name = name,
           jsonp, panel_path
         )
       }
     } else {
       # behave like a normal plot
-      write_ggplot2_component(plot_object, width, height, key, jsonp, panel_path)
+      write_ggplot2_component(plot_object, width, height, key, name, jsonp, panel_path)
     }
 
   } else if (inherits(plot_object, c("trellis"))) {
-    write_ggplot2_component(plot_object, width, height, key, jsonp, panel_path)
+    write_ggplot2_component(plot_object, width, height, key, name, jsonp, panel_path)
 
   } else if (inherits(plot_object, "htmlwidget")) {
     p <- htmltools::as.tags(plot_object)
-    txt <- get_jsonp_text(jsonp, paste0("__panel__._", key))
+    txt <- get_jsonp_text(jsonp, paste0("__panel__._", key, "_", name))
     cat(paste0(txt$st, p[[2]]$children[[1]], txt$nd),
       file = file.path(panel_path,
         paste0(key, ifelse(jsonp, ".jsonp", ".json"))))
@@ -117,7 +118,7 @@ unit_to_px <- function(x, res) {
 }
 
 write_ggplot2_component <- function(
-  plot_component, width, height, key, jsonp, panel_path,
+  plot_component, width, height, key, name, jsonp, panel_path,
   file = tempfile()
 ) {
   ff <- file
@@ -126,7 +127,7 @@ write_ggplot2_component <- function(
   make_png(p = plot_component, file = ff,
     width = width, height = height)
   dat <- paste0("\"", encode_png(ff), "\"")
-  txt <- get_jsonp_text(jsonp, paste0("__panel__._", key))
+  txt <- get_jsonp_text(jsonp, paste0("__panel__._", key, "_", name))
   cat(paste0(txt$st, dat, txt$nd),
     file = file.path(panel_path,
       paste0(key, ifelse(jsonp, ".jsonp", ".json"))))
@@ -170,6 +171,7 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @param md_desc optional string of markdown that will be shown in the viewer for additional context about the display
 #' @param state the initial state the display will open in
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
+#' @param split_sig optional string "signature" specifying the data splitting
 #' @param panel_img_col which column (if any) is a panel image column?
 #' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param thumb should a thumbnail be created?
@@ -181,8 +183,8 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @export
 write_display_obj <- function(cogdf, panel_example, base_path, id, name, group = "common",
   desc = "", height = 500, width = 500, md_desc = "", state = NULL, jsonp = TRUE,
-  panel_img_col = NULL, self_contained = FALSE, thumb = TRUE, split_layout = FALSE,
-  split_aspect = NULL, has_legend = FALSE, pb = NULL) {
+  split_sig = NULL, panel_img_col = NULL, self_contained = FALSE, thumb = TRUE, 
+  split_layout = FALSE, split_aspect = NULL, has_legend = FALSE, pb = NULL) {
 
   display_path <- file.path(base_path, "displays", group, name)
   panel_path <- file.path(display_path, ifelse(jsonp, "jsonp", "json"))
@@ -213,6 +215,18 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
     panelInterface$type <- "image"
   }
 
+  key_sig <- digest::digest(sort(cogdf$panelKey))
+  if (!is.null(split_sig)) {
+    key_sig <- split_sig
+  }
+
+  imgSrcLookup <- NULL
+  if (panelInterface$type == "image_src") {
+    imgSrcLookup <- as.list(cogdf[[panelInterface$panelCol]])
+    names(imgSrcLookup) <- cogdf$panelKey
+    cogdf[[panelInterface$panelCol]] <- NULL
+  }
+
   disp_obj <- list(
     name = name,
     group = group,
@@ -225,9 +239,10 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
     has_legend = has_legend,
     split_layout = split_layout,
     split_aspect = split_aspect,
-    keySig = digest::digest(sort(cogdf$panelKey)), # nolint
+    keySig = key_sig, # nolint
     cogInterface = list(name = name, group = group, type = "JSON"),
     panelInterface = panelInterface,
+    imgSrcLookup = imgSrcLookup,
     cogInfo = get_cog_info(cogdf),
     cogDistns = get_cog_distributions(cogdf)
   )

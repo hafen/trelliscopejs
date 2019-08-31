@@ -58,7 +58,7 @@ set_labels <- function(dat, label_list) {
   dat
 }
 
-resolve_app_params <- function(path, self_contained, jsonp, name, group,
+resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, group,
   state, nrow = 1, ncol = 1, thumb = TRUE, split_layout = FALSE) {
 
   spa <- TRUE # "single-page application"
@@ -149,6 +149,7 @@ resolve_app_params <- function(path, self_contained, jsonp, name, group,
     www_dir = www_dir,
     config_path = config_path,
     jsonp = jsonp,
+    split_sig = split_sig,
     self_contained = self_contained,
     name = sanitize(name),
     group = sanitize(group),

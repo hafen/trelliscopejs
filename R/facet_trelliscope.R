@@ -18,6 +18,7 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param as_plotly should the panels be written as plotly objects?
 #' @param plotly_args optional named list of arguments to send to \code{ggplotly}
 #' @param plotly_cfg optional named list of arguments to send to plotly's \code{config} method
+#' @param split_sig optional string that specifies the "signature" of the data splitting. If not specified, this is calculated as the md5 hash of the sorted unique facet variables. This is used to identify "related displays" - different displays that are based on the same faceting scheme. This parameter should only be specified manually if a display's faceting is mostly similar to another display's.
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
 #' @param auto_cog should auto cogs be computed (if possible)?
@@ -33,7 +34,7 @@ facet_trelliscope <- function(
   desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL,
   height = 500, width = 500,
   state = NULL, jsonp = TRUE, as_plotly = FALSE,
-  plotly_args = NULL, plotly_cfg = NULL,
+  plotly_args = NULL, plotly_cfg = NULL, split_sig = NULL,
   self_contained = FALSE, thumb = TRUE, auto_cog = FALSE,
   split_layout = FALSE, data = ggplot2::waiver()
 ) {
@@ -61,6 +62,7 @@ facet_trelliscope <- function(
     width = width,
     state = state,
     jsonp = jsonp,
+    split_sig = split_sig,
     path = path,
     self_contained = self_contained,
     nrow = nrow,
@@ -91,7 +93,8 @@ facet_trelliscope <- function(
     attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group",
       "desc", "md_desc", "height", "width", "state", "jsonp", "self_contained",
       "path", "state", "nrow", "ncol", "scales", "thumb", "as_plotly",
-      "plotly_args", "plotly_cfg", "auto_cog", "split_layout", "data")]
+      "split_sig", "plotly_args", "plotly_cfg", "auto_cog", "split_layout",
+      "data")]
     class(e1) <- c("facet_trelliscope", class(e1))
     return(e1)
     # return(print(e1))
@@ -224,8 +227,8 @@ print.facet_trelliscope <- function(x, ...) {
     name <- paste("by_", paste(facet_cols, collapse = "_"), sep = "")
 
   params <- resolve_app_params(attrs$path, attrs$self_contained, attrs$jsonp,
-    name, attrs$group, attrs$state, attrs$nrow, attrs$ncol, attrs$thumb,
-    attrs$split_layout)
+    attrs$split_sig, name, attrs$group, attrs$state, attrs$nrow, attrs$ncol,
+    attrs$thumb, attrs$split_layout)
 
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",
@@ -289,6 +292,7 @@ print.facet_trelliscope <- function(x, ...) {
     split_layout = params$split_layout,
     split_aspect = split_aspect,
     has_legend,
+    split_sig = params$split_sig,
     pb = pb
   )
 

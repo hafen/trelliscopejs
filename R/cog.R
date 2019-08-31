@@ -128,6 +128,21 @@ infer_cog_type <- function(val) {
   type
 }
 
+#' @export
+cog_disp_filter <- function(display, var, val,
+  desc = "link", group = "common",
+  default_label = FALSE, default_active = FALSE,
+  filterable = FALSE, sortable = FALSE, log = FALSE) {
+  x <- paste0("#display=", display, "&filter=var:",
+    var, ";type:select;val:", val)
+
+  cog(x, type = "href", desc = desc, group = group, 
+    default_label = default_label,
+    default_active = default_active,
+    filterable = filterable, sortable = sortable,
+    log = log)
+}
+
 #' Href Cognostic
 #'
 #' Create href to be used as cognostics in a trelliscope display

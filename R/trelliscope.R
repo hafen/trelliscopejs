@@ -14,6 +14,7 @@
 #' @param nrow the number of rows of panels to display by default
 #' @param ncol the number of columns of panels to display by default
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
+#' @param split_sig optional string that specifies the "signature" of the data splitting. If not specified, this is calculated as the md5 hash of the sorted unique facet variables. This is used to identify "related displays" - different displays that are based on the same faceting scheme. This parameter should only be specified manually if a display's faceting is mostly similar to another display's.
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
@@ -21,13 +22,15 @@
 #' @export
 trelliscope <- function(x, name, group = "common", panel_col = NULL, desc = "",
   md_desc = "", path, height = 500, width = 500, auto_cog = FALSE, state = NULL,
-  nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = FALSE)
+  nrow = 1, ncol = 1, jsonp = TRUE, split_sig = NULL, self_contained = FALSE,
+  thumb = FALSE)
   UseMethod("trelliscope")
 
 #' @export
 trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
   desc = "", md_desc = "", path = NULL, height = 500, width = 500, auto_cog = FALSE,
-  state = NULL, nrow = 1, ncol = 1, jsonp = TRUE, self_contained = FALSE, thumb = FALSE) {
+  state = NULL, nrow = 1, ncol = 1, jsonp = TRUE, split_sig = NULL,
+  self_contained = FALSE, thumb = FALSE) {
 
   img_local <- FALSE
 
@@ -91,7 +94,7 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
   cond_cols <- cog_info$cond_cols
   state <- cog_info$state
 
-  params <- resolve_app_params(path, self_contained, jsonp, name, group,
+  params <- resolve_app_params(path, self_contained, jsonp, split_sig, name, group,
     state, nrow, ncol, thumb)
 
   keys <- apply(x[cond_cols], 1, function(a) paste(a, collapse = "_")) %>%
@@ -150,6 +153,7 @@ trelliscope.data.frame <- function(x, name, group = "common", panel_col = NULL,
     md_desc = md_desc,
     state = params$state,
     jsonp = params$jsonp,
+    split_sig = params$split_sig,
     self_contained = params$self_contained,
     thumb = params$thumb,
     pb = pb
