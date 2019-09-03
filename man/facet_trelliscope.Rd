@@ -8,9 +8,9 @@ facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
   name = NULL, group = "common", desc = ggplot2::waiver(),
   md_desc = ggplot2::waiver(), path = NULL, height = 500,
   width = 500, state = NULL, jsonp = TRUE, as_plotly = FALSE,
-  plotly_args = NULL, plotly_cfg = NULL, self_contained = FALSE,
-  thumb = TRUE, auto_cog = FALSE, split_layout = FALSE,
-  data = ggplot2::waiver())
+  plotly_args = NULL, plotly_cfg = NULL, split_sig = NULL,
+  self_contained = FALSE, thumb = TRUE, auto_cog = FALSE,
+  split_layout = FALSE, data = ggplot2::waiver())
 }
 \arguments{
 \item{facets}{formula to facet the panels on. Similar to \code{ggplot2::\link[ggplot2]{facet_wrap}}'s \code{facets}}
@@ -44,6 +44,8 @@ facet_trelliscope(facets, nrow = 1, ncol = 1, scales = "same",
 \item{plotly_args}{optional named list of arguments to send to \code{ggplotly}}
 
 \item{plotly_cfg}{optional named list of arguments to send to plotly's \code{config} method}
+
+\item{split_sig}{optional string that specifies the "signature" of the data splitting. If not specified, this is calculated as the md5 hash of the sorted unique facet variables. This is used to identify "related displays" - different displays that are based on the same faceting scheme. This parameter should only be specified manually if a display's faceting is mostly similar to another display's.}
 
 \item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
 

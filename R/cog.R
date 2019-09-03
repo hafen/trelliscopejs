@@ -128,11 +128,22 @@ infer_cog_type <- function(val) {
   type
 }
 
+#' Helper function for creating a cognostic for a link to another display in a filtered state
+#' @param display A string indicating the name of the display to link to.
+#' @param var A string indicating the variable name to filter on.
+#' @param val A string indicating the value of the filter.
+#' @param desc a description for this cognostic value
+#' @param group optional categorization of the cognostic for organizational purposes in the viewer (currently not implemented in the viewer)
+#' @param type the desired type of cognostic you would like to compute (see details)
+#' @param default_label should this cognostic be used as a panel label in the viewer by default?
+#' @param default_active should this cognostic be active (available for sort / filter / sample) by default?
+#' @param filterable should this cognostic be filterable?  Default is \code{TRUE}.  It can be useful to set this to \code{FALSE} if the cognostic is categorical with many unique values and is only desired to be used as a panel label.
+#' @param sortable should this cognostic be sortable?
 #' @export
 cog_disp_filter <- function(display, var, val,
   desc = "link", group = "common",
   default_label = FALSE, default_active = FALSE,
-  filterable = FALSE, sortable = FALSE, log = FALSE) {
+  filterable = FALSE, sortable = FALSE) {
   x <- paste0("#display=", display, "&filter=var:",
     var, ";type:select;val:", val)
 
@@ -140,7 +151,7 @@ cog_disp_filter <- function(display, var, val,
     default_label = default_label,
     default_active = default_active,
     filterable = filterable, sortable = sortable,
-    log = log)
+    log = FALSE)
 }
 
 #' Href Cognostic

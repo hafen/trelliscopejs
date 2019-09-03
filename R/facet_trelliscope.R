@@ -28,6 +28,7 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @export
 #' @example man-roxygen/ex-facet_trelliscope.R
 #' @importFrom ggplot2 facet_wrap
+#' @importFrom rlang as_name
 facet_trelliscope <- function(
   facets,
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
@@ -152,9 +153,9 @@ print.facet_trelliscope <- function(x, ...) {
       "or in the 'data' parameter")
   }
 
-  # character vect of facet columns
+  # character vector of facet columns
   # TODO need to work with facet_trelliscope(~ disp < 5)
-  facet_cols <- unlist(lapply(attrs$facet_cols, as.character))
+  facet_cols <- unlist(lapply(attrs$facet_cols, rlang::as_name))
   facet_cols <- setdiff(facet_cols, "~")
   if (!all(facet_cols %in% names(data))) {
     stop("all facet_trelliscope facet columns must be found in the ",

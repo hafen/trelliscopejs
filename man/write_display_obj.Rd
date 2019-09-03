@@ -6,9 +6,10 @@
 \usage{
 write_display_obj(cogdf, panel_example, base_path, id, name,
   group = "common", desc = "", height = 500, width = 500,
-  md_desc = "", state = NULL, jsonp = TRUE, panel_img_col = NULL,
-  self_contained = FALSE, thumb = TRUE, split_layout = FALSE,
-  split_aspect = NULL, has_legend = FALSE, pb = NULL)
+  md_desc = "", state = NULL, jsonp = TRUE, split_sig = NULL,
+  panel_img_col = NULL, self_contained = FALSE, thumb = TRUE,
+  split_layout = FALSE, split_aspect = NULL, has_legend = FALSE,
+  pb = NULL)
 }
 \arguments{
 \item{cogdf}{a data frame of cognostics, prepared with \code{\link{as_cognostics}}}
@@ -34,6 +35,8 @@ write_display_obj(cogdf, panel_example, base_path, id, name,
 \item{state}{the initial state the display will open in}
 
 \item{jsonp}{should json for display object be jsonp (TRUE) or json (FALSE)?}
+
+\item{split_sig}{optional string "signature" specifying the data splitting}
 
 \item{panel_img_col}{which column (if any) is a panel image column?}
 
