@@ -185,7 +185,7 @@ print.facet_trelliscope <- function(x, ...) {
   # wrapper function that swaps out the data with a subset and removes the facet
   make_plot_obj <- function(dt, pos = -1) {
     q <- p
-    q$data <- tidyr::unnest(dt)
+    q$data <- tidyr::unnest(dt, data)
     q <- add_trelliscope_scales(q, scales_info, show_warnings = (pos == 1))
     q
   }
