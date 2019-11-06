@@ -12,6 +12,7 @@ HTMLWidgets.widget({
     // define shared variables for this instance...
     return {
       renderValue: function(x) {
+        el.innerHTML = '';
         var dv = document.createElement('div');
         dv.id = x.id;
         var fullSize = width === window.innerWidth && height === window.innerHeight;
