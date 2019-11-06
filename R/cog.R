@@ -300,7 +300,6 @@ bind_cog_list_and_descs <- function(cog_list) {
   )
 }
 
-
 #' @importFrom autocogs panel_cogs
 cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list = NULL,
   nested_cog_attrs = NULL) {

@@ -58,6 +58,18 @@ set_labels <- function(dat, label_list) {
   dat
 }
 
+is_in_knitr <- function() {
+  getOption("knitr.in.progress", FALSE)
+}
+
+is_in_shiny <- function() {
+  res <- FALSE
+  tmp <- try(getFromNamespace(".globals", "shiny")$running, silent = TRUE)
+  if (!inherits(tmp, "try-error"))
+    res <- tmp
+  res
+}
+
 resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, group,
   state, nrow = 1, ncol = 1, thumb = TRUE, split_layout = FALSE) {
 
@@ -81,9 +93,10 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, gro
     in_notebook <- TRUE
   }
 
-  in_knitr <- getOption("knitr.in.progress", FALSE)
+  in_knitr <- is_in_knitr()
+  in_shiny <- is_in_shiny()
 
-  if (in_knitr)
+  if (in_knitr || in_shiny)
     spa <- FALSE # results are inline with others
 
   if (shiny_running())
@@ -92,7 +105,7 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, gro
   orig_path <- path
 
   if (is.null(path)) {
-    if (in_knitr) {
+    if (in_knitr || in_shiny) {
       www_dir <- getwd()
     } else {
       www_dir <- tempfile("trelliscope")
@@ -107,10 +120,16 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, gro
 
   # if outside knitr, config.jsonp will always be available to index.html inside appfiles
   config_path <- paste0("appfiles/config.json", ifelse(jsonp, "p", ""))
-  if (in_knitr && !self_contained) {
+  if (in_knitr || in_shiny && !self_contained) {
     if (!grepl("^[A-Za-z0-9_]", orig_path))
-      stop_nice("Path for trelliscope output while inside knitr must be relative.")
-    config_path <- paste(orig_path, config_path, sep = "/")
+      stop_nice("Path for trelliscope output while inside knitr or Shiny must be relative.")
+    if (in_shiny) {
+      if (!grepl("^www/", orig_path))
+        stop_nice("Path for trelliscope output while inside Shiny must go inside www/...")
+      config_path <- paste(gsub("^www/", "", orig_path), config_path, sep = "/")
+    } else {
+      config_path <- paste(orig_path, config_path, sep = "/")
+    }
   }
 
   if (self_contained) {
@@ -157,6 +176,7 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, gro
     spa = spa,
     state = state,
     in_knitr = in_knitr,
+    in_shiny = in_shiny,
     in_notebook = in_notebook,
     thumb = thumb,
     split_layout = split_layout

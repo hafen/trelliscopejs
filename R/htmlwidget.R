@@ -11,7 +11,8 @@ trelliscope_widget <- function(id, config_info, www_dir, latest_display,
     self_contained = self_contained,
     latest_display = latest_display,
     spa = spa,
-    in_knitr = getOption("knitr.in.progress", FALSE),
+    in_knitr = is_in_knitr(),
+    in_shiny = is_in_shiny(),
     in_notebook = in_rmarkdown_notebook())
 
   if (spa) {
