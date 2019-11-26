@@ -146,7 +146,7 @@ write_ggplot2_component <- function(
 write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp = TRUE) {
   display_path <- file.path(base_path, "displays", group, name)
   txt <- get_jsonp_text(jsonp, paste0("__loadCogData__", id, "_", group, "_", name))
-  jsn <- jsonlite::toJSON(cogdf)
+  jsn <- jsonlite::toJSON(cogdf, digits = NA)
   chk <- jsonlite::validate(jsn)
   if (!chk)
     stop_nice("There are issues with the cognostics data that are causing",
