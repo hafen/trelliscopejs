@@ -64,7 +64,7 @@ is_in_knitr <- function() {
 
 is_in_shiny <- function() {
   res <- FALSE
-  tmp <- try(getFromNamespace(".globals", "shiny")$running, silent = TRUE)
+  tmp <- try(utils::getFromNamespace(".globals", "shiny")$running, silent = TRUE)
   if (!inherits(tmp, "try-error"))
     res <- tmp
   res
@@ -159,6 +159,11 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, gro
     ncol = check_n_val(ncol, "ncol"),
     arrange = "row"
   )
+
+  # TODO: check sort state
+
+  # TODO: check filter state
+
 
   # make sure split_layout is a boolean
   split_layout <- isTRUE(split_layout)
