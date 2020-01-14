@@ -50,6 +50,7 @@ make_png <- function(p, file, width, height, orig_width = width, res = 72,
     height = units$height,
     pointsize = units$pointsize)
 
+  unknown_object <- FALSE
   dv <- grDevices::dev.cur()
   tryCatch({
     if (inherits(p, "trellis")) {
@@ -59,6 +60,9 @@ make_png <- function(p, file, width, height, orig_width = width, res = 72,
       print(p)
     } else if (inherits(p, "gtable")) {
       grid::grid.draw(p)
+    } else {
+      unknown_object <- TRUE
+      try(print(p), silent = TRUE)
     }
   },
   finally = grDevices::dev.off(dv))
@@ -66,6 +70,11 @@ make_png <- function(p, file, width, height, orig_width = width, res = 72,
   # if panel function didn't plot anything then make a blank panel
   # res = res * pixelratio,
   if (!file.exists(file)) {
+    if (unknown_object) {
+      cls <- paste(class(p), collapse = ", ")
+      message("The panel object of class'", cls,
+        "' is not a standard plot object and did not produce a panel file.")
+    }
     pngfun(filename = file, width = width * pixelratio, height = height * pixelratio,
       pointsize = units$pointsize)
     blank_image("no panel")

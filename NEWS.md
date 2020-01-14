@@ -1,3 +1,13 @@
+# trelliscopejs 0.2
+
+- Allow non-standard panel objects and message if nothing is plotted
+- Make cognostics json full precision
+- Add logic to handle rendering if done within a Shiny app
+- Remove contents of div prior to rendering widget
+- Update trelliscopejs dependency
+- Update to use newer tidyr unnest syntax
+- Support for linked displays and related displays
+
 # trelliscopejs 0.1
 
 - Add auto detection of URL cogs when using cog() explicitly (0.1.18)

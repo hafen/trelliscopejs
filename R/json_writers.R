@@ -98,7 +98,6 @@ write_panel <- function(plot_object, key, base_path, name, group = "common",
 
   } else if (inherits(plot_object, c("trellis"))) {
     write_ggplot2_component(plot_object, width, height, key, name, jsonp, panel_path)
-
   } else if (inherits(plot_object, "htmlwidget")) {
     p <- htmltools::as.tags(plot_object)
     txt <- get_jsonp_text(jsonp, paste0("__panel__._", key, "_", name))
@@ -106,7 +105,8 @@ write_panel <- function(plot_object, key, base_path, name, group = "common",
       file = file.path(panel_path,
         paste0(key, ifelse(jsonp, ".jsonp", ".json"))))
   } else {
-    message("panel not written - must be trellis, ggplot, or htmlwidget object")
+    write_ggplot2_component(plot_object, width, height, key, name, jsonp, panel_path)
+    # message("panel not written - must be trellis, ggplot, or htmlwidget object")
   }
 }
 

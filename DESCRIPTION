@@ -1,6 +1,6 @@
 Package: trelliscopejs
 Title: Create Interactive Trelliscope Displays
-Version: 0.2.2
+Version: 0.2.3
 Authors@R: c(
       person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre")),
       person("Barret", "Schloerke", email = "schloerke@gmail.com", role = "aut")
