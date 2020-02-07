@@ -4,9 +4,17 @@
 \alias{cog}
 \title{Cast Column as a Cognostic}
 \usage{
-cog(val = NULL, desc = "", group = "common", type = NULL,
-  default_label = FALSE, default_active = TRUE, filterable = TRUE,
-  sortable = TRUE, log = NULL)
+cog(
+  val = NULL,
+  desc = "",
+  group = "common",
+  type = NULL,
+  default_label = FALSE,
+  default_active = TRUE,
+  filterable = TRUE,
+  sortable = TRUE,
+  log = NULL
+)
 }
 \arguments{
 \item{val}{a scalar value (numeric, character, date, etc.)}

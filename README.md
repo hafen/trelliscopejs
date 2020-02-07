@@ -1,8 +1,11 @@
 ## trelliscopejs R Package
 
+<!-- badges: start -->
 [![Build Status](https://travis-ci.org/hafen/trelliscopejs.svg?branch=master)](https://travis-ci.org/hafen/trelliscopejs)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/hafen/trelliscopejs?branch=master&svg=true)](https://ci.appveyor.com/project/hafen/trelliscopejs)
 [![codecov.io](https://codecov.io/github/hafen/trelliscopejs/coverage.svg?branch=master)](https://codecov.io/github/hafen/trelliscopejs?branch=master)
 [![CRAN](http://www.r-pkg.org/badges/version/trelliscopejs)](https://cran.r-project.org/package=trelliscopejs)
+<!-- badges: end -->
 
 Trelliscope is a scalable, flexible, interactive approach to visualizing data. The trelliscopejs R package provides methods that make it easy to create a Trelliscope display specification for the Trelliscope JavaScript library [trelliscopejs-lib](https://github.com/hafen/trelliscopejs-lib). High-level functions are provided for creating displays from within dplyr (via `summarise()`) or ggplot2 (via `facet_trelliscope()`) workflows. Low-level functions are also provided for creating new interfaces.
 

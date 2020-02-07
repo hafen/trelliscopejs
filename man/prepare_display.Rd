@@ -4,8 +4,7 @@
 \alias{prepare_display}
 \title{Set up all auxiliary files needed for a Trelliscope app}
 \usage{
-prepare_display(base_path, id, self_contained = FALSE, jsonp = TRUE,
-  pb = NULL)
+prepare_display(base_path, id, self_contained = FALSE, jsonp = TRUE, pb = NULL)
 }
 \arguments{
 \item{base_path}{the base directory of the trelliscope application}

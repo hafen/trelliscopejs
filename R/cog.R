@@ -134,7 +134,6 @@ infer_cog_type <- function(val) {
 #' @param val A string indicating the value of the filter.
 #' @param desc a description for this cognostic value
 #' @param group optional categorization of the cognostic for organizational purposes in the viewer (currently not implemented in the viewer)
-#' @param type the desired type of cognostic you would like to compute (see details)
 #' @param default_label should this cognostic be used as a panel label in the viewer by default?
 #' @param default_active should this cognostic be active (available for sort / filter / sample) by default?
 #' @param filterable should this cognostic be filterable?  Default is \code{TRUE}.  It can be useful to set this to \code{FALSE} if the cognostic is categorical with many unique values and is only desired to be used as a panel label.

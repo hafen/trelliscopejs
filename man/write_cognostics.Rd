@@ -4,8 +4,7 @@
 \alias{write_cognostics}
 \title{Write cognostics data for a display in a Trelliscope app}
 \usage{
-write_cognostics(cogdf, base_path, id, name, group = "common",
-  jsonp = TRUE)
+write_cognostics(cogdf, base_path, id, name, group = "common", jsonp = TRUE)
 }
 \arguments{
 \item{cogdf}{a data frame of cognostics, prepared with \code{\link{as_cognostics}}}

@@ -4,9 +4,17 @@
 \alias{cog_disp_filter}
 \title{Helper function for creating a cognostic for a link to another display in a filtered state}
 \usage{
-cog_disp_filter(display, var, val, desc = "link", group = "common",
-  default_label = FALSE, default_active = FALSE, filterable = FALSE,
-  sortable = FALSE)
+cog_disp_filter(
+  display,
+  var,
+  val,
+  desc = "link",
+  group = "common",
+  default_label = FALSE,
+  default_active = FALSE,
+  filterable = FALSE,
+  sortable = FALSE
+)
 }
 \arguments{
 \item{display}{A string indicating the name of the display to link to.}
@@ -26,8 +34,6 @@ cog_disp_filter(display, var, val, desc = "link", group = "common",
 \item{filterable}{should this cognostic be filterable?  Default is \code{TRUE}.  It can be useful to set this to \code{FALSE} if the cognostic is categorical with many unique values and is only desired to be used as a panel label.}
 
 \item{sortable}{should this cognostic be sortable?}
-
-\item{type}{the desired type of cognostic you would like to compute (see details)}
 }
 \description{
 Helper function for creating a cognostic for a link to another display in a filtered state

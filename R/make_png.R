@@ -30,16 +30,16 @@ get_png_units <- function(width, height, orig_width = width, res = 72,
 make_png <- function(p, file, width, height, orig_width = width, res = 72,
   base_point_size = 12, pixelratio = 2) {
 
-  if (capabilities("aqua")) {
-    pngfun <- grDevices::png
-  } else {
-    pkg <- "Cairo" # nolint
-    if (suppressWarnings(suppressMessages(require(pkg, character.only = TRUE)))) {
-      pngfun <- Cairo::CairoPNG
-    } else {
-      pngfun <- grDevices::png
-    }
-  }
+  pngfun <- grDevices::png
+  # if (capabilities("aqua")) {
+  # } else {
+  #   pkg <- "Cairo" # nolint
+  #   if (suppressWarnings(suppressMessages(require(pkg, character.only = TRUE)))) {
+  #     pngfun <- Cairo::CairoPNG
+  #   } else {
+  #     pngfun <- grDevices::png
+  #   }
+  # }
 
   units <- get_png_units(width, height, orig_width, res,
     base_point_size, pixelratio)

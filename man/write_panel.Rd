@@ -4,8 +4,17 @@
 \alias{write_panel}
 \title{Write a plot object as a panel in a Trelliscope display}
 \usage{
-write_panel(plot_object, key, base_path, name, group = "common", width,
-  height, jsonp = TRUE, split_layout = FALSE)
+write_panel(
+  plot_object,
+  key,
+  base_path,
+  name,
+  group = "common",
+  width,
+  height,
+  jsonp = TRUE,
+  split_layout = FALSE
+)
 }
 \arguments{
 \item{plot_object}{a plot object to be written (can be trellis, ggplot2, or htmlwidget)}

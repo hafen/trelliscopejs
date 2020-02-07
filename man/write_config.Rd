@@ -4,8 +4,14 @@
 \alias{write_config}
 \title{Write Trelliscope app configuration file}
 \usage{
-write_config(base_path, id, self_contained = FALSE, jsonp = TRUE,
-  split_layout = FALSE, has_legend = FALSE)
+write_config(
+  base_path,
+  id,
+  self_contained = FALSE,
+  jsonp = TRUE,
+  split_layout = FALSE,
+  has_legend = FALSE
+)
 }
 \arguments{
 \item{base_path}{the base directory of the trelliscope application}

@@ -7,12 +7,8 @@ node_modules/
 ..Rcheck
 CONTRIBUTING\.md
 LICENSE\.md
-Gruntfile\.js
 _ignore
-\.sublime\-
-\.Rapp\.history
 package.json
-rhipe-java*.log
 tools/
 cran-comments.md
 ^tools
@@ -20,3 +16,5 @@ _test/
 ^codecov\.yml$
 ^_gh-pages$
 ^revdep$
+^.*\.code-workspace$
+^appveyor\.yml$

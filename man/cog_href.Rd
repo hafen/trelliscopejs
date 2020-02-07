@@ -4,9 +4,16 @@
 \alias{cog_href}
 \title{Href Cognostic}
 \usage{
-cog_href(x, desc = "link", group = "common", default_label = FALSE,
-  default_active = FALSE, filterable = FALSE, sortable = FALSE,
-  log = FALSE)
+cog_href(
+  x,
+  desc = "link",
+  group = "common",
+  default_label = FALSE,
+  default_active = FALSE,
+  filterable = FALSE,
+  sortable = FALSE,
+  log = FALSE
+)
 }
 \arguments{
 \item{x}{URL to link to}

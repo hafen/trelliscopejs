@@ -4,10 +4,25 @@
 \alias{trelliscope}
 \title{Create a Trelliscope Display}
 \usage{
-trelliscope(x, name, group = "common", panel_col = NULL, desc = "",
-  md_desc = "", path, height = 500, width = 500, auto_cog = FALSE,
-  state = NULL, nrow = 1, ncol = 1, jsonp = TRUE,
-  split_sig = NULL, self_contained = FALSE, thumb = FALSE)
+trelliscope(
+  x,
+  name,
+  group = "common",
+  panel_col = NULL,
+  desc = "",
+  md_desc = "",
+  path,
+  height = 500,
+  width = 500,
+  auto_cog = FALSE,
+  state = NULL,
+  nrow = 1,
+  ncol = 1,
+  jsonp = TRUE,
+  split_sig = NULL,
+  self_contained = FALSE,
+  thumb = FALSE
+)
 }
 \arguments{
 \item{x}{an object to create at trelliscope display for}

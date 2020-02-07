@@ -4,8 +4,15 @@
 \alias{as_cognostics}
 \title{Cast a data frame as a cognostics data frame}
 \usage{
-as_cognostics(x, cond_cols, key_col = NULL, cog_desc = NULL,
-  needs_key = TRUE, needs_cond = TRUE, group = "common")
+as_cognostics(
+  x,
+  cond_cols,
+  key_col = NULL,
+  cog_desc = NULL,
+  needs_key = TRUE,
+  needs_cond = TRUE,
+  group = "common"
+)
 }
 \arguments{
 \item{x}{a data frame}

@@ -82,27 +82,39 @@ facet_trelliscope <- function(
   ret
 }
 
-#' Add method for gg / facet_trelliscope
-#' @param e1 a object with class gg
-#' @param e2 if object is of class 'facet_trelliscope', then 'facet_trelliscope' will be appended to the class of e1
 #' @export
-#' @importFrom ggplot2 %+%
-`+.gg` <- function (e1, e2) {
-  if (inherits(e2, "facet_trelliscope")) {
-
-    # e1 <- e1 %+% (e2$facet_wrap)
-    attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group",
+ggplot_add.facet_trelliscope <- function(object, plot, object_name) {
+  attr(plot, "trelliscope") <- object[
+    c("facets", "facet_cols", "name", "group",
       "desc", "md_desc", "height", "width", "state", "jsonp", "self_contained",
       "path", "state", "nrow", "ncol", "scales", "thumb", "as_plotly",
       "split_sig", "plotly_args", "plotly_cfg", "auto_cog", "split_layout",
       "data")]
-    class(e1) <- c("facet_trelliscope", class(e1))
-    return(e1)
-    # return(print(e1))
-  }
-
-  e1 %+% e2
+  class(plot) <- c("facet_trelliscope", class(plot))
+  return(plot)
 }
+
+# #' Add method for gg / facet_trelliscope
+# #' @param e1 a object with class gg
+# #' @param e2 if object is of class 'facet_trelliscope', then 'facet_trelliscope' will be appended to the class of e1
+# #' @export
+# #' @importFrom ggplot2 %+%
+# `+.gg` <- function (e1, e2) {
+#   if (inherits(e2, "facet_trelliscope")) {
+
+#     # e1 <- e1 %+% (e2$facet_wrap)
+#     attr(e1, "trelliscope") <- e2[c("facets", "facet_cols", "name", "group",
+#       "desc", "md_desc", "height", "width", "state", "jsonp", "self_contained",
+#       "path", "state", "nrow", "ncol", "scales", "thumb", "as_plotly",
+#       "split_sig", "plotly_args", "plotly_cfg", "auto_cog", "split_layout",
+#       "data")]
+#     class(e1) <- c("facet_trelliscope", class(e1))
+#     return(e1)
+#     # return(print(e1))
+#   }
+
+#   e1 %+% e2
+# }
 
 
 #' Print facet trelliscope object
@@ -185,7 +197,18 @@ print.facet_trelliscope <- function(x, ...) {
   # wrapper function that swaps out the data with a subset and removes the facet
   make_plot_obj <- function(dt, pos = -1) {
     q <- p
-    q$data <- tidyr::unnest(dt, data)
+    # dt$data <- lapply(dt$data, function(x) {
+    #   idx <- which(unlist(lapply(x, function(a) inherits(a, "cog"))))
+    #   for (ii in idx) {
+    #     class(x[[ii]]) <- setdiff(class(x[[ii]]), "cog")
+    #   }
+    #   x
+    # })
+    # q$data <- tidyr::unnest(dt, data)
+    nms <- setdiff(names(dt), "data")
+    tmp <- dt$data[[1]]
+    for (nm in nms) tmp[[nm]] <- dt[[nm]]
+    q$data <- tmp[, c(nms, setdiff(names(tmp), nms))]
     q <- add_trelliscope_scales(q, scales_info, show_warnings = (pos == 1))
     q
   }
