@@ -5,8 +5,6 @@
 [![CRAN](http://www.r-pkg.org/badges/version/trelliscopejs)](https://cran.r-project.org/package=trelliscopejs)
 <!-- badges: end -->
 
-<script src="https://unpkg.com/trelliscopejs-lib/dist/trelliscope.min.js"></script>
-
 # trelliscopejs <img src="man/figures/logo.png" align="right" width="120px" />
 
 Trelliscope is a scalable, flexible, interactive approach to visualizing data. The trelliscopejs R package provides methods that make it easy to create a Trelliscope display specification for the Trelliscope JavaScript library [trelliscopejs-lib](https://github.com/hafen/trelliscopejs-lib). High-level functions are provided for creating displays from within dplyr (via `summarise()`) or ggplot2 (via `facet_trelliscope()`) workflows. Low-level functions are also provided for creating new interfaces.
@@ -50,9 +48,3 @@ qplot(year, lifeExp, data = gapminder) +
 <div style="margin-top:20px; margin-bottom: 20px">
 <div id="ebbfa969" class="trelliscope-not-spa" style="width:850px; height:600px;"></div>
 </div>
-
-<script>
-  (function() {
-    trelliscopeApp('ebbfa969', 'https://hafen.github.io/trelliscopejs-demo/mpg/appfiles/config.jsonp');
-  })();
-</script>
