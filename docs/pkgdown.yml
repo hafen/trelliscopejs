@@ -1,0 +1,6 @@
+pandoc: 2.2.3.2
+pkgdown: 1.4.1
+pkgdown_sha: ~
+articles:
+  trelliscopejs: trelliscopejs.html
+

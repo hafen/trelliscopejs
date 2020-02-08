@@ -1,0 +1,47 @@
+destination: docs
+
+toc:
+  depth: 1
+
+reference:
+  - title: "Trelliscope Functions"
+    desc: "Functions for creating Trelliscope displays."
+    contents: 
+      - trelliscope
+      - facet_trelliscope
+      - img_panel
+      - img_panel_local
+      - print.facet_trelliscope
+  - title: "Cognostics"
+    desc: "Functions for creating and modifying the behavior of cognostics."
+    contents:
+      - cog
+      - cog_href
+      - cogs
+      - cog_disp_filter
+  - title: "Helpers"
+    desc: "Helper functions for working in the tidyverse."
+    contents:
+      - map2_cog
+      - map2_plot
+      - map_cog
+      - map_plot
+      - panel
+      - panels
+      - set_labels
+      - sort_spec
+  - title: "Low-level Functions"
+    desc: "Low-level functions."
+    contents:
+      - prepare_display
+      - update_display_list
+      - write_cognostics
+      - write_config
+      - write_display_obj
+      - write_panel
+      - write_panels
+      - as_cognostics
+  - title: "Datasets"
+    desc: "Datasets"
+    contents:
+      - mpg_labels
