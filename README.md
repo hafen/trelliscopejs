@@ -1,5 +1,3 @@
-## trelliscopejs R Package
-
 <!-- badges: start -->
 [![Build Status](https://travis-ci.org/hafen/trelliscopejs.svg?branch=master)](https://travis-ci.org/hafen/trelliscopejs)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/hafen/trelliscopejs?branch=master&svg=true)](https://ci.appveyor.com/project/hafen/trelliscopejs)
@@ -7,13 +5,22 @@
 [![CRAN](http://www.r-pkg.org/badges/version/trelliscopejs)](https://cran.r-project.org/package=trelliscopejs)
 <!-- badges: end -->
 
-Trelliscope is a scalable, flexible, interactive approach to visualizing data. The trelliscopejs R package provides methods that make it easy to create a Trelliscope display specification for the Trelliscope JavaScript library [trelliscopejs-lib](https://github.com/hafen/trelliscopejs-lib). High-level functions are provided for creating displays from within dplyr (via `summarise()`) or ggplot2 (via `facet_trelliscope()`) workflows. Low-level functions are also provided for creating new interfaces.
+<script src="https://unpkg.com/trelliscopejs-lib/dist/trelliscope.min.js"></script>
 
-Note that this package, **trelliscopejs** is the successor of the [**trelliscope**] package which is available on CRAN and is part of the DeltaRho project. Eventually the **trelliscopejs** package will replace **trelliscope** and plug in to the DeltaRho ecosystem as well.
+# trelliscopejs <img src="man/figures/logo.png" align="right" width="120px" />
+
+Trelliscope is a scalable, flexible, interactive approach to visualizing data. The trelliscopejs R package provides methods that make it easy to create a Trelliscope display specification for the Trelliscope JavaScript library [trelliscopejs-lib](https://github.com/hafen/trelliscopejs-lib). High-level functions are provided for creating displays from within dplyr (via `summarise()`) or ggplot2 (via `facet_trelliscope()`) workflows. Low-level functions are also provided for creating new interfaces.
 
 ### Install
 
 ```r
+install.packages("trelliscopejs")
+```
+
+To install the latest development version:
+
+```r
+# install.packages("remotes") # if "remotes" is not already installed
 devtools::install_github("hafen/trelliscopejs")
 ```
 
@@ -26,9 +33,9 @@ devtools::install_github("hafen/trelliscopejs")
 
 ## Examples
 
-The examples below are minimal. Please see the [package vignettes](https://hafen.github.io/trelliscopejs) for more.
+Here is a simple example using the ggplot2 interface. Using trelliscopejs in this way is as easy as swapping `facet_wrap()` with `facet_trelliscope()` and specifying some additional options.
 
-#### ggplot
+Please see the [package vignettes](https://hafen.github.io/trelliscopejs) for more.
 
 ```r
 library(trelliscopejs)
@@ -40,27 +47,12 @@ qplot(year, lifeExp, data = gapminder) +
   facet_trelliscope(~ country + continent, nrow = 2, ncol = 7, width = 300)
 ```
 
-#### tidyverse
+<div style="margin-top:20px; margin-bottom: 20px">
+<div id="ebbfa969" class="trelliscope-not-spa" style="width:850px; height:600px;"></div>
+</div>
 
-```r
-library(trelliscopejs)
-library(tidyverse)
-library(rbokeh)
-library(gapminder)
-
-# nest gapminder data by country
-by_country <- gapminder %>%
-  group_by(country, continent) %>%
-  nest()
-
-# add in a plot column with map_plot
-by_country <- by_country %>% mutate(
-  panel = map_plot(data,
-    ~ figure(xlim = c(1948, 2011), ylim = c(10, 95), width = 300, tools = NULL) %>%
-        ly_points(year, lifeExp, data = .x, hover = .x)
-  ))
-
-# plot it
-by_country %>%
-  trelliscope("gapminder", nrow = 2, ncol = 7)
-```
+<script>
+  (function() {
+    trelliscopeApp('ebbfa969', 'https://hafen.github.io/trelliscopejs-demo/mpg/appfiles/config.jsonp');
+  })();
+</script>
