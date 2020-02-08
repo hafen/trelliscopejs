@@ -2,7 +2,7 @@
 title: "Introduction to trelliscopejs"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to pkgdown}
+  %\VignetteIndexEntry{Introduction to trelliscopejs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,9 +10,6 @@ vignette: >
 ```{r global_options, include=FALSE}
 # R output pre blocks are styled by default to indicate output
 knitr::opts_chunk$set(comment = NA)
-
-# shorthand for rd_link() - see ?packagedocs::rd_link for more information
-rdl <- function(x) packagedocs::rd_link(deparse(substitute(x)))
 
 library(rbokeh)
 thm <- getOption("bokeh_theme")
@@ -137,7 +134,9 @@ Let's set up a scenario in which we will produce a plot similar to the Gapminder
 We want to plot life expectancy vs. year by country. So first we will group our data frame by country and continent and thenc call `tidyr::nest()` to obtain a data frame with one row per country and continent with each unique country's data stored in a new column of nested data frames, `data`:
 
 ```{r message=FALSE}
-library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(purrr)
 library(gapminder)
 
 by_country <- gapminder %>%
@@ -199,8 +198,8 @@ The `by_country` data frame now has a new column, `data_plot` that contains the 
 We can now pipe this into a call to `trelliscope()`:
 
 ```r
-d %>%
-  trelliscope(name = "life_expectancy")
+by_country %>%
+  trelliscope(name = "life_expectancy", nrow = 2, ncol = 4)
 ```
 
 The output will look like this:
