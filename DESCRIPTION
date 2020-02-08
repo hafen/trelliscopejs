@@ -36,9 +36,9 @@ Imports:
     knitr,
     webshot,
     autocogs,
+    tidyr,
     rlang
 Suggests:
-    tidyr,
     rbokeh,
     plotly,
     testthat,
