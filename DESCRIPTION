@@ -48,3 +48,4 @@ Suggests:
 RoxygenNote: 7.0.2
 URL: https://github.com/hafen/trelliscopejs
 BugReports: https://github.com/hafen/trelliscopejs/issues
+VignetteBuilder: knitr
