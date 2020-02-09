@@ -1,8 +1,9 @@
 ## Test environments
 
-* local OS X install, R 3.5.2
-* ubuntu 14.04 (on travis-ci), R 3.5.2
-* win-builder (devel and release)
+* local OS X install, R 3.6.2
+* ubuntu 16.04 (on travis-ci), R 3.6.2
+* Windows R (on Appveyor) 3.6.2
+* R-Hub Fedora, Windows
 
 ## R CMD check results
 
@@ -10,4 +11,4 @@
 
 ## Reverse dependencies
 
-There are no reverse dependencies.
+R CMD check ran successfully on the only reverse dependency, PML.
