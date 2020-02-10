@@ -161,7 +161,7 @@
   <span class='fu'><a href='https://tidyr.tidyverse.org/reference/nest.html'>nest</a></span>() <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(
     <span class='kw'>additional_cogs</span> <span class='kw'>=</span> <span class='fu'><a href='map_cog.html'>map_cog</a></span>(<span class='no'>data</span>,
-      ~ <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>data_frame</a></span>(
+      ~ <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>tibble</a></span>(
         <span class='kw'>max_city_mpg</span> <span class='kw'>=</span> <span class='fu'><a href='cog.html'>cog</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='no'>.x</span>$<span class='no'>cty</span>), <span class='kw'>desc</span> <span class='kw'>=</span> <span class='st'>"Max city mpg"</span>),
         <span class='kw'>min_city_mpg</span> <span class='kw'>=</span> <span class='fu'><a href='cog.html'>cog</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span>(<span class='no'>.x</span>$<span class='no'>cty</span>), <span class='kw'>desc</span> <span class='kw'>=</span> <span class='st'>"Min city mpg"</span>))),
     <span class='kw'>panel</span> <span class='kw'>=</span> <span class='fu'><a href='map_plot.html'>map_plot</a></span>(<span class='no'>data</span>, ~ <span class='fu'><a href='https://rdrr.io/pkg/rbokeh/man/figure.html'>figure</a></span>(<span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"City mpg"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Highway mpg"</span>) <span class='kw'>%&gt;%</span>

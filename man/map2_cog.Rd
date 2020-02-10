@@ -36,7 +36,7 @@ iris \%>\%
   mutate(
     mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
     cogs = map2_cog(data, mod, function(data, mod) {
-      data_frame(max_sl = max(data$Sepal.Length), slope = coef(mod)[2])
+      tibble(max_sl = max(data$Sepal.Length), slope = coef(mod)[2])
     }),
     panel = map2_plot(data, mod, function(data, mod) {
       figure(xlab = "Sepal.Width", ylab = "Sepal.Length") \%>\%

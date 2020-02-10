@@ -29,7 +29,7 @@ ggplot2::mpg \%>\%
   nest() \%>\%
   mutate(
     additional_cogs = map_cog(data,
-      ~ data_frame(
+      ~ tibble(
         max_city_mpg = cog(max(.x$cty), desc = "Max city mpg"),
         min_city_mpg = cog(min(.x$cty), desc = "Min city mpg"))),
     panel = map_plot(data, ~ figure(xlab = "City mpg", ylab = "Highway mpg") \%>\%

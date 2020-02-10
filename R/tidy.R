@@ -172,7 +172,7 @@ pmap_plot <- function(.l, .f, ...) {
 #'   nest() %>%
 #'   mutate(
 #'     additional_cogs = map_cog(data,
-#'       ~ data_frame(
+#'       ~ tibble(
 #'         max_city_mpg = cog(max(.x$cty), desc = "Max city mpg"),
 #'         min_city_mpg = cog(min(.x$cty), desc = "Min city mpg"))),
 #'     panel = map_plot(data, ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
@@ -234,7 +234,7 @@ map_cog <- function(.x, .f, ...) {
 #'   mutate(
 #'     mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
 #'     cogs = map2_cog(data, mod, function(data, mod) {
-#'       data_frame(max_sl = max(data$Sepal.Length), slope = coef(mod)[2])
+#'       tibble(max_sl = max(data$Sepal.Length), slope = coef(mod)[2])
 #'     }),
 #'     panel = map2_plot(data, mod, function(data, mod) {
 #'       figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%

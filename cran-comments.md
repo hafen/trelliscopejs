@@ -1,3 +1,5 @@
+Resubmission: URLs that were out of date in vignettes have been updated.
+
 ## Test environments
 
 * local OS X install, R 3.6.2

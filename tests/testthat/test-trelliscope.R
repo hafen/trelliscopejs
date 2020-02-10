@@ -63,7 +63,7 @@ test_that("examples run without barfing", {
     group_by(manufacturer, class) %>%
     nest() %>%
     mutate(
-      cogs = map_cog(data, ~ data_frame(
+      cogs = map_cog(data, ~ tibble(
         mean_city_mpg = mean(.$cty),
         mean_hwy_mpg = mean(.$hwy),
         most_common_drv = tail(names(table(.$drv)), 1)
@@ -86,7 +86,7 @@ test_that("examples run without barfing", {
     group_by(manufacturer, class) %>%
     nest() %>%
     mutate(
-      cogs = map_cog(data, ~ data_frame(
+      cogs = map_cog(data, ~ tibble(
         mean_city_mpg = cog(mean(.$cty), desc = "Mean city mpg"),
         mean_hwy_mpg = cog(mean(.$hwy), desc = "Mean highway mpg"),
         most_common_drv = cog(tail(names(table(.$drv)), 1), desc = "Most common drive type")
@@ -187,7 +187,7 @@ test_that("examples run without barfing", {
     nest() %>%
     mutate(
       additional_cogs = map_cog(data,
-        ~ data_frame(
+        ~ tibble(
             max_city_mpg = cog(max(.x$cty), desc = "Max city mpg"),
             min_city_mpg = cog(min(.x$cty), desc = "Min city mpg"))),
       panel = map_plot(data, ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
@@ -202,7 +202,7 @@ test_that("examples run without barfing", {
     mutate(
       mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
       cogs = map2_cog(data, mod, function(data, mod) {
-        data_frame(max_sl = max(data$Sepal.Length), slope = coef(mod)[2])
+        tibble(max_sl = max(data$Sepal.Length), slope = coef(mod)[2])
       }),
       panel = map2_plot(data, mod, function(data, mod) {
         figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
@@ -217,7 +217,7 @@ test_that("examples run without barfing", {
     mutate(
       mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
       cogs = pmap_cog(list(data = data), function(data) {
-        data_frame(max_sl = max(data$Sepal.Length))
+        tibble(max_sl = max(data$Sepal.Length))
       }),
       panel = pmap_plot(list(data = data, mod = mod), function(data, mod) {
         figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%

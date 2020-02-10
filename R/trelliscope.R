@@ -221,13 +221,13 @@ find_cond_cols <- function(x, is_nested) {
 #   note: this will only detect first-order sorting...
 find_sort_cols <- function(x) {
   if (ncol(x) == 0)
-    return(data_frame())
+    return(tibble())
 
   sortable <- names(x)[sapply(x, is.atomic)]
 
   res <- lapply(sortable,
     function(nm) {
-      res <- data_frame(name = nm, dir = NA)
+      res <- tibble(name = nm, dir = NA)
       if (!is.unsorted(x[[nm]], na.rm = TRUE)) {
         res$dir <- "asc"
       } else if (!is.unsorted(rev(x[[nm]]), na.rm = TRUE)) {

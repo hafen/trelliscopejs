@@ -28,7 +28,7 @@
 #'   group_by(manufacturer, class) %>%
 #'   nest() %>%
 #'   mutate(
-#'     cogs = map_cog(data, ~ data_frame(
+#'     cogs = map_cog(data, ~ tibble(
 #'       mean_city_mpg = cog(mean(.$cty), desc = "Mean city mpg"),
 #'       mean_hwy_mpg = cog(mean(.$hwy), desc = "Mean highway mpg"),
 #'       most_common_drv = cog(tail(names(table(.$drv)), 1), desc = "Most common drive type")

@@ -63,14 +63,14 @@ stop_nice <- function(...) {
 #
 #   ## determine which columns to compute what kind of cognostics for
 #   cog_spec <- list(
-#     count = data_frame(col = NA, cogname = "count", desc = "number of observations")
+#     count = tibble(col = NA, cogname = "count", desc = "number of observations")
 #   )
 #
 #   # if any columns are unique per group, add them as an "identity" cognostic
 #   tmp <- cog_data %>% purrr::map_df(. %>% summarise_all(n_distinct))
 #   unique_cols <- names(tmp)[sapply(tmp, function(x) all(x == 1))]
 #   if (length(unique_cols) > 0) {
-#     cog_spec$unique <- data_frame(
+#     cog_spec$unique <- tibble(
 #       col = unique_cols,
 #       cogname = sanitize(unique_cols),
 #       desc = get_label(cog_data[[1]], unique_cols))
@@ -80,7 +80,7 @@ stop_nice <- function(...) {
 #   num_cols <- names(cog_data[[1]])[sapply(cog_data[[1]], is.numeric)]
 #   num_cols <- setdiff(num_cols, unique_cols)
 #   if (length(num_cols) > 0)
-#     cog_spec$num <- data_frame(
+#     cog_spec$num <- tibble(
 #       col = num_cols,
 #       cogname = paste0(sanitize(num_cols), "_mean"),
 #       desc = paste("mean", get_label(cog_data[[1]], num_cols)))
@@ -90,7 +90,7 @@ stop_nice <- function(...) {
 #   names(cog_desc) <- tmp$cogname
 #
 #   res <- map_cog(cog_data, function(x) {
-#     res <- data_frame(count = nrow(x))
+#     res <- tibble(count = nrow(x))
 #     for (ii in seq_along(cog_spec$unique$col))
 #       res[[cog_spec$unique$cogname[ii]]] <- x[[cog_spec$unique$col[ii]]][1]
 #     for (ii in seq_along(cog_spec$num$col))
