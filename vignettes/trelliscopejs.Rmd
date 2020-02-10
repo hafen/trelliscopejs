@@ -17,7 +17,7 @@ thm$axis$axis_label_text_font_size <- "10pt"
 options(bokeh_theme = thm)
 ```
 
-Trelliscope is a visualization approach based on the idea of ["small multiples"](https://www.juiceanalytics.com/writing/better-know-visualization-small-multiples) or ["Trellis Display"](https://polisci.msu.edu/jacoby/uic/manuscripts/95.8.color.pdf), where data are split into groups and a plot is made for each group, with the resulting plots arranged in a grid. This approach is very simple yet is considered to be ["the best design solution for a wide range or problems in data presentation"](https://en.wikipedia.org/wiki/Small_multiple). Trelliscope makes small multiple displays come alive by providing the ability to interactively sort and filter the plots based on summary statistics computed for each group.
+Trelliscope is a visualization approach based on the idea of ["small multiples"](https://www.juiceanalytics.com/writing/better-know-visualization-small-multiples) or Trellis Display, where data are split into groups and a plot is made for each group, with the resulting plots arranged in a grid. This approach is very simple yet is considered to be ["the best design solution for a wide range or problems in data presentation"](https://en.wikipedia.org/wiki/Small_multiple). Trelliscope makes small multiple displays come alive by providing the ability to interactively sort and filter the plots based on summary statistics computed for each group.
 
 The **trelliscopejs** R package is an interface for creating Trelliscope displays with the goal of providing methods that are convenient to use in traditional visual / analytical workflows. For example, the package provides methods that allow you to easily generate Trelliscope displays from ggplot2 or ["tidy"](https://blog.rstudio.org/2016/09/15/tidyverse-1-0-0/) workflows.
 
@@ -285,7 +285,7 @@ Note that if you want to embed a plot in an RMarkdown notebook, you must specify
 
 # Examples
 
-Here are a few more interesting examples of Trelliscope. You can check out my [blog](https://ryanhafen.com/blog/) for upcoming posts on other interesting displays.
+Here are a few more interesting examples of Trelliscope. You can check out my [blog](https://ryanhafen.com/#posts) for upcoming posts on other interesting displays.
 
 ## Housing data
 
