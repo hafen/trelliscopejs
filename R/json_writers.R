@@ -182,9 +182,10 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @importFrom digest digest
 #' @export
 write_display_obj <- function(cogdf, panel_example, base_path, id, name, group = "common",
-  desc = "", height = 500, width = 500, md_desc = "", state = NULL, jsonp = TRUE,
-  split_sig = NULL, panel_img_col = NULL, self_contained = FALSE, thumb = TRUE, 
-  split_layout = FALSE, split_aspect = NULL, has_legend = FALSE, pb = NULL) {
+  desc = "", height = 500, width = 500, md_desc = "", state = NULL,
+  views = NULL, jsonp = TRUE, split_sig = NULL, panel_img_col = NULL, 
+  self_contained = FALSE, thumb = TRUE, split_layout = FALSE,
+  split_aspect = NULL, has_legend = FALSE, pb = NULL) {
 
   display_path <- file.path(base_path, "displays", group, name)
   panel_path <- file.path(display_path, ifelse(jsonp, "jsonp", "json"))
@@ -268,6 +269,7 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
     }
   }
   disp_obj$state <- state
+  disp_obj$views <- views
 
   if (!dir.exists(display_path))
     dir.create(display_path, recursive = TRUE)
@@ -283,7 +285,12 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
 
   write_cognostics(cogdf, base_path, id = id, name = name, group = group, jsonp = jsonp)
 
-  thumb_message <- ifelse(thumb, "writing thumbnail   ", "empty thumbnail     ")
+  if (is.character(thumb)) {
+    thumb_message <- "img thumbnail       "
+    panel_example <- thumb
+  } else if (is.logical(thumb)) {
+    thumb_message <- ifelse(thumb, "writing thumbnail   ", "empty thumbnail     ")
+  }
 
   # if thumb is false, we still write a blank one...
   if (!is.null(pb))
@@ -300,12 +307,14 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
 #' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param jsonp should json for display list and app config be jsonp (TRUE) or json (FALSE)?
 #' @param pb optional progress bar object to pass in and use to report progress
+#' @param require_token require a special token for all displays to be visible (experimental)
 #' @export
 prepare_display <- function(
   base_path,
   id,
   self_contained = FALSE,
   jsonp = TRUE,
+  require_token = FALSE,
   pb = NULL
 ) {
 
@@ -321,7 +330,8 @@ prepare_display <- function(
     base_path,
     id = id,
     self_contained = self_contained,
-    jsonp = jsonp
+    jsonp = jsonp,
+    require_token = require_token
   )
 }
 
@@ -375,10 +385,14 @@ update_display_list <- function(base_path, jsonp = TRUE) {
 #' @param id a unique id for the application
 #' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param jsonp should json for app config be jsonp (TRUE) or json (FALSE)?
+#' @param require_token require a special token for all displays to be visible (experimental)
 #' @template param-split-layout
 #' @template param-has-legend
 #' @export
-write_config <- function(base_path, id, self_contained = FALSE, jsonp = TRUE, split_layout = FALSE, has_legend = FALSE) {
+write_config <- function(base_path, id, self_contained = FALSE,
+  jsonp = TRUE, require_token = FALSE, split_layout = FALSE,
+  has_legend = FALSE
+) {
   cfg <- as.character(jsonlite::toJSON(
     list(
       display_base = ifelse(self_contained, "__self__", "displays"),
@@ -388,7 +402,8 @@ write_config <- function(base_path, id, self_contained = FALSE, jsonp = TRUE, sp
         info = list(base = ifelse(self_contained, "__self__", "displays"))
       ),
       split_layout = split_layout,
-      has_legend = has_legend
+      has_legend = has_legend,
+      require_token = require_token
     ),
     pretty = TRUE,
     auto_unbox = TRUE
