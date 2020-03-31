@@ -16,6 +16,7 @@ write_display_obj(
   width = 500,
   md_desc = "",
   state = NULL,
+  views = NULL,
   jsonp = TRUE,
   split_sig = NULL,
   panel_img_col = NULL,
@@ -24,6 +25,7 @@ write_display_obj(
   split_layout = FALSE,
   split_aspect = NULL,
   has_legend = FALSE,
+  order = 1,
   pb = NULL
 )
 }

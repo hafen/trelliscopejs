@@ -16,12 +16,16 @@ trelliscope(
   width = 500,
   auto_cog = FALSE,
   state = NULL,
+  views = NULL,
   nrow = 1,
   ncol = 1,
   jsonp = TRUE,
   split_sig = NULL,
   self_contained = FALSE,
-  thumb = FALSE
+  thumb = FALSE,
+  require_token = FALSE,
+  id = NULL,
+  order = 1
 )
 }
 \arguments{
@@ -47,6 +51,8 @@ trelliscope(
 
 \item{state}{the initial state the display will open in}
 
+\item{views}{an optional list of pre-specified views of the display (experimental)}
+
 \item{nrow}{the number of rows of panels to display by default}
 
 \item{ncol}{the number of columns of panels to display by default}
@@ -58,6 +64,12 @@ trelliscope(
 \item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
 
 \item{thumb}{should a thumbnail be created?}
+
+\item{require_token}{require a special token for all displays to be visible (experimental)}
+
+\item{id}{set a hard-coded ID for this app (do not set this if the display will be part of a larger web page)}
+
+\item{order}{an integer indicating the order that the display should appear in if using multiple displays}
 }
 \description{
 Create a Trelliscope Display

@@ -181,12 +181,13 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @param pb optional progress bar object to pass in and use to report progress
 #' @importFrom digest digest
 #' @export
-write_display_obj <- function(cogdf, panel_example, base_path, id, name, group = "common",
+write_display_obj <- function(
+  cogdf, panel_example, base_path, id, name, group = "common",
   desc = "", height = 500, width = 500, md_desc = "", state = NULL,
   views = NULL, jsonp = TRUE, split_sig = NULL, panel_img_col = NULL, 
   self_contained = FALSE, thumb = TRUE, split_layout = FALSE,
-  split_aspect = NULL, has_legend = FALSE, pb = NULL) {
-
+  split_aspect = NULL, has_legend = FALSE, order = 1, pb = NULL
+) {
   display_path <- file.path(base_path, "displays", group, name)
   panel_path <- file.path(display_path, ifelse(jsonp, "jsonp", "json"))
 
@@ -237,6 +238,7 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
     n = nrow(cogdf),
     height = height,
     width = width,
+    order = order,
     has_legend = has_legend,
     split_layout = split_layout,
     split_aspect = split_aspect,
@@ -365,6 +367,7 @@ update_display_list <- function(base_path, jsonp = TRUE) {
       name = obj$name,
       desc = obj$desc,
       n = obj$n,
+      order = obj$order,
       height = obj$height,
       width = obj$width,
       updated = obj$updated,

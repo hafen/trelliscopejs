@@ -11,6 +11,7 @@
 #' @param width width in pixels of each panel
 #' @param auto_cog should auto cogs be computed (if possible)?
 #' @param state the initial state the display will open in
+#' @param views an optional list of pre-specified views of the display (experimental)
 #' @param nrow the number of rows of panels to display by default
 #' @param ncol the number of columns of panels to display by default
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
@@ -18,6 +19,8 @@
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
 #' @param require_token require a special token for all displays to be visible (experimental)
+#' @param id set a hard-coded ID for this app (do not set this if the display will be part of a larger web page)
+#' @param order an integer indicating the order that the display should appear in if using multiple displays
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 #' @example man-roxygen/ex-trelliscope.R
 #' @export
@@ -26,15 +29,16 @@ trelliscope <- function(x, name, group = "common", panel_col = NULL,
   auto_cog = FALSE, state = NULL, views = NULL,
   nrow = 1, ncol = 1, jsonp = TRUE, split_sig = NULL,
   self_contained = FALSE,
-  thumb = FALSE, require_token = FALSE)
+  thumb = FALSE, require_token = FALSE, id = NULL, order = 1)
   UseMethod("trelliscope")
 
 #' @export
 trelliscope.data.frame <- function(
   x, name, group = "common", panel_col = NULL,
-  desc = "", md_desc = "", path = NULL, height = 500, width = 500, auto_cog = FALSE, state = NULL, views = NULL,
-  nrow = 1, ncol = 1, jsonp = TRUE, split_sig = NULL,
-  self_contained = FALSE, thumb = FALSE, require_token = FALSE
+  desc = "", md_desc = "", path = NULL, height = 500, width = 500,
+  auto_cog = FALSE, state = NULL, views = NULL, nrow = 1, ncol = 1,
+  jsonp = TRUE, split_sig = NULL, self_contained = FALSE,
+  thumb = FALSE, require_token = FALSE, id = NULL, order = 1
 ) {
   img_local <- FALSE
 
@@ -100,7 +104,7 @@ trelliscope.data.frame <- function(
 
   params <- resolve_app_params(
     path, self_contained, jsonp, split_sig, name, group,
-    state, nrow, ncol, thumb)
+    state, nrow, ncol, thumb, FALSE, id)
 
   keys <- apply(x[cond_cols], 1, function(a) paste(a, collapse = "_")) %>%
     sanitize()
@@ -162,10 +166,13 @@ trelliscope.data.frame <- function(
     self_contained = params$self_contained,
     thumb = params$thumb,
     views = views,
+    order = order,
     pb = pb
   )
 
-  prepare_display(params$path, params$id, params$self_contained, params$jsonp, require_token, pb = pb)
+  prepare_display(
+    params$path, params$id, params$self_contained, params$jsonp,
+    require_token, pb = pb)
 
   trelliscope_widget(
     id = params$id,

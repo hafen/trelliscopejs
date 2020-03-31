@@ -70,8 +70,9 @@ is_in_shiny <- function() {
   res
 }
 
-resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, group,
-  state, nrow = 1, ncol = 1, thumb = TRUE, split_layout = FALSE) {
+resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, 
+  group, state, nrow = 1, ncol = 1, thumb = TRUE, split_layout = FALSE,
+  id = NULL) {
 
   spa <- TRUE # "single-page application"
 
@@ -164,9 +165,11 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, gro
 
   # TODO: check filter state
 
-
   # make sure split_layout is a boolean
   split_layout <- isTRUE(split_layout)
+
+  if (is.null(id))
+    id <- get_id(path)
 
   list(
     path = path,
@@ -177,7 +180,7 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, gro
     self_contained = self_contained,
     name = sanitize(name),
     group = sanitize(group),
-    id = get_id(path),
+    id = id,
     spa = spa,
     state = state,
     in_knitr = in_knitr,

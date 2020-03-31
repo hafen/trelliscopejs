@@ -17,6 +17,7 @@ facet_trelliscope(
   height = 500,
   width = 500,
   state = NULL,
+  views = NULL,
   jsonp = TRUE,
   as_plotly = FALSE,
   plotly_args = NULL,
@@ -24,6 +25,9 @@ facet_trelliscope(
   split_sig = NULL,
   self_contained = FALSE,
   thumb = TRUE,
+  require_token = FALSE,
+  id = NULL,
+  order = 1,
   auto_cog = FALSE,
   split_layout = FALSE,
   data = ggplot2::waiver()
@@ -52,7 +56,8 @@ facet_trelliscope(
 
 \item{width}{width in pixels of each panel}
 
-\item{state}{the initial state the display will open in}
+\item{state}{the initial state the display will open in
+#' @param views an optional list of pre-specified views of the display (experimental)}
 
 \item{jsonp}{should json for display object be jsonp (TRUE) or json (FALSE)?}
 
@@ -67,6 +72,12 @@ facet_trelliscope(
 \item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
 
 \item{thumb}{should a thumbnail be created?}
+
+\item{require_token}{require a special token for all displays to be visible (experimental)}
+
+\item{id}{set a hard-coded ID for this app (do not set this if the display will be part of a larger web page)}
+
+\item{order}{an integer indicating the order that the display should appear in if using multiple displays}
 
 \item{auto_cog}{should auto cogs be computed (if possible)?}
 

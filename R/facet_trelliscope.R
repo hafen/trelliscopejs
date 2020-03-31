@@ -11,6 +11,7 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param height height in pixels of each panel
 #' @param width width in pixels of each panel
 #' @param state the initial state the display will open in
+#' #' @param views an optional list of pre-specified views of the display (experimental)
 #' @param nrow the number of rows of panels to display by default
 #' @param ncol the number of columns of panels to display by default
 #' @param scales should scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.
@@ -21,6 +22,9 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param split_sig optional string that specifies the "signature" of the data splitting. If not specified, this is calculated as the md5 hash of the sorted unique facet variables. This is used to identify "related displays" - different displays that are based on the same faceting scheme. This parameter should only be specified manually if a display's faceting is mostly similar to another display's.
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
+#' @param require_token require a special token for all displays to be visible (experimental)
+#' @param id set a hard-coded ID for this app (do not set this if the display will be part of a larger web page)
+#' @param order an integer indicating the order that the display should appear in if using multiple displays
 #' @param auto_cog should auto cogs be computed (if possible)?
 #' @param data data used for faceting. Defaults to the first layer data
 #' @template param-split-layout
@@ -34,12 +38,11 @@ facet_trelliscope <- function(
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
   desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL,
   height = 500, width = 500,
-  state = NULL, jsonp = TRUE, as_plotly = FALSE,
+  state = NULL, views = NULL, jsonp = TRUE, as_plotly = FALSE,
   plotly_args = NULL, plotly_cfg = NULL, split_sig = NULL,
-  self_contained = FALSE, thumb = TRUE, auto_cog = FALSE,
-  split_layout = FALSE, data = ggplot2::waiver()
+  self_contained = FALSE, thumb = TRUE, require_token = FALSE, id = NULL,
+  order = 1, auto_cog = FALSE, split_layout = FALSE, data = ggplot2::waiver()
 ) {
-
   if (split_layout)
     stop("Sorry - the viewer doesn't support rendering split layout yet...")
 
@@ -75,6 +78,7 @@ facet_trelliscope <- function(
     plotly_cfg = plotly_cfg,
     auto_cog = auto_cog,
     split_layout = split_layout,
+    id = id,
     data = data
   )
 
@@ -89,7 +93,7 @@ ggplot_add.facet_trelliscope <- function(object, plot, object_name) {
       "desc", "md_desc", "height", "width", "state", "jsonp", "self_contained",
       "path", "state", "nrow", "ncol", "scales", "thumb", "as_plotly",
       "split_sig", "plotly_args", "plotly_cfg", "auto_cog", "split_layout",
-      "data")]
+      "id", "data")]
   class(plot) <- c("facet_trelliscope", class(plot))
   return(plot)
 }
@@ -252,7 +256,7 @@ print.facet_trelliscope <- function(x, ...) {
 
   params <- resolve_app_params(attrs$path, attrs$self_contained, attrs$jsonp,
     attrs$split_sig, name, attrs$group, attrs$state, attrs$nrow, attrs$ncol,
-    attrs$thumb, attrs$split_layout)
+    attrs$thumb, attrs$split_layout, attrs$id)
 
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",
@@ -317,13 +321,14 @@ print.facet_trelliscope <- function(x, ...) {
     split_aspect = split_aspect,
     has_legend,
     split_sig = params$split_sig,
+    views = views,
+    order = order,
     pb = pb
   )
 
   prepare_display(
     params$path, params$id, params$self_contained, params$jsonp,
-    pb = pb
-  )
+    require_token, pb = pb)
 
   res <- trelliscope_widget(
     id = params$id,
