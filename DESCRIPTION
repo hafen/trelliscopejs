@@ -1,6 +1,6 @@
 Package: trelliscopejs
 Title: Create Interactive Trelliscope Displays
-Version: 0.2.5
+Version: 0.2.6
 Authors@R: c(
     person(given = "Ryan",
            family = "Hafen",
