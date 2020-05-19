@@ -21,6 +21,7 @@
 #' @param require_token require a special token for all displays to be visible (experimental)
 #' @param id set a hard-coded ID for this app (do not set this if the display will be part of a larger web page)
 #' @param order an integer indicating the order that the display should appear in if using multiple displays
+#' @param disclaimer an optional string of html to include as a disclaimer for the set of displays
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 #' @example man-roxygen/ex-trelliscope.R
 #' @export
@@ -29,7 +30,8 @@ trelliscope <- function(x, name, group = "common", panel_col = NULL,
   auto_cog = FALSE, state = NULL, views = NULL,
   nrow = 1, ncol = 1, jsonp = TRUE, split_sig = NULL,
   self_contained = FALSE,
-  thumb = FALSE, require_token = FALSE, id = NULL, order = 1)
+  thumb = FALSE, require_token = FALSE, id = NULL, order = 1,
+  disclaimer = FALSE)
   UseMethod("trelliscope")
 
 #' @export
@@ -38,7 +40,8 @@ trelliscope.data.frame <- function(
   desc = "", md_desc = "", path = NULL, height = 500, width = 500,
   auto_cog = FALSE, state = NULL, views = NULL, nrow = 1, ncol = 1,
   jsonp = TRUE, split_sig = NULL, self_contained = FALSE,
-  thumb = FALSE, require_token = FALSE, id = NULL, order = 1
+  thumb = FALSE, require_token = FALSE, id = NULL, order = 1,
+  disclaimer = FALSE
 ) {
   img_local <- FALSE
 
@@ -104,7 +107,7 @@ trelliscope.data.frame <- function(
 
   params <- resolve_app_params(
     path, self_contained, jsonp, split_sig, name, group,
-    state, nrow, ncol, thumb, FALSE, id)
+    state, nrow, ncol, thumb, FALSE, id, disclaimer)
 
   keys <- apply(x[cond_cols], 1, function(a) paste(a, collapse = "_")) %>%
     sanitize()
@@ -172,7 +175,7 @@ trelliscope.data.frame <- function(
 
   prepare_display(
     params$path, params$id, params$self_contained, params$jsonp,
-    require_token, pb = pb)
+    require_token, params$disclaimer, pb = pb)
 
   trelliscope_widget(
     id = params$id,

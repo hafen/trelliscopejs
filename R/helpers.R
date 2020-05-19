@@ -72,7 +72,7 @@ is_in_shiny <- function() {
 
 resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, 
   group, state, nrow = 1, ncol = 1, thumb = TRUE, split_layout = FALSE,
-  id = NULL) {
+  id = NULL, disclaimer = FALSE) {
 
   spa <- TRUE # "single-page application"
 
@@ -171,6 +171,20 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name,
   if (is.null(id))
     id <- get_id(path)
 
+  if (length(disclaimer) > 1 || disclaimer != FALSE) {
+    if (is.character(disclaimer)) {
+      disclaimer <- list(cols = 2, text = disclaimer)
+    } else if (is.list(disclaimer)) {
+      if (!all(c("cols", "text") %in% names(disclaimer))) {
+        message("'disclaimer' must be text or a list with 'cols' and 'text'.",
+          " Ignoring...")
+        disclaimer <- FALSE
+      }
+    } else {
+      disclaimer <- FALSE
+    }
+  }
+
   list(
     path = path,
     www_dir = www_dir,
@@ -181,6 +195,7 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name,
     name = sanitize(name),
     group = sanitize(group),
     id = id,
+    disclaimer = disclaimer,
     spa = spa,
     state = state,
     in_knitr = in_knitr,
@@ -234,6 +249,14 @@ get_cog_info <- function(x) {
     tmp <- attr(x[[i]], "cog_attrs")
     data.frame(name = nms[i], tmp, stringsAsFactors = FALSE)
   }))
+
+  na_idx <- which(is.na(cog_info$type))
+  if (length(na_idx) > 0) {
+    message("Cognostics: ", paste(cog_info$name[na_idx], collapse = ", "),
+      " have type 'NA' - setting type to 'factor'. To set to something ",
+      "else, use cog(..., type='...').")
+    cog_info$type[na_idx] <- "factor"
+  }
 
   tmp <- lapply(seq_len(nrow(cog_info)), function(i) {
     res <- as.list(cog_info[i, ])

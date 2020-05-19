@@ -310,6 +310,7 @@ write_display_obj <- function(
 #' @param jsonp should json for display list and app config be jsonp (TRUE) or json (FALSE)?
 #' @param pb optional progress bar object to pass in and use to report progress
 #' @param require_token require a special token for all displays to be visible (experimental)
+#' @param disclaimer an optional string of html to include as a disclaimer for the set of displays
 #' @export
 prepare_display <- function(
   base_path,
@@ -317,6 +318,7 @@ prepare_display <- function(
   self_contained = FALSE,
   jsonp = TRUE,
   require_token = FALSE,
+  disclaimer = FALSE,
   pb = NULL
 ) {
 
@@ -333,7 +335,8 @@ prepare_display <- function(
     id = id,
     self_contained = self_contained,
     jsonp = jsonp,
-    require_token = require_token
+    require_token = require_token,
+    disclaimer = disclaimer
   )
 }
 
@@ -389,12 +392,13 @@ update_display_list <- function(base_path, jsonp = TRUE) {
 #' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param jsonp should json for app config be jsonp (TRUE) or json (FALSE)?
 #' @param require_token require a special token for all displays to be visible (experimental)
+#' @param disclaimer an optional string of html to include as a disclaimer for the set of displays
 #' @template param-split-layout
 #' @template param-has-legend
 #' @export
 write_config <- function(base_path, id, self_contained = FALSE,
-  jsonp = TRUE, require_token = FALSE, split_layout = FALSE,
-  has_legend = FALSE
+  jsonp = TRUE, require_token = FALSE, disclaimer = FALSE,
+  split_layout = FALSE, has_legend = FALSE
 ) {
   cfg <- as.character(jsonlite::toJSON(
     list(
@@ -406,7 +410,8 @@ write_config <- function(base_path, id, self_contained = FALSE,
       ),
       split_layout = split_layout,
       has_legend = has_legend,
-      require_token = require_token
+      require_token = require_token,
+      disclaimer = disclaimer
     ),
     pretty = TRUE,
     auto_unbox = TRUE

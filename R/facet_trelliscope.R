@@ -25,6 +25,7 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param require_token require a special token for all displays to be visible (experimental)
 #' @param id set a hard-coded ID for this app (do not set this if the display will be part of a larger web page)
 #' @param order an integer indicating the order that the display should appear in if using multiple displays
+#' @param disclaimer an optional string of html to include as a disclaimer for the set of displays
 #' @param auto_cog should auto cogs be computed (if possible)?
 #' @param data data used for faceting. Defaults to the first layer data
 #' @template param-split-layout
@@ -41,7 +42,8 @@ facet_trelliscope <- function(
   state = NULL, views = NULL, jsonp = TRUE, as_plotly = FALSE,
   plotly_args = NULL, plotly_cfg = NULL, split_sig = NULL,
   self_contained = FALSE, thumb = TRUE, require_token = FALSE, id = NULL,
-  order = 1, auto_cog = FALSE, split_layout = FALSE, data = ggplot2::waiver()
+  order = 1, disclaimer = FALSE, auto_cog = FALSE, split_layout = FALSE,
+  data = ggplot2::waiver()
 ) {
   if (split_layout)
     stop("Sorry - the viewer doesn't support rendering split layout yet...")
@@ -79,6 +81,7 @@ facet_trelliscope <- function(
     auto_cog = auto_cog,
     split_layout = split_layout,
     id = id,
+    disclaimer = disclaimer,
     data = data
   )
 
@@ -93,7 +96,7 @@ ggplot_add.facet_trelliscope <- function(object, plot, object_name) {
       "desc", "md_desc", "height", "width", "state", "jsonp", "self_contained",
       "path", "state", "nrow", "ncol", "scales", "thumb", "as_plotly",
       "split_sig", "plotly_args", "plotly_cfg", "auto_cog", "split_layout",
-      "id", "data")]
+      "id", "disclaimer", "data")]
   class(plot) <- c("facet_trelliscope", class(plot))
   return(plot)
 }
@@ -256,7 +259,7 @@ print.facet_trelliscope <- function(x, ...) {
 
   params <- resolve_app_params(attrs$path, attrs$self_contained, attrs$jsonp,
     attrs$split_sig, name, attrs$group, attrs$state, attrs$nrow, attrs$ncol,
-    attrs$thumb, attrs$split_layout, attrs$id)
+    attrs$thumb, attrs$split_layout, attrs$id, attrs$disclaimer)
 
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",
@@ -328,7 +331,7 @@ print.facet_trelliscope <- function(x, ...) {
 
   prepare_display(
     params$path, params$id, params$self_contained, params$jsonp,
-    require_token, pb = pb)
+    require_token, params$disclaimer, pb = pb)
 
   res <- trelliscope_widget(
     id = params$id,
