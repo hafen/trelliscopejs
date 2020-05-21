@@ -22,7 +22,7 @@
 #' library(tidyr)
 #' library(purrr)
 #' library(ggplot2)
-#' library(rbokeh)
+#' library(plotly)
 #' 
 #' mpg_cog <- mpg %>%
 #'   group_by(manufacturer, class) %>%
@@ -33,14 +33,15 @@
 #'       mean_hwy_mpg = cog(mean(.$hwy), desc = "Mean highway mpg"),
 #'       most_common_drv = cog(tail(names(table(.$drv)), 1), desc = "Most common drive type")
 #'     )),
-#'     panel = map_plot(data, ~
-#'       figure(., xlab = "City mpg", ylab = "Highway mpg",
-#'         xlim = c(9, 47), ylim = c(7, 37)) %>%
-#'         ly_points(cty, hwy,
-#'           hover = list(year, model))
-#'     )
+#'     panel = map_plot(data, function(x) {
+#'       plot_ly(data = x, x = ~cty, y = ~hwy,
+#'         type = "scatter", mode = "markers") %>%
+#'         layout(
+#'           xaxis = list(range = c(9, 47)),
+#'           yaxis = list(range = c(7, 37)))
+#'     })
 #'   )
-#' 
+#'
 #' trelliscope(mpg_cog, name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
 cog <- function(val = NULL, desc = "", group = "common",
   type = NULL, default_label = FALSE, default_active = TRUE,
@@ -164,15 +165,19 @@ cog_disp_filter <- function(display, var, val,
 #' @examples
 #' \donttest{
 #' library(dplyr)
-#' library(rbokeh)
+#' library(plotly)
 #' iris %>%
 #'   group_by(Species) %>%
-#'   summarise(
+#'   nest() %>%
+#'   mutate(
+#'     panel = map_plot(data, function(x) {
+#'       plot_ly(data = x, x = ~Sepal.Length, y = ~Sepal.Width,
+#'         type = "scatter", mode = "markers")
+#'     }),
 #'     wiki_link = cog_href(paste0("https://en.wikipedia.org/wiki/Iris_",
 #'       tolower(Species))[1], default_label = TRUE,
-#'       desc = "link to species on wikipedia"),
-#'     panel = panel(figure(xlab = "Sepal Length", ylab = "Sepal Width") %>%
-#'       ly_points(Sepal.Length, Sepal.Width))) %>%
+#'       desc = "link to species on wikipedia")
+#'   ) %>%
 #'   trelliscope(name = "iris_species", ncol = 3)
 #' }
 #' @export
