@@ -255,7 +255,7 @@ as_cognostics <- function(x, cond_cols, key_col = NULL, cog_desc = NULL,
     x[na_cogs] <- NULL
   }
 
-  class(x) <- c(class(x), "cognostics")
+  class(x) <- c("cognostics", class(x))
   x
 }
 
