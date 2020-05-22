@@ -22,11 +22,6 @@ test_that("examples run without barfing", {
   p <- d %>% trelliscope(name = "city_vs_highway_mpg", thumb = FALSE)
   print(p)
 
-  # if you want to use in RStudio Viewer or RMarkdown Notebook, use self_containedd
-  # (this will hopefully change, and you should avoid self_contained whenever possible)
-  p <- d %>% trelliscope(name = "city_vs_highway_mpg", self_contained = TRUE, thumb = FALSE)
-  print(p)
-
   # set default layout
   p <- d %>% trelliscope(name = "city_vs_highway_mpg", nrow = 2, ncol = 3, thumb = FALSE)
   print(p)
@@ -132,7 +127,7 @@ test_that("examples run without barfing", {
   mpg2$class2 <- cog(mpg2$class2, desc = "custom cognostic label test")
 
   p <- qplot(cty, hwy, data = mpg2) +
-    facet_trelliscope(~ class, self_contained = TRUE)
+    facet_trelliscope(~ class)
   print(p)
 
   # not required, but if you set labels, these will be added as
@@ -161,14 +156,17 @@ test_that("examples run without barfing", {
     print(p)
   }
 
-  p <- qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
-    facet_trelliscope(~ class + manufacturer, ncol = 7, height = 800, width = 200,
+  p <- qplot(class, cty, data = mpg, geom = c("boxplot", "jitter"),
+    na.rm = TRUE) +
+    facet_trelliscope(~ class + manufacturer, ncol = 7,
+      height = 800, width = 200,
       state = list(sort = list(sort_spec("cty_mean"))),
       scales = c("free", "same")) +
     theme_bw()
   print(p)
 
-  p <- qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
+  p <- qplot(class, cty, data = mpg, geom = c("boxplot", "jitter"),
+    na.rm = TRUE) +
     facet_trelliscope(~ class, ncol = 7, height = 800, width = 200,
       state = list(sort = list(sort_spec("cty_mean"))),
       scales = c("free", "same"), as_plotly = TRUE) +
