@@ -342,14 +342,18 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list 
 
   if (!is.null(nested_data_list)) {
     # add unique data within nested data
-    distinct_counts <- nested_data_list %>% purrr::map_df(. %>% summarise_all(n_distinct))
+    distinct_counts <- nested_data_list %>%
+      purrr::map_df(. %>% summarise_all(n_distinct))
     unique_cols <- names(distinct_counts)[sapply(distinct_counts, function(x) all(x == 1))]
     if (length(unique_cols) > 0) {
       tmp <- nested_data_list %>%
         lapply(function(sub_dt) {
-          sub_dt[1, unique_cols]
+          aa <- sub_dt[1, unique_cols]
+          for (jj in seq_along(aa))
+            class(aa[[jj]]) <- setdiff(class(aa[[jj]]), "cog")
+          aa
         }) %>%
-        bind_rows()
+        dplyr::bind_rows()
 
       # add nested cog attrs back in, if specified
       for (nm in names(tmp)) {
