@@ -91,20 +91,6 @@ test_that("examples run without barfing", {
     trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2, thumb = FALSE)
   print(p)
 
-  p <- ggplot2::mpg %>%
-    group_by(manufacturer, class) %>%
-    summarise(
-      wiki_link = cog_href(paste0("https://en.wikipedia.org/wiki/",
-        manufacturer)[1], default_label = TRUE,
-        desc = "link to species on wikipedia"),
-      panel = panel(
-        plot_ly(x = cty, y = hwy,
-          type = "scatter", mode = "markers")
-      )
-    ) %>%
-    trelliscope("mpg")
-  print(p)
-
   ## ggplot2
   ##---------------------------------------------------------
 
