@@ -7,8 +7,7 @@ library(ggplot2)
 
 # tidyverse + plotly
 d <- mpg %>%
-  group_by(manufacturer, class) %>%
-  nest() %>%
+  nest(data = !one_of(c("manufacturer", "class"))) %>%
   mutate(
     mean_city_mpg = map_dbl(data, ~ mean(.$cty)),
     panel = map_plot(data, function(x) {
@@ -36,8 +35,7 @@ d %>%
 
 # tidyverse + ggplot2
 mpg %>%
-  group_by(manufacturer, class) %>%
-  nest() %>%
+  nest(data = !one_of(c("manufacturer", "class"))) %>%
   mutate(
     panel = map_plot(data, ~
       qplot(cty, hwy, data = .) + xlab("cty") + ylab("hwy") +
@@ -46,8 +44,7 @@ mpg %>%
 
 # computing additional cognostics
 mpg_cog <- mpg %>%
-  group_by(manufacturer, class) %>%
-  nest() %>%
+  nest(data = !one_of(c("manufacturer", "class"))) %>%
   mutate(
     cogs = map_cog(data, ~ tibble(
       mean_city_mpg = mean(.$cty),
@@ -59,8 +56,7 @@ mpg_cog <- mpg %>%
 # computing additional cognostics explicitly using cog()
 # so we can specify descriptions, etc.
 mpg_cog2 <- mpg %>%
-  group_by(manufacturer, class) %>%
-  nest() %>%
+  nest(data = !one_of(c("manufacturer", "class"))) %>%
   mutate(
     cogs = map_cog(data, ~ tibble(
       mean_city_mpg = cog(mean(.$cty), desc = "Mean city mpg"),

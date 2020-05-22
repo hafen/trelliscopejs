@@ -25,8 +25,7 @@
 #' library(plotly)
 #' 
 #' mpg_cog <- mpg %>%
-#'   group_by(manufacturer, class) %>%
-#'   nest() %>%
+#'   nest(data = !one_of(c("manufacturer", "class"))) %>%
 #'   mutate(
 #'     cogs = map_cog(data, ~ tibble(
 #'       mean_city_mpg = cog(mean(.$cty), desc = "Mean city mpg"),
@@ -165,10 +164,10 @@ cog_disp_filter <- function(display, var, val,
 #' @examples
 #' \donttest{
 #' library(dplyr)
+#' library(tidyr)
 #' library(plotly)
 #' iris %>%
-#'   group_by(Species) %>%
-#'   nest() %>%
+#'   nest(data = -Species) %>%
 #'   mutate(
 #'     panel = map_plot(data, function(x) {
 #'       plot_ly(data = x, x = ~Sepal.Length, y = ~Sepal.Width,

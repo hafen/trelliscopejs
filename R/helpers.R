@@ -4,14 +4,18 @@
 #' @param x a plot object
 #' @examples
 #' \donttest{
-#' library(rbokeh)
 #' library(dplyr)
+#' library(tidyr)
+#' library(plotly)
 #' ggplot2::mpg %>%
 #'   group_by(manufacturer, class) %>%
 #'   summarise(
 #'     panel = panel(
-#'       figure(xlab = "City mpg", ylab = "Highway mpg") %>%
-#'         ly_points(cty, hwy)))
+#'       plot_ly(x = cty, y = hwy,
+#'         type = "scatter", mode = "markers")
+#'     )
+#'   ) %>%
+#'   trelliscope("mpg")
 #' }
 #' @export
 panel <- function(x) {

@@ -26,15 +26,19 @@ Create href to be used as cognostics in a trelliscope display
 \examples{
 \donttest{
 library(dplyr)
-library(rbokeh)
+library(tidyr)
+library(plotly)
 iris \%>\%
-  group_by(Species) \%>\%
-  summarise(
+  nest(data = -Species) \%>\%
+  mutate(
+    panel = map_plot(data, function(x) {
+      plot_ly(data = x, x = ~Sepal.Length, y = ~Sepal.Width,
+        type = "scatter", mode = "markers")
+    }),
     wiki_link = cog_href(paste0("https://en.wikipedia.org/wiki/Iris_",
       tolower(Species))[1], default_label = TRUE,
-      desc = "link to species on wikipedia"),
-    panel = panel(figure(xlab = "Sepal Length", ylab = "Sepal Width") \%>\%
-      ly_points(Sepal.Length, Sepal.Width))) \%>\%
+      desc = "link to species on wikipedia")
+  ) \%>\%
   trelliscope(name = "iris_species", ncol = 3)
 }
 }

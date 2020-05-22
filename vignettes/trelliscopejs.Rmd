@@ -10,11 +10,6 @@ vignette: >
 ```{r global_options, include=FALSE}
 # R output pre blocks are styled by default to indicate output
 knitr::opts_chunk$set(comment = NA)
-
-library(rbokeh)
-thm <- getOption("bokeh_theme")
-thm$axis$axis_label_text_font_size <- "10pt"
-options(bokeh_theme = thm)
 ```
 
 Trelliscope is a visualization approach based on the idea of ["small multiples"](https://www.juiceanalytics.com/writing/better-know-visualization-small-multiples) or Trellis Display, where data are split into groups and a plot is made for each group, with the resulting plots arranged in a grid. This approach is very simple yet is considered to be ["the best design solution for a wide range or problems in data presentation"](https://en.wikipedia.org/wiki/Small_multiple). Trelliscope makes small multiple displays come alive by providing the ability to interactively sort and filter the plots based on summary statistics computed for each group.
@@ -131,7 +126,7 @@ The example in the ["Many Models"](http://r4ds.had.co.nz/many-models.html) chapt
 
 Let's set up a scenario in which we will produce a plot similar to the Gapminder plot we created using `facet_trelliscope()`, but using nested data frames and list-columns.
 
-We want to plot life expectancy vs. year by country. So first we will group our data frame by country and continent and thenc call `tidyr::nest()` to obtain a data frame with one row per country and continent with each unique country's data stored in a new column of nested data frames, `data`:
+We want to plot life expectancy vs. year by country. So first we will nest our data frame by country and continent using `tidyr::nest()` to obtain a data frame with one row per country and continent with each unique country's data stored in a new column of nested data frames, `data`:
 
 ```{r message=FALSE}
 library(dplyr)
@@ -139,9 +134,7 @@ library(tidyr)
 library(purrr)
 library(gapminder)
 
-by_country <- gapminder %>%
-  group_by(country, continent) %>%
-  nest()
+by_country <- nest(gapminder, data = !one_of(c("country", "continent")))
 
 by_country
 ```
@@ -175,16 +168,21 @@ The functions available are:
 
 These are all basically wrappers around the corresponding purrr functions (`purrr::map()`, `purrr::map2()`, etc.) that indicate that an output is a list of plots. These functions can be used to operate over columns of a data frame to apply a user-defined plotting function to each group. Your plot function can return a wide variety of plot objects, including ggplot2, lattice, and htmlwidgets.
 
-Let's look at an example. With our nested Gapminder data, let's use `map2_plot()` to add a plot column to our data set which plots both the raw data and the fitted line. `map2_plot()` allows us to specify two columns (we'll want to use the columns `data` and `model`) as input to our plot function, whereas we can only specify one column with `map_plot()`. In this example we use the [rbokeh](http://hafen.github.io/rbokeh/) package, which is an htmlwidget, to create the plots.
+Let's look at an example. With our nested Gapminder data, let's use `map2_plot()` to add a plot column to our data set which plots both the raw data and the fitted line. `map2_plot()` allows us to specify two columns (we'll want to use the columns `data` and `model`) as input to our plot function, whereas we can only specify one column with `map_plot()`. In this example we use the [plotly](https://plotly-r.com) package, which is an htmlwidget, to create the plots.
 
 ```{r warning=FALSE}
-library(rbokeh)
+library(plotly)
 library(trelliscopejs)
 
 country_plot <- function(data, model) {
-  figure(xlim = c(1948, 2011), ylim = c(10, 95), tools = NULL) %>%
-    ly_points(year, lifeExp, data = data, hover = data) %>%
-    ly_abline(model)
+  plot_ly(data = data, x = ~year, y = ~lifeExp,
+    type = "scatter", mode = "markers", name = "data") %>%
+    add_trace(data = data, x = ~year, y = ~predict(model),
+      mode = "lines", name = "lm") %>%
+    layout(
+      xaxis = list(range = c(1948, 2011)),
+      yaxis = list(range = c(10, 95)),
+      showlegend = FALSE)
 }
 
 by_country <- by_country %>%
@@ -295,7 +293,7 @@ This package has a dataset, "housing" that gives the monthly median list and sol
 
 Here, we are going to compute our own custom summary "cognostics", including the slope of a fitted line, the median list and sold price, the number of non-NA observations, and a special "href" cognostic, which will provide a link to Zillow showing the homes for sale in the county.
 
-For this one I would recommend using rbokeh over ggplot2 simply because of the time it takes to generate the panels with ggplot2.
+For this one I would recommend using [rbokeh](http://hafen.github.io/rbokeh/) or plotly over ggplot2 simply because of the time it takes to generate the panels with ggplot2.
 
 ```r
 library(housingData)
@@ -305,9 +303,7 @@ housing$county <- as.character(housing$county)
 slope_fn <- function(x, y)
   coef(lm(y ~ x))[2]
 
-d <- housing %>%
-  group_by(county, state) %>%
-  nest()
+d <- nest(housing, data = !one_of(c("county", "state"))
 
 d <- d %>%
   mutate(
@@ -328,14 +324,18 @@ d <- d %>%
 d <- d %>%
   mutate(
     panel = map_plot(data, function(x) {
-      figure(xlab = "time", ylab = "median list price / sq ft", toolbar = NULL) %>%
-        ly_points(time, medListPriceSqft, data = x, hover = x)
+      plot_ly(data = x, x = ~time, y = ~medListPriceSqft,
+        type = "scatter", mode = "markers") %>%
+        layout(
+          xaxis = list(title = "time"),
+          yaxis = list(title = "median list price / sq ft"))
     })
   )
 
 d %>%
   trelliscope(name = "list_vs_time",
-    desc = "monthly median list price vs. time for 2984 US counties from 2008–2016")
+    desc = "monthly median list price vs. time for 2984 US counties from 2008–2016",
+    nrow = 2, ncol = 4)
 ```
 
 Here is the resulting display:

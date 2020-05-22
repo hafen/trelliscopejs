@@ -24,32 +24,34 @@ See \code{\link[purrr]{map}}
 library(dplyr)
 library(tidyr)
 library(purrr)
-library(rbokeh)
+library(plotly)
 library(gapminder)
 
 # nest gapminder data by country
 by_country <- gapminder \%>\%
-  group_by(country, continent) \%>\%
-  nest()
+  nest(data = !one_of(c("country", "continent")))
 
 # add in a plot column with map_plot
 by_country <- by_country \%>\% mutate(
-  panel = map_plot(data,
-    ~ figure(xlim = c(1948, 2011), ylim = c(10, 95), width = 300, tools = NULL) \%>\%
-        ly_points(year, lifeExp, data = .x, hover = .x)
-  ))
+  panel = map_plot(data, function(x) {
+    plot_ly(data = x, x = ~year, y = ~lifeExp,
+      type = "scatter", mode = "markers") \%>\%
+      layout(
+        xaxis = list(range = c(1948, 2011)),
+        yaxis = list(range = c(10, 95)))
+  }))
 
 # plot it
 by_country \%>\%
-  trelliscope("gapminder", nrow = 2, ncol = 7)
+  trelliscope("gapminder", nrow = 2, ncol = 7, width = 300)
 
 # example using mpg data
 ggplot2::mpg \%>\%
-  group_by(manufacturer, class) \%>\%
-  nest() \%>\%
-  mutate(panel = map_plot(data,
-    ~ figure(xlab = "City mpg", ylab = "Highway mpg") \%>\%
-        ly_points(cty, hwy, data = .x))) \%>\%
+  nest(data = !one_of(c("manufacturer", "class"))) \%>\%
+  mutate(panel = map_plot(data, function(x) {
+    plot_ly(data = x, x = ~hwy, y = ~cty,
+      type = "scatter", mode = "markers")
+  })) \%>\%
   trelliscope(name = "city_vs_highway_mpg")
 }
 }

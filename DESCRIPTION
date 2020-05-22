@@ -39,7 +39,6 @@ Imports:
     tidyr,
     rlang
 Suggests:
-    rbokeh,
     plotly,
     testthat,
     covr,

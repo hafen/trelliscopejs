@@ -5,19 +5,19 @@ test_that("examples run without barfing", {
   suppressPackageStartupMessages(library(dplyr))
   suppressPackageStartupMessages(library(tidyr))
   suppressPackageStartupMessages(library(purrr))
-  suppressPackageStartupMessages(library(rbokeh))
+  suppressPackageStartupMessages(library(plotly))
   suppressPackageStartupMessages(library(ggplot2))
 
-  # tidyverse + rbokeh
+  # tidyverse + plotly
   d <- mpg %>%
-    group_by(manufacturer, class) %>%
-    nest() %>%
+    nest(data = !one_of(c("manufacturer", "class"))) %>%
     mutate(
       mean_city_mpg = map_dbl(data, ~ mean(.$cty)),
-      panel = map_plot(data, ~
-        figure(., xlab = "City mpg", ylab = "Highway mpg") %>%
-          ly_points(cty, hwy))
-    )
+      panel = map_plot(data, function(x) {
+        plot_ly(data = x, x = ~cty, y = ~hwy,
+          type = "scatter", mode = "markers")
+      }
+    ))
 
   p <- d %>% trelliscope(name = "city_vs_highway_mpg", thumb = FALSE)
   print(p)
@@ -49,8 +49,7 @@ test_that("examples run without barfing", {
 
   # tidyverse + ggplot2
   p <- mpg %>%
-    group_by(manufacturer, class) %>%
-    nest() %>%
+    nest(data = !one_of(c("manufacturer", "class"))) %>%
     mutate(
       panel = map_plot(data, ~
         qplot(cty, hwy, data = .) + xlab("cty") + ylab("hwy") +
@@ -60,20 +59,17 @@ test_that("examples run without barfing", {
 
   # computing additional cognostics
   mpg_cog <- mpg %>%
-    group_by(manufacturer, class) %>%
-    nest() %>%
+    nest(data = !one_of(c("manufacturer", "class"))) %>%
     mutate(
       cogs = map_cog(data, ~ tibble(
         mean_city_mpg = mean(.$cty),
         mean_hwy_mpg = mean(.$hwy),
         most_common_drv = tail(names(table(.$drv)), 1)
       )),
-      panel = map_plot(data, ~
-        figure(., xlab = "City mpg", ylab = "Highway mpg",
-          xlim = c(9, 47), ylim = c(7, 37)) %>%
-          ly_points(cty, hwy,
-            hover = list(year, model))
-      )
+      panel = map_plot(data, function(x) {
+        plot_ly(data = x, x = ~cty, y = ~hwy,
+          type = "scatter", mode = "markers")
+      })
     )
 
   p <- mpg_cog %>%
@@ -83,35 +79,35 @@ test_that("examples run without barfing", {
   # computing additional cognostics explicitly using cog()
   # so we can specify descriptions, etc.
   mpg_cog2 <- mpg %>%
-    group_by(manufacturer, class) %>%
-    nest() %>%
+    nest(data = !one_of(c("manufacturer", "class"))) %>%
     mutate(
       cogs = map_cog(data, ~ tibble(
         mean_city_mpg = cog(mean(.$cty), desc = "Mean city mpg"),
         mean_hwy_mpg = cog(mean(.$hwy), desc = "Mean highway mpg"),
         most_common_drv = cog(tail(names(table(.$drv)), 1), desc = "Most common drive type")
       )),
-      panel = map_plot(data, ~
-        figure(., xlab = "City mpg", ylab = "Highway mpg",
-          xlim = c(9, 47), ylim = c(7, 37)) %>%
-          ly_points(cty, hwy,
-            hover = list(year, model))
-      )
+      panel = map_plot(data, function(x) {
+        plot_ly(data = x, x = ~cty, y = ~hwy,
+          type = "scatter", mode = "markers")
+      })
     )
 
   p <- mpg_cog2 %>%
     trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2, thumb = FALSE)
   print(p)
 
-  p <- iris %>%
-    group_by(Species) %>%
+  p <- ggplot2::mpg %>%
+    group_by(manufacturer, class) %>%
     summarise(
-      wiki_link = cog_href(paste0("https://en.wikipedia.org/wiki/Iris_",
-        tolower(Species))[1], default_label = TRUE,
+      wiki_link = cog_href(paste0("https://en.wikipedia.org/wiki/",
+        manufacturer)[1], default_label = TRUE,
         desc = "link to species on wikipedia"),
-      panel = panel(figure(xlab = "Sepal Length", ylab = "Sepal Width") %>%
-        ly_points(Sepal.Length, Sepal.Width))) %>%
-    trelliscope(name = "iris_species", ncol = 3, thumb = FALSE)
+      panel = panel(
+        plot_ly(x = cty, y = hwy,
+          type = "scatter", mode = "markers")
+      )
+    ) %>%
+    trelliscope("mpg")
   print(p)
 
   ## ggplot2
@@ -183,50 +179,53 @@ test_that("examples run without barfing", {
   ##---------------------------------------------------------
 
   p <- ggplot2::mpg %>%
-    group_by(manufacturer, class) %>%
-    nest() %>%
+    nest(data = !one_of(c("manufacturer", "class"))) %>%
     mutate(
-      additional_cogs = map_cog(data,
-        ~ tibble(
-            max_city_mpg = cog(max(.x$cty), desc = "Max city mpg"),
-            min_city_mpg = cog(min(.x$cty), desc = "Min city mpg"))),
-      panel = map_plot(data, ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
-        ly_points(cty, hwy, data = .x))) %>%
+      additional_cogs = map_cog(data, function(x) {
+        tibble(
+          max_city_mpg = cog(max(x$cty), desc = "Max city mpg"),
+          min_city_mpg = cog(min(x$cty), desc = "Min city mpg"))
+      }),
+      panel = map_plot(data, function(x) {
+        plot_ly(data = x, x = ~cty, y = ~hwy,
+          type = "scatter", mode = "markers")
+      })) %>%
     trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2, thumb = FALSE)
   print(p)
 
   ## other tidyverse functions
 
   p <- iris %>%
-    nest(-Species) %>%
+    nest(data = -Species) %>%
     mutate(
       mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
       cogs = map2_cog(data, mod, function(data, mod) {
         tibble(max_sl = max(data$Sepal.Length), slope = coef(mod)[2])
       }),
       panel = map2_plot(data, mod, function(data, mod) {
-        figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
-          ly_points(data$Sepal.Width, data$Sepal.Length) %>%
-          ly_abline(mod)
+        plot_ly(data = data, x = ~Sepal.Width, y = ~Sepal.Length,
+          type = "scatter", mode = "markers", name = "data") %>%
+          add_trace(data = data, x = ~Sepal.Width, y = ~predict(mod),
+            mode = "lines", name = "lm")
       })) %>%
     trelliscope(name = "iris", thumb = FALSE)
   print(p)
 
   p <- iris %>%
-    nest(-Species) %>%
+    nest(data = -Species) %>%
     mutate(
       mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
       cogs = pmap_cog(list(data = data), function(data) {
         tibble(max_sl = max(data$Sepal.Length))
       }),
       panel = pmap_plot(list(data = data, mod = mod), function(data, mod) {
-        figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
-          ly_points(data$Sepal.Width, data$Sepal.Length) %>%
-          ly_abline(mod)
+        plot_ly(data = data, x = ~Sepal.Width, y = ~Sepal.Length,
+          type = "scatter", mode = "markers", name = "data") %>%
+          add_trace(data = data, x = ~Sepal.Width, y = ~predict(mod),
+            mode = "lines", name = "lm")
       })) %>%
     trelliscope(name = "iris", thumb = FALSE)
   print(p)
-
 
   iris_sample <- iris %>% mutate(sample = sample(Species, 150))
   expect_error({
