@@ -27,6 +27,7 @@ test_that("examples run without barfing", {
   print(p)
 
   tf <- tempfile("trelliscopetest")
+  on.exit(unlink(tf, recursive = TRUE))
 
   # set the output path for where files will be stored
   p <- d %>% trelliscope(name = "city_vs_highway_mpg", path = tf, thumb = FALSE)
