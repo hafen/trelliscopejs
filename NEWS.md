@@ -1,5 +1,6 @@
 # trelliscopejs 0.2
 
+- Updates for compatibility with dplyr 1.0 (0.2.5)
 - Allow non-standard panel objects and message if nothing is plotted
 - Make cognostics json full precision
 - Add logic to handle rendering if done within a Shiny app
