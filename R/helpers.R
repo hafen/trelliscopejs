@@ -1,27 +1,3 @@
-#' Panel Wrapper Function
-#' Wrapper function to specify a plot object for a panel for use in dplyr summarise()
-#'
-#' @param x a plot object
-#' @examples
-#' \donttest{
-#' library(dplyr)
-#' library(tidyr)
-#' library(plotly)
-#' ggplot2::mpg %>%
-#'   group_by(manufacturer, class) %>%
-#'   summarise(
-#'     panel = panel(
-#'       plot_ly(x = cty, y = hwy,
-#'         type = "scatter", mode = "markers")
-#'     )
-#'   ) %>%
-#'   trelliscope("mpg")
-#' }
-#' @export
-panel <- function(x) {
-  structure(list(x), class = "trelliscope_panels")
-}
-
 #' Cast a vector of URLs pointing to images as an image panel source
 #'
 #' @param x a vector of URLs pointing to images

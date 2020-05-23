@@ -66,7 +66,7 @@ Create a Trelliscope Display
 Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 }
 \examples{
-\donttest{
+\dontrun{
 library(dplyr)
 library(tidyr)
 library(purrr)
@@ -95,9 +95,6 @@ d \%>\% trelliscope(name = "city_vs_highway_mpg", path = my_displays)
 
 # multiple displays can be added to the same path and all will be available in the viewer
 d \%>\% trelliscope(name = "city_vs_highway_mpg2", path = my_displays)
-
-# clean up
-unlink(my_displays, recursive = TRUE)
 
 # ordering the data frame will set default sort order of the display
 d \%>\%

@@ -81,7 +81,7 @@ Facet Trelliscope
 Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 }
 \examples{
-\donttest{
+\dontrun{
 library(ggplot2)
 
 # basically swap out facet_wrap for facet_trelliscope

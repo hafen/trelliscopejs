@@ -1,4 +1,4 @@
-\donttest{
+\dontrun{
 library(ggplot2)
 
 # basically swap out facet_wrap for facet_trelliscope
