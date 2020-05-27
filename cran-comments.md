@@ -1,11 +1,11 @@
-Resubmission: URLs that were out of date in vignettes have been updated.
+Updated to be compatible with the upcoming release of dplyr 1.0 and address other minor issues.
 
 ## Test environments
 
-* local OS X install, R 3.6.2
-* ubuntu 16.04 (on travis-ci), R 3.6.2
-* Windows R (on Appveyor) 3.6.2
-* R-Hub Fedora, Windows
+* local OS X install, R 4.0.0
+* ubuntu 16.04 (on travis-ci), R 4.0.0
+* Windows R (on Appveyor) R 4.0.0
+* win-builder (devel and release)
 
 ## R CMD check results
 
