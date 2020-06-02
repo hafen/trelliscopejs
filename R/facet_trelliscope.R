@@ -11,7 +11,7 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param height height in pixels of each panel
 #' @param width width in pixels of each panel
 #' @param state the initial state the display will open in
-#' #' @param views an optional list of pre-specified views of the display (experimental)
+#' @param views an optional list of pre-specified views of the display (experimental)
 #' @param nrow the number of rows of panels to display by default
 #' @param ncol the number of columns of panels to display by default
 #' @param scales should scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.
@@ -325,14 +325,14 @@ print.facet_trelliscope <- function(x, ...) {
     split_aspect = split_aspect,
     has_legend,
     split_sig = params$split_sig,
-    views = views,
+    views = attrs$views,
     order = order,
     pb = pb
   )
 
   prepare_display(
     params$path, params$id, params$self_contained, params$jsonp,
-    require_token, params$disclaimer, pb = pb)
+    attrs$require_token, params$disclaimer, pb = pb)
 
   res <- trelliscope_widget(
     id = params$id,

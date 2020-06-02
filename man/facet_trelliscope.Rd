@@ -57,8 +57,9 @@ facet_trelliscope(
 
 \item{width}{width in pixels of each panel}
 
-\item{state}{the initial state the display will open in
-#' @param views an optional list of pre-specified views of the display (experimental)}
+\item{state}{the initial state the display will open in}
+
+\item{views}{an optional list of pre-specified views of the display (experimental)}
 
 \item{jsonp}{should json for display object be jsonp (TRUE) or json (FALSE)?}
 

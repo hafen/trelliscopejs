@@ -170,6 +170,8 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @param width width in pixels of each panel
 #' @param md_desc optional string of markdown that will be shown in the viewer for additional context about the display
 #' @param state the initial state the display will open in
+#' @param views an optional list of pre-specified views of the display (experimental)
+#' @param order an integer indicating the order that the display should appear in if using multiple displays
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
 #' @param split_sig optional string "signature" specifying the data splitting
 #' @param panel_img_col which column (if any) is a panel image column?

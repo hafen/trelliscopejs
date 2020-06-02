@@ -52,6 +52,8 @@ write_display_obj(
 
 \item{state}{the initial state the display will open in}
 
+\item{views}{an optional list of pre-specified views of the display (experimental)}
+
 \item{jsonp}{should json for display object be jsonp (TRUE) or json (FALSE)?}
 
 \item{split_sig}{optional string "signature" specifying the data splitting}
@@ -67,6 +69,8 @@ write_display_obj(
 \item{split_aspect}{list indicating aspect ratios of axes for a split layout.  Only applies to ggplot2 plot objects.}
 
 \item{has_legend}{should a legend be reported for split_layout}
+
+\item{order}{an integer indicating the order that the display should appear in if using multiple displays}
 
 \item{pb}{optional progress bar object to pass in and use to report progress}
 }
