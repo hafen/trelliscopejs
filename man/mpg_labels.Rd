@@ -4,7 +4,9 @@
 \name{mpg_labels}
 \alias{mpg_labels}
 \title{Labels for ggplot2 "mpg" data}
-\format{An object of class \code{list} of length 10.}
+\format{
+An object of class \code{list} of length 10.
+}
 \usage{
 mpg_labels
 }

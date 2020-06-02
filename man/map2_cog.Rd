@@ -28,20 +28,21 @@ See \code{\link[purrr]{map2}}
 \donttest{
 library(tidyr)
 library(purrr)
-library(rbokeh)
+library(plotly)
 library(dplyr)
 
 iris \%>\%
-  nest(-Species) \%>\%
+  nest(data = -Species) \%>\%
   mutate(
     mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
     cogs = map2_cog(data, mod, function(data, mod) {
       tibble(max_sl = max(data$Sepal.Length), slope = coef(mod)[2])
     }),
     panel = map2_plot(data, mod, function(data, mod) {
-      figure(xlab = "Sepal.Width", ylab = "Sepal.Length") \%>\%
-        ly_points(data$Sepal.Width, data$Sepal.Length) \%>\%
-        ly_abline(mod)
+      plot_ly(data = data, x = ~Sepal.Width, y = ~Sepal.Length,
+        type = "scatter", mode = "markers", name = "data") \%>\%
+        add_trace(data = data, x = ~Sepal.Width, y = ~predict(mod),
+          mode = "lines", name = "lm")
     })) \%>\%
   trelliscope(name = "iris")
 }

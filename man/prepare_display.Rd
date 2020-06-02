@@ -10,6 +10,7 @@ prepare_display(
   self_contained = FALSE,
   jsonp = TRUE,
   require_token = FALSE,
+  disclaimer = FALSE,
   pb = NULL
 )
 }
@@ -23,6 +24,8 @@ prepare_display(
 \item{jsonp}{should json for display list and app config be jsonp (TRUE) or json (FALSE)?}
 
 \item{require_token}{require a special token for all displays to be visible (experimental)}
+
+\item{disclaimer}{an optional string of html to include as a disclaimer for the set of displays}
 
 \item{pb}{optional progress bar object to pass in and use to report progress}
 }

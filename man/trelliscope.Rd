@@ -25,7 +25,8 @@ trelliscope(
   thumb = FALSE,
   require_token = FALSE,
   id = NULL,
-  order = 1
+  order = 1,
+  disclaimer = FALSE
 )
 }
 \arguments{
@@ -70,6 +71,8 @@ trelliscope(
 \item{id}{set a hard-coded ID for this app (do not set this if the display will be part of a larger web page)}
 
 \item{order}{an integer indicating the order that the display should appear in if using multiple displays}
+
+\item{disclaimer}{an optional string of html to include as a disclaimer for the set of displays}
 }
 \description{
 Create a Trelliscope Display
@@ -78,29 +81,25 @@ Create a Trelliscope Display
 Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 }
 \examples{
-\donttest{
+\dontrun{
 library(dplyr)
 library(tidyr)
 library(purrr)
-library(rbokeh)
+library(plotly)
 library(ggplot2)
 
-# tidyverse + rbokeh
+# tidyverse + plotly
 d <- mpg \%>\%
-  group_by(manufacturer, class) \%>\%
-  nest() \%>\%
+  nest(data = !one_of(c("manufacturer", "class"))) \%>\%
   mutate(
     mean_city_mpg = map_dbl(data, ~ mean(.$cty)),
-    panel = map_plot(data, ~
-      figure(., xlab = "City mpg", ylab = "Highway mpg") \%>\%
-        ly_points(cty, hwy))
+    panel = map_plot(data, function(x) {
+      plot_ly(data = x, x = ~cty, y = ~hwy,
+        type = "scatter", mode = "markers")
+    })
   )
 
 d \%>\% trelliscope(name = "city_vs_highway_mpg")
-
-# if you want to use in RStudio Viewer or RMarkdown Notebook, use self_containedd
-# (this will hopefully change, and you should avoid self_contained whenever possible)
-d \%>\% trelliscope(name = "city_vs_highway_mpg", self_contained = TRUE)
 
 # set default layout
 d \%>\% trelliscope(name = "city_vs_highway_mpg", nrow = 2, ncol = 3)
@@ -119,8 +118,7 @@ d \%>\%
 
 # tidyverse + ggplot2
 mpg \%>\%
-  group_by(manufacturer, class) \%>\%
-  nest() \%>\%
+  nest(data = !one_of(c("manufacturer", "class"))) \%>\%
   mutate(
     panel = map_plot(data, ~
       qplot(cty, hwy, data = .) + xlab("cty") + ylab("hwy") +
@@ -129,42 +127,32 @@ mpg \%>\%
 
 # computing additional cognostics
 mpg_cog <- mpg \%>\%
-  group_by(manufacturer, class) \%>\%
-  nest() \%>\%
+  nest(data = !one_of(c("manufacturer", "class"))) \%>\%
   mutate(
     cogs = map_cog(data, ~ tibble(
       mean_city_mpg = mean(.$cty),
       mean_hwy_mpg = mean(.$hwy),
       most_common_drv = tail(names(table(.$drv)), 1)
-    )),
-    panel = map_plot(data, ~
-      figure(., xlab = "City mpg", ylab = "Highway mpg",
-        xlim = c(9, 47), ylim = c(7, 37)) \%>\%
-        ly_points(cty, hwy,
-          hover = list(year, model))
-    )
+    ))
   )
-
-mpg_cog \%>\%
-  trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
 
 # computing additional cognostics explicitly using cog()
 # so we can specify descriptions, etc.
 mpg_cog2 <- mpg \%>\%
-  group_by(manufacturer, class) \%>\%
-  nest() \%>\%
+  nest(data = !one_of(c("manufacturer", "class"))) \%>\%
   mutate(
     cogs = map_cog(data, ~ tibble(
       mean_city_mpg = cog(mean(.$cty), desc = "Mean city mpg"),
       mean_hwy_mpg = cog(mean(.$hwy), desc = "Mean highway mpg"),
       most_common_drv = cog(tail(names(table(.$drv)), 1), desc = "Most common drive type")
     )),
-    panel = map_plot(data, ~
-      figure(., xlab = "City mpg", ylab = "Highway mpg",
-        xlim = c(9, 47), ylim = c(7, 37)) \%>\%
-        ly_points(cty, hwy,
-          hover = list(year, model))
-    )
+    panel = map_plot(data, function(x) {
+      plot_ly(data = x, x = ~cty, y = ~hwy,
+        type = "scatter", mode = "markers") \%>\%
+        layout(
+          xaxis = list(range = c(9, 47)),
+          yaxis = list(range = c(7, 37)))
+    })
   )
 
 mpg_cog2 \%>\%

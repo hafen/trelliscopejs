@@ -23,13 +23,16 @@ See \code{\link[purrr]{map}}
 \donttest{
 library(dplyr)
 library(tidyr)
-library(rbokeh)
+library(plotly)
 ggplot2::mpg \%>\%
-  group_by(manufacturer, class) \%>\%
-  nest() \%>\%
-  mutate(panel = map_plot(data,
-    ~ figure(xlab = "City mpg", ylab = "Highway mpg") \%>\%
-        ly_points(cty, hwy, data = .x))) \%>\%
+  nest(data = !one_of(c("manufacturer", "class"))) \%>\%
+  mutate(
+    cog = map_cog(data, function(x) tibble(mean_hwy = mean(x$hwy))),
+    panel = map_plot(data, function(x) {
+      plot_ly(data = x, x = ~cty, y = ~hwy,
+        type = "scatter", mode = "markers")
+    })
+  ) \%>\%
   trelliscope(name = "city_vs_highway_mpg")
 }
 }

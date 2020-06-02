@@ -195,7 +195,8 @@ print.facet_trelliscope <- function(x, ...) {
     ungroup() %>%
     dplyr::mutate(.id = seq_len(nrow(data))) %>%
     dplyr::group_by_at(facet_cols) %>%
-    tidyr::nest()
+    tidyr::nest() %>%
+    dplyr::ungroup()
 
   # get ranges of all data
   scales_info <- upgrade_scales_param(attrs$scales, p$facet)

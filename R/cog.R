@@ -22,25 +22,25 @@
 #' library(tidyr)
 #' library(purrr)
 #' library(ggplot2)
-#' library(rbokeh)
+#' library(plotly)
 #' 
 #' mpg_cog <- mpg %>%
-#'   group_by(manufacturer, class) %>%
-#'   nest() %>%
+#'   nest(data = !one_of(c("manufacturer", "class"))) %>%
 #'   mutate(
 #'     cogs = map_cog(data, ~ tibble(
 #'       mean_city_mpg = cog(mean(.$cty), desc = "Mean city mpg"),
 #'       mean_hwy_mpg = cog(mean(.$hwy), desc = "Mean highway mpg"),
 #'       most_common_drv = cog(tail(names(table(.$drv)), 1), desc = "Most common drive type")
 #'     )),
-#'     panel = map_plot(data, ~
-#'       figure(., xlab = "City mpg", ylab = "Highway mpg",
-#'         xlim = c(9, 47), ylim = c(7, 37)) %>%
-#'         ly_points(cty, hwy,
-#'           hover = list(year, model))
-#'     )
+#'     panel = map_plot(data, function(x) {
+#'       plot_ly(data = x, x = ~cty, y = ~hwy,
+#'         type = "scatter", mode = "markers") %>%
+#'         layout(
+#'           xaxis = list(range = c(9, 47)),
+#'           yaxis = list(range = c(7, 37)))
+#'     })
 #'   )
-#' 
+#'
 #' trelliscope(mpg_cog, name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
 cog <- function(val = NULL, desc = "", group = "common",
   type = NULL, default_label = FALSE, default_active = TRUE,
@@ -169,15 +169,19 @@ cog_disp_filter <- function(display, var, val,
 #' @examples
 #' \donttest{
 #' library(dplyr)
-#' library(rbokeh)
+#' library(tidyr)
+#' library(plotly)
 #' iris %>%
-#'   group_by(Species) %>%
-#'   summarise(
+#'   nest(data = -Species) %>%
+#'   mutate(
+#'     panel = map_plot(data, function(x) {
+#'       plot_ly(data = x, x = ~Sepal.Length, y = ~Sepal.Width,
+#'         type = "scatter", mode = "markers")
+#'     }),
 #'     wiki_link = cog_href(paste0("https://en.wikipedia.org/wiki/Iris_",
 #'       tolower(Species))[1], default_label = TRUE,
-#'       desc = "link to species on wikipedia"),
-#'     panel = panel(figure(xlab = "Sepal Length", ylab = "Sepal Width") %>%
-#'       ly_points(Sepal.Length, Sepal.Width))) %>%
+#'       desc = "link to species on wikipedia")
+#'   ) %>%
 #'   trelliscope(name = "iris_species", ncol = 3)
 #' }
 #' @export
@@ -345,14 +349,18 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list 
 
   if (!is.null(nested_data_list)) {
     # add unique data within nested data
-    distinct_counts <- nested_data_list %>% purrr::map_df(. %>% summarise_all(n_distinct))
+    distinct_counts <- nested_data_list %>%
+      purrr::map_df(. %>% summarise_all(n_distinct))
     unique_cols <- names(distinct_counts)[sapply(distinct_counts, function(x) all(x == 1))]
     if (length(unique_cols) > 0) {
       tmp <- nested_data_list %>%
         lapply(function(sub_dt) {
-          sub_dt[1, unique_cols]
+          aa <- sub_dt[1, unique_cols]
+          for (jj in seq_along(aa))
+            class(aa[[jj]]) <- setdiff(class(aa[[jj]]), "cog")
+          aa
         }) %>%
-        bind_rows()
+        dplyr::bind_rows()
 
       # add nested cog attrs back in, if specified
       for (nm in names(tmp)) {

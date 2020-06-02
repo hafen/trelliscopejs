@@ -49,23 +49,23 @@ library(dplyr)
 library(tidyr)
 library(purrr)
 library(ggplot2)
-library(rbokeh)
+library(plotly)
 
 mpg_cog <- mpg \%>\%
-  group_by(manufacturer, class) \%>\%
-  nest() \%>\%
+  nest(data = !one_of(c("manufacturer", "class"))) \%>\%
   mutate(
     cogs = map_cog(data, ~ tibble(
       mean_city_mpg = cog(mean(.$cty), desc = "Mean city mpg"),
       mean_hwy_mpg = cog(mean(.$hwy), desc = "Mean highway mpg"),
       most_common_drv = cog(tail(names(table(.$drv)), 1), desc = "Most common drive type")
     )),
-    panel = map_plot(data, ~
-      figure(., xlab = "City mpg", ylab = "Highway mpg",
-        xlim = c(9, 47), ylim = c(7, 37)) \%>\%
-        ly_points(cty, hwy,
-          hover = list(year, model))
-    )
+    panel = map_plot(data, function(x) {
+      plot_ly(data = x, x = ~cty, y = ~hwy,
+        type = "scatter", mode = "markers") \%>\%
+        layout(
+          xaxis = list(range = c(9, 47)),
+          yaxis = list(range = c(7, 37)))
+    })
   )
 
 trelliscope(mpg_cog, name = "city_vs_highway_mpg", nrow = 1, ncol = 2)

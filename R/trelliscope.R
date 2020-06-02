@@ -93,7 +93,7 @@ trelliscope.data.frame <- function(
 
   if (length(panel_col) != 1 && length(panel_img_col) != 1)
     stop_nice("A column containing the panel to be plotted must be specified",
-      "using panel() or img_panel().")
+      "using map_plot() or similar, or img_panel().")
 
   cog_info <- cog_df_info(
     x,

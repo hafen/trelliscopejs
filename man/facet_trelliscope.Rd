@@ -28,6 +28,7 @@ facet_trelliscope(
   require_token = FALSE,
   id = NULL,
   order = 1,
+  disclaimer = FALSE,
   auto_cog = FALSE,
   split_layout = FALSE,
   data = ggplot2::waiver()
@@ -79,6 +80,8 @@ facet_trelliscope(
 
 \item{order}{an integer indicating the order that the display should appear in if using multiple displays}
 
+\item{disclaimer}{an optional string of html to include as a disclaimer for the set of displays}
+
 \item{auto_cog}{should auto cogs be computed (if possible)?}
 
 \item{split_layout}{boolean that determines if the layout is split into components like a facet_grid vs. individual panels like facet_wrap.  Only applies to ggplot2 plot objects.}
@@ -92,7 +95,7 @@ Facet Trelliscope
 Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 }
 \examples{
-\donttest{
+\dontrun{
 library(ggplot2)
 
 # basically swap out facet_wrap for facet_trelliscope
@@ -113,7 +116,7 @@ qplot(cty, hwy, data = mpg) +
   theme_bw() +
   facet_trelliscope(~ manufacturer + class, nrow = 2, ncol = 4, as_plotly = TRUE)
 
-qplot(class, cty, data = mpg, geom = c("boxplot", "jitter")) +
+qplot(class, cty, data = mpg, geom = c("boxplot", "jitter"), na.rm = TRUE) +
   facet_trelliscope(~ class, ncol = 7, height = 800, width = 200,
     state = list(sort = list(sort_spec("cty_mean")))) +
   theme_bw()

@@ -8,13 +8,13 @@
 #' \donttest{
 #' library(dplyr)
 #' library(tidyr)
-#' library(rbokeh)
+#' library(plotly)
 #' ggplot2::mpg %>%
-#'   group_by(manufacturer, class) %>%
-#'   nest() %>%
-#'   mutate(panel = map_plot(data,
-#'     ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
-#'         ly_points(cty, hwy, data = .x))) %>%
+#'   nest(data = !one_of(c("manufacturer", "class"))) %>%
+#'   mutate(panel = map_plot(data, function(x) {
+#'     plot_ly(data = x, x = ~hwy, y = ~cty,
+#'       type = "scatter", mode = "markers")
+#'   })) %>%
 #'   trelliscope(name = "city_vs_highway_mpg")
 #' }
 #' @export
@@ -38,32 +38,34 @@ panels <- function(.x, .f, ...) {
 #' library(dplyr)
 #' library(tidyr)
 #' library(purrr)
-#' library(rbokeh)
+#' library(plotly)
 #' library(gapminder)
 #'
 #' # nest gapminder data by country
 #' by_country <- gapminder %>%
-#'   group_by(country, continent) %>%
-#'   nest()
-#'
+#'   nest(data = !one_of(c("country", "continent")))
+#' 
 #' # add in a plot column with map_plot
 #' by_country <- by_country %>% mutate(
-#'   panel = map_plot(data,
-#'     ~ figure(xlim = c(1948, 2011), ylim = c(10, 95), width = 300, tools = NULL) %>%
-#'         ly_points(year, lifeExp, data = .x, hover = .x)
-#'   ))
-#'
+#'   panel = map_plot(data, function(x) {
+#'     plot_ly(data = x, x = ~year, y = ~lifeExp,
+#'       type = "scatter", mode = "markers") %>%
+#'       layout(
+#'         xaxis = list(range = c(1948, 2011)),
+#'         yaxis = list(range = c(10, 95)))
+#'   }))
+#' 
 #' # plot it
 #' by_country %>%
-#'   trelliscope("gapminder", nrow = 2, ncol = 7)
-#'
+#'   trelliscope("gapminder", nrow = 2, ncol = 7, width = 300)
+#' 
 #' # example using mpg data
 #' ggplot2::mpg %>%
-#'   group_by(manufacturer, class) %>%
-#'   nest() %>%
-#'   mutate(panel = map_plot(data,
-#'     ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
-#'         ly_points(cty, hwy, data = .x))) %>%
+#'   nest(data = !one_of(c("manufacturer", "class"))) %>%
+#'   mutate(panel = map_plot(data, function(x) {
+#'     plot_ly(data = x, x = ~hwy, y = ~cty,
+#'       type = "scatter", mode = "markers")
+#'   })) %>%
 #'   trelliscope(name = "city_vs_highway_mpg")
 #' }
 #' @export
@@ -85,28 +87,18 @@ map_plot <- function(.x, .f, ...) {
 #' \donttest{
 #' library(tidyr)
 #' library(purrr)
-#' library(rbokeh)
+#' library(plotly)
 #' library(dplyr)
 #'
 #' iris %>%
-#'   nest(-Species) %>%
+#'   nest(data = -Species) %>%
 #'   mutate(
 #'     mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
 #'     panel = map2_plot(data, mod, function(data, mod) {
-#'       figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
-#'         ly_points(data$Sepal.Width, data$Sepal.Length) %>%
-#'         ly_abline(mod)
-#'     })) %>%
-#'   trelliscope(name = "iris")
-#'
-#' iris %>%
-#'   nest(-Species) %>%
-#'   mutate(
-#'     mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
-#'     panel = pmap_plot(list(data = data, mod = mod), function(data, mod) {
-#'       figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
-#'         ly_points(data$Sepal.Width, data$Sepal.Length) %>%
-#'         ly_abline(mod)
+#'       plot_ly(data = data, x = ~Sepal.Width, y = ~Sepal.Length,
+#'         type = "scatter", mode = "markers", name = "data") %>%
+#'         add_trace(data = data, x = ~Sepal.Width, y = ~predict(mod),
+#'           mode = "lines", name = "lm")
 #'     })) %>%
 #'   trelliscope(name = "iris")
 #' }
@@ -137,7 +129,6 @@ pmap_plot <- function(.l, .f, ...) {
 # #' \dontrun{
 # #' library(tidyr)
 # #' library(purrr)
-# #' library(rbokeh)
 # #' iris %>%
 # #'   nest(-Species) %>%
 # #'   mutate(mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x))) %>%
@@ -166,17 +157,20 @@ pmap_plot <- function(.l, .f, ...) {
 #' \donttest{
 #' library(dplyr)
 #' library(tidyr)
-#' library(rbokeh)
+#' library(plotly)
 #' ggplot2::mpg %>%
-#'   group_by(manufacturer, class) %>%
-#'   nest() %>%
+#'   nest(data = !one_of(c("manufacturer", "class"))) %>%
 #'   mutate(
-#'     additional_cogs = map_cog(data,
-#'       ~ tibble(
-#'         max_city_mpg = cog(max(.x$cty), desc = "Max city mpg"),
-#'         min_city_mpg = cog(min(.x$cty), desc = "Min city mpg"))),
-#'     panel = map_plot(data, ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
-#'       ly_points(cty, hwy, data = .x))) %>%
+#'     additional_cogs = map_cog(data, function(x) {
+#'       tibble(
+#'         max_city_mpg = cog(max(x$cty), desc = "Max city mpg"),
+#'         min_city_mpg = cog(min(x$cty), desc = "Min city mpg"))
+#'     }),
+#'     panel = map_plot(data, function(x) {
+#'       plot_ly(data = x, x = ~cty, y = ~hwy,
+#'         type = "scatter", mode = "markers")
+#'     })
+#'   ) %>%
 #'   trelliscope(name = "city_vs_highway_mpg", nrow = 1, ncol = 2)
 #' }
 cogs <- function(.x, .f, ...) {
@@ -198,13 +192,16 @@ cogs <- function(.x, .f, ...) {
 #' \donttest{
 #' library(dplyr)
 #' library(tidyr)
-#' library(rbokeh)
+#' library(plotly)
 #' ggplot2::mpg %>%
-#'   group_by(manufacturer, class) %>%
-#'   nest() %>%
-#'   mutate(panel = map_plot(data,
-#'     ~ figure(xlab = "City mpg", ylab = "Highway mpg") %>%
-#'         ly_points(cty, hwy, data = .x))) %>%
+#'   nest(data = !one_of(c("manufacturer", "class"))) %>%
+#'   mutate(
+#'     cog = map_cog(data, function(x) tibble(mean_hwy = mean(x$hwy))),
+#'     panel = map_plot(data, function(x) {
+#'       plot_ly(data = x, x = ~cty, y = ~hwy,
+#'         type = "scatter", mode = "markers")
+#'     })
+#'   ) %>%
 #'   trelliscope(name = "city_vs_highway_mpg")
 #' }
 #' @export
@@ -226,20 +223,21 @@ map_cog <- function(.x, .f, ...) {
 #' \donttest{
 #' library(tidyr)
 #' library(purrr)
-#' library(rbokeh)
+#' library(plotly)
 #' library(dplyr)
 #'
 #' iris %>%
-#'   nest(-Species) %>%
+#'   nest(data = -Species) %>%
 #'   mutate(
 #'     mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x)),
 #'     cogs = map2_cog(data, mod, function(data, mod) {
 #'       tibble(max_sl = max(data$Sepal.Length), slope = coef(mod)[2])
 #'     }),
 #'     panel = map2_plot(data, mod, function(data, mod) {
-#'       figure(xlab = "Sepal.Width", ylab = "Sepal.Length") %>%
-#'         ly_points(data$Sepal.Width, data$Sepal.Length) %>%
-#'         ly_abline(mod)
+#'       plot_ly(data = data, x = ~Sepal.Width, y = ~Sepal.Length,
+#'         type = "scatter", mode = "markers", name = "data") %>%
+#'         add_trace(data = data, x = ~Sepal.Width, y = ~predict(mod),
+#'           mode = "lines", name = "lm")
 #'     })) %>%
 #'   trelliscope(name = "iris")
 #' }
@@ -292,7 +290,6 @@ pmap_cog <- function(.l, .f, ...) {
 # #' \dontrun{
 # #' library(tidyr)
 # #' library(purrr)
-# #' library(rbokeh)
 # #' iris %>%
 # #'   nest(-Species) %>%
 # #'   mutate(mod = map(data, ~ lm(Sepal.Length ~ Sepal.Width, data = .x))) %>%
