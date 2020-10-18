@@ -16,6 +16,7 @@ facet_trelliscope(
   path = NULL,
   height = 500,
   width = 500,
+  inputs = NULL,
   state = NULL,
   views = NULL,
   jsonp = TRUE,
@@ -56,6 +57,8 @@ facet_trelliscope(
 \item{height}{height in pixels of each panel}
 
 \item{width}{width in pixels of each panel}
+
+\item{inputs}{optional set of input specifications (using \code{\link{input_cogs}}) to allow user input for each panel}
 
 \item{state}{the initial state the display will open in}
 

@@ -14,6 +14,7 @@ write_display_obj(
   desc = "",
   height = 500,
   width = 500,
+  inputs = NULL,
   md_desc = "",
   state = NULL,
   views = NULL,
@@ -47,6 +48,8 @@ write_display_obj(
 \item{height}{height in pixels of each panel}
 
 \item{width}{width in pixels of each panel}
+
+\item{inputs}{optional set of input specifications (using \code{\link{input_cogs}}) to allow user input for each panel}
 
 \item{md_desc}{optional string of markdown that will be shown in the viewer for additional context about the display}
 

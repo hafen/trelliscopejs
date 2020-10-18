@@ -10,6 +10,7 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param path the base directory of the trelliscope application
 #' @param height height in pixels of each panel
 #' @param width width in pixels of each panel
+#' @param inputs optional set of input specifications (using \code{\link{input_cogs}}) to allow user input for each panel
 #' @param state the initial state the display will open in
 #' @param views an optional list of pre-specified views of the display (experimental)
 #' @param nrow the number of rows of panels to display by default
@@ -38,7 +39,7 @@ facet_trelliscope <- function(
   facets,
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
   desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL,
-  height = 500, width = 500,
+  height = 500, width = 500, inputs = NULL,
   state = NULL, views = NULL, jsonp = TRUE, as_plotly = FALSE,
   plotly_args = NULL, plotly_cfg = NULL, split_sig = NULL,
   self_contained = FALSE, thumb = TRUE, require_token = FALSE, id = NULL,
@@ -66,6 +67,7 @@ facet_trelliscope <- function(
     md_desc = md_desc,
     height = height,
     width = width,
+    inputs = inputs,
     state = state,
     jsonp = jsonp,
     split_sig = split_sig,
@@ -93,7 +95,7 @@ facet_trelliscope <- function(
 ggplot_add.facet_trelliscope <- function(object, plot, object_name) {
   attr(plot, "trelliscope") <- object[
     c("facets", "facet_cols", "name", "group",
-      "desc", "md_desc", "height", "width", "state", "jsonp", "self_contained",
+      "desc", "md_desc", "height", "width", "inputs", "state", "jsonp", "self_contained",
       "path", "state", "nrow", "ncol", "scales", "thumb", "as_plotly",
       "split_sig", "plotly_args", "plotly_cfg", "auto_cog", "split_layout",
       "id", "disclaimer", "data")]
@@ -260,7 +262,8 @@ print.facet_trelliscope <- function(x, ...) {
 
   params <- resolve_app_params(attrs$path, attrs$self_contained, attrs$jsonp,
     attrs$split_sig, name, attrs$group, attrs$state, attrs$nrow, attrs$ncol,
-    attrs$thumb, attrs$split_layout, attrs$id, attrs$disclaimer)
+    attrs$thumb, attrs$split_layout, attrs$id, attrs$disclaimer,
+    attrs$inputs)
 
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",
@@ -317,6 +320,7 @@ print.facet_trelliscope <- function(x, ...) {
     desc = attrs$desc,
     height = attrs$height,
     width = attrs$width,
+    inputs = params$inputs,
     md_desc = attrs$md_desc,
     state = params$state,
     jsonp = params$jsonp,

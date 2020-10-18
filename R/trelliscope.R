@@ -9,6 +9,7 @@
 #' @param path the base directory of the trelliscope application
 #' @param height height in pixels of each panel
 #' @param width width in pixels of each panel
+#' @param inputs optional set of input specifications (using \code{\link{input_cogs}}) to allow user input for each panel
 #' @param auto_cog should auto cogs be computed (if possible)?
 #' @param state the initial state the display will open in
 #' @param views an optional list of pre-specified views of the display (experimental)
@@ -26,7 +27,7 @@
 #' @example man-roxygen/ex-trelliscope.R
 #' @export
 trelliscope <- function(x, name, group = "common", panel_col = NULL,
-  desc = "", md_desc = "", path, height = 500, width = 500,
+  desc = "", md_desc = "", path, height = 500, width = 500, inputs = NULL,
   auto_cog = FALSE, state = NULL, views = NULL,
   nrow = 1, ncol = 1, jsonp = TRUE, split_sig = NULL,
   self_contained = FALSE,
@@ -37,7 +38,7 @@ trelliscope <- function(x, name, group = "common", panel_col = NULL,
 #' @export
 trelliscope.data.frame <- function(
   x, name, group = "common", panel_col = NULL,
-  desc = "", md_desc = "", path = NULL, height = 500, width = 500,
+  desc = "", md_desc = "", path = NULL, height = 500, width = 500, inputs = NULL,
   auto_cog = FALSE, state = NULL, views = NULL, nrow = 1, ncol = 1,
   jsonp = TRUE, split_sig = NULL, self_contained = FALSE,
   thumb = FALSE, require_token = FALSE, id = NULL, order = 1,
@@ -107,7 +108,7 @@ trelliscope.data.frame <- function(
 
   params <- resolve_app_params(
     path, self_contained, jsonp, split_sig, name, group,
-    state, nrow, ncol, thumb, FALSE, id, disclaimer)
+    state, nrow, ncol, thumb, FALSE, id, disclaimer, inputs)
 
   keys <- apply(x[cond_cols], 1, function(a) paste(a, collapse = "_")) %>%
     sanitize()
@@ -162,6 +163,7 @@ trelliscope.data.frame <- function(
     desc = desc,
     height = height,
     width = width,
+    inputs = inputs,
     md_desc = md_desc,
     state = params$state,
     jsonp = params$jsonp,

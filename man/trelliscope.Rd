@@ -14,6 +14,7 @@ trelliscope(
   path,
   height = 500,
   width = 500,
+  inputs = NULL,
   auto_cog = FALSE,
   state = NULL,
   views = NULL,
@@ -47,6 +48,8 @@ trelliscope(
 \item{height}{height in pixels of each panel}
 
 \item{width}{width in pixels of each panel}
+
+\item{inputs}{optional set of input specifications (using \code{\link{input_cogs}}) to allow user input for each panel}
 
 \item{auto_cog}{should auto cogs be computed (if possible)?}
 

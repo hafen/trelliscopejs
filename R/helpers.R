@@ -52,7 +52,7 @@ is_in_shiny <- function() {
 
 resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, 
   group, state, nrow = 1, ncol = 1, thumb = TRUE, split_layout = FALSE,
-  id = NULL, disclaimer = FALSE) {
+  id = NULL, disclaimer = FALSE, inputs = NULL) {
 
   spa <- TRUE # "single-page application"
 
@@ -165,6 +165,11 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name,
     }
   }
 
+  if (!is.null(inputs) && !inherits(inputs, "input_cogs")) {
+    message("'inputs' must be a set of inputs specified with 'input_cogs'. Ignoring...")
+    inputs <- NULL
+  }
+
   list(
     path = path,
     www_dir = www_dir,
@@ -176,6 +181,7 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name,
     group = sanitize(group),
     id = id,
     disclaimer = disclaimer,
+    inputs = inputs,
     spa = spa,
     state = state,
     in_knitr = in_knitr,
@@ -219,7 +225,7 @@ get_jsonp_text <- function(jsonp, fn_name) {
   }
 }
 
-get_cog_info <- function(x) {
+get_cog_info <- function(x, inputs = NULL) {
   if (! inherits(x, "cognostics"))
     stop_nice("Cognostics data frame must be a cognostics object - ",
       "call as_cognostics() to cast it as such.")
@@ -259,6 +265,15 @@ get_cog_info <- function(x) {
     res
   })
   names(tmp) <- sapply(tmp, function(x) x$name)
+  if (!is.null(inputs)) {
+    nms <- unlist(lapply(inputs, function(x) x$name))
+    names(inputs) <- nms
+    if (nms %in% names(tmp))
+      stop("Inputs have names matching at least one of the cognostics.")
+    tmp <- c(tmp, inputs)
+    browser()
+  }
+
   tmp
 }
 

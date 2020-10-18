@@ -168,6 +168,7 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @param desc description of the display
 #' @param height height in pixels of each panel
 #' @param width width in pixels of each panel
+#' @param inputs optional set of input specifications (using \code{\link{input_cogs}}) to allow user input for each panel
 #' @param md_desc optional string of markdown that will be shown in the viewer for additional context about the display
 #' @param state the initial state the display will open in
 #' @param views an optional list of pre-specified views of the display (experimental)
@@ -185,7 +186,7 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @export
 write_display_obj <- function(
   cogdf, panel_example, base_path, id, name, group = "common",
-  desc = "", height = 500, width = 500, md_desc = "", state = NULL,
+  desc = "", height = 500, width = 500, inputs = NULL, md_desc = "", state = NULL,
   views = NULL, jsonp = TRUE, split_sig = NULL, panel_img_col = NULL, 
   self_contained = FALSE, thumb = TRUE, split_layout = FALSE,
   split_aspect = NULL, has_legend = FALSE, order = 1, pb = NULL
@@ -248,7 +249,7 @@ write_display_obj <- function(
     cogInterface = list(name = name, group = group, type = "JSON"),
     panelInterface = panelInterface,
     imgSrcLookup = imgSrcLookup,
-    cogInfo = get_cog_info(cogdf),
+    cogInfo = get_cog_info(cogdf, inputs),
     cogDistns = get_cog_distributions(cogdf)
   )
 
