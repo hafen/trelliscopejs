@@ -243,6 +243,7 @@ write_display_obj <- function(
     width = width,
     order = order,
     has_legend = has_legend,
+    has_inputs = !is.null(inputs),
     split_layout = split_layout,
     split_aspect = split_aspect,
     keySig = key_sig, # nolint

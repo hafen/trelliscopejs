@@ -271,7 +271,6 @@ get_cog_info <- function(x, inputs = NULL) {
     if (nms %in% names(tmp))
       stop("Inputs have names matching at least one of the cognostics.")
     tmp <- c(tmp, inputs)
-    browser()
   }
 
   tmp
