@@ -4,9 +4,11 @@
 \alias{input_cogs}
 \title{Specify a collection of input cognostics}
 \usage{
-input_cogs(...)
+input_cogs(..., feedback_email = NULL)
 }
 \arguments{
+\item{feedback_email}{optional feedback email address that input feedback can be sent to}
+
 \item{\ldots}{objects created by any of \code{\link{input_radio}},
 \code{\link{input_text}}, \code{\link{input_textarea}}}
 }

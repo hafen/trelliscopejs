@@ -2,15 +2,19 @@
 #' 
 #' @param \ldots objects created by any of \code{\link{input_radio}},
 #'   \code{\link{input_text}}, \code{\link{input_textarea}}
+#' @param feedback_email optional feedback email address that input feedback can be sent to
 #' @export
-input_cogs <- function(...) {
+input_cogs <- function(..., feedback_email = NULL) {
   is_input <- unlist(lapply(list(...), function(x)
     inherits(x, "input_cog")))
   if (!all(is_input))
     stop("All 'input_cogs()' arguments must be of type 'input_cog'.",
       call. = FALSE)
   
-  structure(list(...), class = c("input_cogs", "list"))
+  res <- structure(list(...), class = c("input_cogs", "list"))
+  attr(res, "feedback_email") <- feedback_email
+
+  res
 }
 
 #' Specify a radio button input

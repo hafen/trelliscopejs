@@ -244,6 +244,7 @@ write_display_obj <- function(
     order = order,
     has_legend = has_legend,
     has_inputs = !is.null(inputs),
+    input_email = attr(inputs, "feedback_email"),
     split_layout = split_layout,
     split_aspect = split_aspect,
     keySig = key_sig, # nolint
