@@ -38,4 +38,29 @@ input_radio <- function(name, desc = NULL, options, group = NULL,
     defActive = TRUE,
     filterable = FALSE
   ), class = c("input_cog", "input_radio", "list"))
-  }
+}
+
+#' Specify a text input
+#' 
+#' @param name name of the input
+#' @param desc optional description of the input
+#' @param width width (in characters) of the text box popout
+#' @param height height (in lines of text) of the text box popout
+#' @param group optional categorization of the input for organizational purposes in the viewer (currently not implemented in the viewer)
+#' @param default_label should this input be shown under the panel in the viewer by default?
+#' @export
+input_text <- function(name, desc = NULL, width = 80, height = 3,
+  group = NULL, default_label = TRUE) {
+
+  structure(list(
+    name = name,
+    desc = ifelse(is.null(desc), name, desc),
+    type = "input_text",
+    width = width,
+    height = height,
+    group = ifelse(is.null(group), "input", group),
+    defLabel = default_label,
+    defActive = TRUE,
+    filterable = FALSE
+  ), class = c("input_cog", "input_text", "list"))
+}

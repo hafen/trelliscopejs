@@ -268,7 +268,7 @@ get_cog_info <- function(x, inputs = NULL) {
   if (!is.null(inputs)) {
     nms <- unlist(lapply(inputs, function(x) x$name))
     names(inputs) <- nms
-    if (nms %in% names(tmp))
+    if (any(nms %in% names(tmp)))
       stop("Inputs have names matching at least one of the cognostics.")
     tmp <- c(tmp, inputs)
   }
