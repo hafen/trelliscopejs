@@ -5,7 +5,7 @@ dependencies:
    script: [
      js/2.647f9a73.chunk.js,
      js/runtime-main.d9025fd8.js,
-     js/main.54aceb7d.chunk.js,
+     js/main.da5df91f.chunk.js,
    ]
    stylesheet: [
      css/2.5a492dbc.chunk.css,
