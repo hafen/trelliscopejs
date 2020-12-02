@@ -1,3 +1,20 @@
+#' Specify a markdown description for a display
+#' @param content Markdown content
+#' @param title Title of the dialog box that displays this content
+#' @param show should the markdown description be shown by default when the display is loaded?
+#' @export
+md_description <- function(
+  content = "",
+  title = "Information About This Display",
+  show = FALSE
+) {
+  structure(list(
+    content = content,
+    title = title,
+    show = show
+  ), class = c("list", "md_desc"))
+}
+
 #' Cast a vector of URLs pointing to images as an image panel source
 #'
 #' @param x a vector of URLs pointing to images

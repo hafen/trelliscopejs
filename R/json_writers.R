@@ -232,11 +232,21 @@ write_display_obj <- function(
     cogdf[[panelInterface$panelCol]] <- NULL
   }
 
+  show_md_desc <- FALSE
+  md_title <- "Information About This Display"
+  if (inherits(md_desc, "md_desc")) {
+    show_md_desc <- md_desc$show
+    md_title <- md_desc$title
+    md_desc <- md_desc$content
+  }
+
   disp_obj <- list(
     name = name,
     group = group,
     desc = desc,
     mdDesc = md_desc,
+    mdTitle = md_title,
+    showMdDesc = show_md_desc,
     updated = Sys.time(),
     n = nrow(cogdf),
     height = height,
@@ -245,6 +255,7 @@ write_display_obj <- function(
     has_legend = has_legend,
     has_inputs = !is.null(inputs),
     input_email = attr(inputs, "feedback_email"),
+    input_csv_vars = attr(inputs, "input_csv_vars"),
     split_layout = split_layout,
     split_aspect = split_aspect,
     keySig = key_sig, # nolint

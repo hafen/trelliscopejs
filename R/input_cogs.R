@@ -1,18 +1,23 @@
 #' Specify a collection of input cognostics
 #' 
 #' @param \ldots objects created by any of \code{\link{input_radio}},
-#'   \code{\link{input_text}}, \code{\link{input_textarea}}
+#'   \code{\link{input_text}}
 #' @param feedback_email optional feedback email address that input feedback can be sent to
+#' @param extra_cogs optional vector of names of non-input "regular" cognostics to include in the csv output
 #' @export
-input_cogs <- function(..., feedback_email = NULL) {
+input_cogs <- function(..., feedback_email = NULL, extra_cogs = NULL) {
   is_input <- unlist(lapply(list(...), function(x)
     inherits(x, "input_cog")))
   if (!all(is_input))
     stop("All 'input_cogs()' arguments must be of type 'input_cog'.",
       call. = FALSE)
-  
+
+  if (is.null(extra_cogs))
+    extra_cogs <- list()
+
   res <- structure(list(...), class = c("input_cogs", "list"))
   attr(res, "feedback_email") <- feedback_email
+  attr(res, "input_csv_vars") <- extra_cogs
 
   res
 }

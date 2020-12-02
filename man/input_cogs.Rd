@@ -4,13 +4,15 @@
 \alias{input_cogs}
 \title{Specify a collection of input cognostics}
 \usage{
-input_cogs(..., feedback_email = NULL)
+input_cogs(..., feedback_email = NULL, extra_cogs = NULL)
 }
 \arguments{
 \item{feedback_email}{optional feedback email address that input feedback can be sent to}
 
+\item{extra_cogs}{optional vector of names of non-input "regular" cognostics to include in the csv output}
+
 \item{\ldots}{objects created by any of \code{\link{input_radio}},
-\code{\link{input_text}}, \code{\link{input_textarea}}}
+\code{\link{input_text}}}
 }
 \description{
 Specify a collection of input cognostics

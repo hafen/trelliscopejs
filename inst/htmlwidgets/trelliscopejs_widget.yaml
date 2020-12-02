@@ -3,8 +3,8 @@ dependencies:
    version:  0.3.4
    src: htmlwidgets/lib/trelliscopejs_widget
    script: [
-     js/2.647f9a73.chunk.js,
-     js/main.3018f544.chunk.js,
+     js/2.3be2b8c8.chunk.js,
+     js/main.f2805fba.chunk.js,
      js/runtime-main.d9025fd8.js,
    ]
    stylesheet: [
