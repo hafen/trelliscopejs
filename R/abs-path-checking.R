@@ -1,5 +1,6 @@
 # The following code was taken directly from the {xfun} package. It is
 # licensed under the MIT license. The copyright holder is Yihui Xie.
+# See https://github.com/yihui/xfun for the package and details.
 
 is_abs_path <- function (x) {
     if (is_unix())
