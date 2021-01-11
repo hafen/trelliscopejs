@@ -101,8 +101,9 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, gro
   # if outside knitr, config.jsonp will always be available to index.html inside appfiles
   config_path <- paste0("appfiles/config.json", ifelse(jsonp, "p", ""))
   if (in_knitr || in_shiny && !self_contained) {
-    if (!grepl("^[A-Za-z0-9_]", orig_path))
+    if (is_abs_path(orig_path)) {
       stop_nice("Path for trelliscope output while inside knitr or Shiny must be relative.")
+    }
     if (in_shiny) {
       if (!grepl("^www/", orig_path))
         stop_nice("Path for trelliscope output while inside Shiny must go inside www/...")
