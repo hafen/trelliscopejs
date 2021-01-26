@@ -44,9 +44,10 @@ is_in_knitr <- function() {
 
 is_in_shiny <- function() {
   res <- FALSE
-  tmp <- try(utils::getFromNamespace(".globals", "shiny")$running, silent = TRUE)
-  if (!inherits(tmp, "try-error"))
-    res <- tmp
+  tmp <- try(utils::getFromNamespace(".globals", "shiny")$appState,
+    silent = TRUE)
+  if (!inherits(tmp, "try-error") && !is.null(tmp))
+    res <- TRUE
   res
 }
 
