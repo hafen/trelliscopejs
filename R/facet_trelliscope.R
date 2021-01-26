@@ -84,7 +84,8 @@ facet_trelliscope <- function(
     split_layout = split_layout,
     id = id,
     disclaimer = disclaimer,
-    data = data
+    data = data,
+    views = views
   )
 
   class(ret) <- "facet_trelliscope"
@@ -98,7 +99,7 @@ ggplot_add.facet_trelliscope <- function(object, plot, object_name) {
       "desc", "md_desc", "height", "width", "inputs", "state", "jsonp", "self_contained",
       "path", "state", "nrow", "ncol", "scales", "thumb", "as_plotly",
       "split_sig", "plotly_args", "plotly_cfg", "auto_cog", "split_layout",
-      "id", "disclaimer", "data")]
+      "id", "disclaimer", "data", "views")]
   class(plot) <- c("facet_trelliscope", class(plot))
   return(plot)
 }

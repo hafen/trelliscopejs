@@ -15,6 +15,32 @@ md_description <- function(
   ), class = c("list", "md_desc"))
 }
 
+#' Construct a list of view items
+#' @param ... Objects created using \code{\link{view_item}}
+#' @export
+view_list <- function(...) {
+  cls <- unlist(lapply(list(...), function(x) {
+    inherits(x, "view_item")
+  }))
+  if (any(!cls))
+    stop("All arguments to view_list() must be created with view_item()")
+
+  structure(list(...), class = c("list", "view_list"))
+}
+
+#' Construct a list of view items
+#' @param name A string indicating the name of the view (will be displayed in the "Views" sidebar)
+#' @param hash A URL hash that sends the user to this view (typically the URL starting with &nrow=...)
+#' @export
+view_item <- function(name, hash) {
+  # TODO: validation
+  structure(list(
+    name = name,
+    state = hash
+  ), class = c("list", "view_item"))
+}
+
+
 #' Cast a vector of URLs pointing to images as an image panel source
 #'
 #' @param x a vector of URLs pointing to images
@@ -61,9 +87,10 @@ is_in_knitr <- function() {
 
 is_in_shiny <- function() {
   res <- FALSE
-  tmp <- try(utils::getFromNamespace(".globals", "shiny")$running, silent = TRUE)
-  if (!inherits(tmp, "try-error"))
-    res <- tmp
+  tmp <- try(utils::getFromNamespace(".globals", "shiny")$appState,
+    silent = TRUE)
+  if (!inherits(tmp, "try-error") && !is.null(tmp))
+    res <- TRUE
   res
 }
 
