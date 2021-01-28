@@ -1,10 +1,10 @@
-Updated to be compatible with the upcoming release of dplyr 1.0 and address other minor issues.
+Updated to fix minor issues and update documentation.
 
 ## Test environments
 
-* local OS X install, R 4.0.0
-* ubuntu 16.04 (on travis-ci), R 4.0.0
-* Windows R (on Appveyor) R 4.0.0
+* local OS X install, R 4.0.3
+* ubuntu 16.04 (on travis-ci), R 4.0.2
+* Windows R (on Appveyor) R 4.0.3
 * win-builder (devel and release)
 
 ## R CMD check results
@@ -13,4 +13,4 @@ Updated to be compatible with the upcoming release of dplyr 1.0 and address othe
 
 ## Reverse dependencies
 
-R CMD check ran successfully on the only reverse dependency, PML.
+There are no reverse dependencies.

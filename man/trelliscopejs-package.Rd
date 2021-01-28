@@ -8,7 +8,7 @@
 Create interactive Trelliscope displays
 }
 \details{
-\url{http://hafen.github.io/trelliscopejs/}
+\url{https://hafen.github.io/trelliscopejs/}
 }
 \examples{
 help(package = trelliscopejs)

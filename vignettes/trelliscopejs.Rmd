@@ -273,7 +273,7 @@ Functions will be added in the future that allow you to treat a display as an ob
 
 While all of the examples so far have created a single application that fills the window of your viewer pane or web browser, you can embed multiple trelliscope displays inside of RMarkdown documents or RMarkdown Notebooks. When using **trelliscopejs** in RMarkdown documents, each display is embedded within the flow of the document (and dimensions can be controlled in the usual way), but an additional "fullscreen" button appears in the bottom right corner allowing toggling between full window mode.  In RMarkdown Notebooks, however, you do not get the fullscreen option because Notebooks embed htmlwidgets as iframes rather than as an integrated part of the page.
 
-**trelliscopejs** displays are also easy to share as standalone apps on the web through Github or a simple web server. For example, some of the examples from this document have been made available through Github (see [here](http://hafen.github.io/trelliscopejs-demo/housing/), [here](http://hafen.github.io/trelliscopejs-demo/gapminder/), and [here](http://hafen.github.io/trelliscopejs-demo/mpg/)).
+**trelliscopejs** displays are also easy to share as standalone apps on the web through Github or a simple web server. For example, some of the examples from this document have been made available through Github (see [here](https://hafen.github.io/trelliscopejs-demo/housing/), [here](https://hafen.github.io/trelliscopejs-demo/gapminder/), and [here](https://hafen.github.io/trelliscopejs-demo/mpg/)).
 
 ## Low-Level Functions
 
@@ -291,7 +291,7 @@ This package has a dataset, "housing" that gives the monthly median list and sol
 
 Here, we are going to compute our own custom summary "cognostics", including the slope of a fitted line, the median list and sold price, the number of non-NA observations, and a special "href" cognostic, which will provide a link to Zillow showing the homes for sale in the county.
 
-For this one I would recommend using [rbokeh](http://hafen.github.io/rbokeh/) or plotly over ggplot2 simply because of the time it takes to generate the panels with ggplot2.
+For this one I would recommend using [rbokeh](https://hafen.github.io/rbokeh/) or plotly over ggplot2 simply because of the time it takes to generate the panels with ggplot2.
 
 ```r
 library(housingData)
@@ -360,7 +360,7 @@ This display works well as an app for consumers to play with to explore home pri
 
 For those who are interested, trelliscopejs-lib is written using [React](https://facebook.github.io/react/), [redux](http://redux.js.org/), and [Webpack](https://webpack.github.io/). Other major components include [material-ui](http://www.material-ui.com/#/) and [crossfilter](https://www.npmjs.com/package/crossfilter2), and [d3](https://d3js.org/).
 
-The library is available on [npm](https://www.npmjs.com/package/trelliscopejs-lib) and therefore over CDN using [unpkg](http://unpkg.com/). All dependencies, fonts, css, etc. are bundled into the library and it weighs in at a little over 1MB.
+The library is available on [npm](https://www.npmjs.com/package/trelliscopejs-lib) and therefore over CDN using [unpkg](https://unpkg.com/). All dependencies, fonts, css, etc. are bundled into the library and it weighs in at a little over 1MB.
 
 ### Embedding trelliscopejs apps
 
