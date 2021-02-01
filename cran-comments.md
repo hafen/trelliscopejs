@@ -1,4 +1,6 @@
-Updated to fix minor issues and update documentation.
+Resubmission:
+
+Addressed possibly invalid URL corrections requests.
 
 ## Test environments
 
