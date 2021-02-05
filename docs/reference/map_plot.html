@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">trelliscopejs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
       </span>
     </div>
 
@@ -88,7 +88,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -105,7 +105,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/hafen/trelliscopejs/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -131,7 +131,7 @@
     <p>Apply a function to each element of a vector and return a vector of plots</p>
     </div>
 
-    <pre class="usage"><span class='fu'>map_plot</span>(<span class='no'>.x</span>, <span class='no'>.f</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>map_plot</span><span class='op'>(</span><span class='va'>.x</span>, <span class='va'>.f</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -156,39 +156,40 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tidyr</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>purrr</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>plotly</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>gapminder</span>)
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyr.tidyverse.org'>tidyr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://purrr.tidyverse.org'>purrr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://plotly-r.com'>plotly</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/jennybc/gapminder'>gapminder</a></span><span class='op'>)</span>
 
 <span class='co'># nest gapminder data by country</span>
-<span class='no'>by_country</span> <span class='kw'>&lt;-</span> <span class='no'>gapminder</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://tidyr.tidyverse.org/reference/nest.html'>nest</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> !<span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>one_of</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"country"</span>, <span class='st'>"continent"</span>)))
+<span class='va'>by_country</span> <span class='op'>&lt;-</span> <span class='va'>gapminder</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://tidyr.tidyverse.org/reference/nest.html'>nest</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='op'>!</span><span class='fu'><a href='https://tidyselect.r-lib.org/reference/one_of.html'>one_of</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"country"</span>, <span class='st'>"continent"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># add in a plot column with map_plot</span>
-<span class='no'>by_country</span> <span class='kw'>&lt;-</span> <span class='no'>by_country</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(
-  <span class='kw'>panel</span> <span class='kw'>=</span> <span class='fu'>map_plot</span>(<span class='no'>data</span>, <span class='kw'>function</span>(<span class='no'>x</span>) {
-    <span class='fu'><a href='https://rdrr.io/pkg/plotly/man/plot_ly.html'>plot_ly</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>x</span>, <span class='kw'>x</span> <span class='kw'>=</span> ~<span class='no'>year</span>, <span class='kw'>y</span> <span class='kw'>=</span> ~<span class='no'>lifeExp</span>,
-      <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"scatter"</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"markers"</span>) <span class='kw'>%&gt;%</span>
-      <span class='fu'><a href='https://rdrr.io/pkg/plotly/man/layout.html'>layout</a></span>(
-        <span class='kw'>xaxis</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>range</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1948</span>, <span class='fl'>2011</span>)),
-        <span class='kw'>yaxis</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>range</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>95</span>)))
-  }))
+<span class='va'>by_country</span> <span class='op'>&lt;-</span> <span class='va'>by_country</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>
+  panel <span class='op'>=</span> <span class='fu'>map_plot</span><span class='op'>(</span><span class='va'>data</span>, <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>{</span>
+    <span class='fu'><a href='https://rdrr.io/pkg/plotly/man/plot_ly.html'>plot_ly</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>x</span>, x <span class='op'>=</span> <span class='op'>~</span><span class='va'>year</span>, y <span class='op'>=</span> <span class='op'>~</span><span class='va'>lifeExp</span>,
+      type <span class='op'>=</span> <span class='st'>"scatter"</span>, mode <span class='op'>=</span> <span class='st'>"markers"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+      <span class='fu'><a href='https://rdrr.io/pkg/plotly/man/layout.html'>layout</a></span><span class='op'>(</span>
+        xaxis <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>range <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1948</span>, <span class='fl'>2011</span><span class='op'>)</span><span class='op'>)</span>,
+        yaxis <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>range <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>95</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+  <span class='op'>}</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># plot it</span>
-<span class='no'>by_country</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='trelliscope.html'>trelliscope</a></span>(<span class='st'>"gapminder"</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>300</span>)
+<span class='va'>by_country</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='trelliscope.html'>trelliscope</a></span><span class='op'>(</span><span class='st'>"gapminder"</span>, nrow <span class='op'>=</span> <span class='fl'>2</span>, ncol <span class='op'>=</span> <span class='fl'>7</span>, width <span class='op'>=</span> <span class='fl'>300</span><span class='op'>)</span>
 
 <span class='co'># example using mpg data</span>
-<span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='no'><a href='https://ggplot2.tidyverse.org/reference/mpg.html'>mpg</a></span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://tidyr.tidyverse.org/reference/nest.html'>nest</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> !<span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>one_of</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"manufacturer"</span>, <span class='st'>"class"</span>))) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>panel</span> <span class='kw'>=</span> <span class='fu'>map_plot</span>(<span class='no'>data</span>, <span class='kw'>function</span>(<span class='no'>x</span>) {
-    <span class='fu'><a href='https://rdrr.io/pkg/plotly/man/plot_ly.html'>plot_ly</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>x</span>, <span class='kw'>x</span> <span class='kw'>=</span> ~<span class='no'>hwy</span>, <span class='kw'>y</span> <span class='kw'>=</span> ~<span class='no'>cty</span>,
-      <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"scatter"</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"markers"</span>)
-  })) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='trelliscope.html'>trelliscope</a></span>(<span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"city_vs_highway_mpg"</span>)
-<span class='co'># }</span></div></pre>
+<span class='fu'>ggplot2</span><span class='fu'>::</span><span class='va'><a href='https://ggplot2.tidyverse.org/reference/mpg.html'>mpg</a></span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://tidyr.tidyverse.org/reference/nest.html'>nest</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='op'>!</span><span class='fu'><a href='https://tidyselect.r-lib.org/reference/one_of.html'>one_of</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"manufacturer"</span>, <span class='st'>"class"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>panel <span class='op'>=</span> <span class='fu'>map_plot</span><span class='op'>(</span><span class='va'>data</span>, <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>{</span>
+    <span class='fu'><a href='https://rdrr.io/pkg/plotly/man/plot_ly.html'>plot_ly</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>x</span>, x <span class='op'>=</span> <span class='op'>~</span><span class='va'>hwy</span>, y <span class='op'>=</span> <span class='op'>~</span><span class='va'>cty</span>,
+      type <span class='op'>=</span> <span class='st'>"scatter"</span>, mode <span class='op'>=</span> <span class='st'>"markers"</span><span class='op'>)</span>
+  <span class='op'>}</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='trelliscope.html'>trelliscope</a></span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"city_vs_highway_mpg"</span><span class='op'>)</span>
+<span class='co'># }</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -204,7 +205,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

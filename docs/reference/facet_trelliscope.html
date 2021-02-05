@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">trelliscopejs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
       </span>
     </div>
 
@@ -88,7 +88,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -105,7 +105,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/hafen/trelliscopejs/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -131,30 +131,30 @@
     <p>Facet Trelliscope</p>
     </div>
 
-    <pre class="usage"><span class='fu'>facet_trelliscope</span>(
-  <span class='no'>facets</span>,
-  <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>scales</span> <span class='kw'>=</span> <span class='st'>"same"</span>,
-  <span class='kw'>name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>group</span> <span class='kw'>=</span> <span class='st'>"common"</span>,
-  <span class='kw'>desc</span> <span class='kw'>=</span> <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>waiver</a></span>(),
-  <span class='kw'>md_desc</span> <span class='kw'>=</span> <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>waiver</a></span>(),
-  <span class='kw'>path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>500</span>,
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>500</span>,
-  <span class='kw'>state</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>jsonp</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>as_plotly</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>plotly_args</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>plotly_cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>split_sig</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>self_contained</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>thumb</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>auto_cog</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>split_layout</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>waiver</a></span>()
-)</pre>
+    <pre class="usage"><span class='fu'>facet_trelliscope</span><span class='op'>(</span>
+  <span class='va'>facets</span>,
+  nrow <span class='op'>=</span> <span class='fl'>1</span>,
+  ncol <span class='op'>=</span> <span class='fl'>1</span>,
+  scales <span class='op'>=</span> <span class='st'>"same"</span>,
+  name <span class='op'>=</span> <span class='cn'>NULL</span>,
+  group <span class='op'>=</span> <span class='st'>"common"</span>,
+  desc <span class='op'>=</span> <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>waiver</a></span><span class='op'>(</span><span class='op'>)</span>,
+  md_desc <span class='op'>=</span> <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>waiver</a></span><span class='op'>(</span><span class='op'>)</span>,
+  path <span class='op'>=</span> <span class='cn'>NULL</span>,
+  height <span class='op'>=</span> <span class='fl'>500</span>,
+  width <span class='op'>=</span> <span class='fl'>500</span>,
+  state <span class='op'>=</span> <span class='cn'>NULL</span>,
+  jsonp <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  as_plotly <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  plotly_args <span class='op'>=</span> <span class='cn'>NULL</span>,
+  plotly_cfg <span class='op'>=</span> <span class='cn'>NULL</span>,
+  split_sig <span class='op'>=</span> <span class='cn'>NULL</span>,
+  self_contained <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  thumb <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  auto_cog <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  split_layout <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  data <span class='op'>=</span> <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/waiver.html'>waiver</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -254,39 +254,40 @@
     <p>Note that <code>self_contained</code> is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://ggplot2.tidyverse.org'>ggplot2</a></span><span class='op'>)</span>
 
 <span class='co'># basically swap out facet_wrap for facet_trelliscope</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/qplot.html'>qplot</a></span>(<span class='no'>cty</span>, <span class='no'>hwy</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mpg</span>) +
-  <span class='fu'>facet_trelliscope</span>(~ <span class='no'>class</span> + <span class='no'>manufacturer</span>)
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/qplot.html'>qplot</a></span><span class='op'>(</span><span class='va'>cty</span>, <span class='va'>hwy</span>, data <span class='op'>=</span> <span class='va'>mpg</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>facet_trelliscope</span><span class='op'>(</span><span class='op'>~</span> <span class='va'>class</span> <span class='op'>+</span> <span class='va'>manufacturer</span><span class='op'>)</span>
 
 <span class='co'># not required, but if you set labels, these will be added as</span>
 <span class='co'># descriptions to the cognostics that are automatically computed</span>
-<span class='no'>mpg</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='set_labels.html'>set_labels</a></span>(<span class='no'>mpg</span>, <span class='no'>mpg_labels</span>)
+<span class='va'>mpg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='set_labels.html'>set_labels</a></span><span class='op'>(</span><span class='va'>mpg</span>, <span class='va'>mpg_labels</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/qplot.html'>qplot</a></span>(<span class='no'>cty</span>, <span class='no'>hwy</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mpg</span>) +
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>() +
-  <span class='fu'>facet_trelliscope</span>(~ <span class='no'>manufacturer</span> + <span class='no'>class</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>4</span>)
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/qplot.html'>qplot</a></span><span class='op'>(</span><span class='va'>cty</span>, <span class='va'>hwy</span>, data <span class='op'>=</span> <span class='va'>mpg</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>facet_trelliscope</span><span class='op'>(</span><span class='op'>~</span> <span class='va'>manufacturer</span> <span class='op'>+</span> <span class='va'>class</span>, nrow <span class='op'>=</span> <span class='fl'>2</span>, ncol <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
 
 <span class='co'># using plotly</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>plotly</span>)
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/qplot.html'>qplot</a></span>(<span class='no'>cty</span>, <span class='no'>hwy</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mpg</span>) +
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>() +
-  <span class='fu'>facet_trelliscope</span>(~ <span class='no'>manufacturer</span> + <span class='no'>class</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>as_plotly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://plotly-r.com'>plotly</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/qplot.html'>qplot</a></span><span class='op'>(</span><span class='va'>cty</span>, <span class='va'>hwy</span>, data <span class='op'>=</span> <span class='va'>mpg</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>facet_trelliscope</span><span class='op'>(</span><span class='op'>~</span> <span class='va'>manufacturer</span> <span class='op'>+</span> <span class='va'>class</span>, nrow <span class='op'>=</span> <span class='fl'>2</span>, ncol <span class='op'>=</span> <span class='fl'>4</span>, as_plotly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/qplot.html'>qplot</a></span>(<span class='no'>class</span>, <span class='no'>cty</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mpg</span>, <span class='kw'>geom</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"boxplot"</span>, <span class='st'>"jitter"</span>), <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) +
-  <span class='fu'>facet_trelliscope</span>(~ <span class='no'>class</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>800</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>200</span>,
-    <span class='kw'>state</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>sort</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='sort_spec.html'>sort_spec</a></span>(<span class='st'>"cty_mean"</span>)))) +
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/qplot.html'>qplot</a></span><span class='op'>(</span><span class='va'>class</span>, <span class='va'>cty</span>, data <span class='op'>=</span> <span class='va'>mpg</span>, geom <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"boxplot"</span>, <span class='st'>"jitter"</span><span class='op'>)</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>facet_trelliscope</span><span class='op'>(</span><span class='op'>~</span> <span class='va'>class</span>, ncol <span class='op'>=</span> <span class='fl'>7</span>, height <span class='op'>=</span> <span class='fl'>800</span>, width <span class='op'>=</span> <span class='fl'>200</span>,
+    state <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>sort <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='sort_spec.html'>sort_spec</a></span><span class='op'>(</span><span class='st'>"cty_mean"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>gapminder</span>)
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/qplot.html'>qplot</a></span>(<span class='no'>year</span>, <span class='no'>lifeExp</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>gapminder</span>) +
-  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/lims.html'>xlim</a></span>(<span class='fl'>1948</span>, <span class='fl'>2011</span>) + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/lims.html'>ylim</a></span>(<span class='fl'>10</span>, <span class='fl'>95</span>) + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>() +
-  <span class='fu'>facet_trelliscope</span>(~ <span class='no'>country</span> + <span class='no'>continent</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-    <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>300</span>, <span class='kw'>as_plotly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-    <span class='kw'>plotly_cfg</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>displayModeBar</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>))
-}</div></pre>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/jennybc/gapminder'>gapminder</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/qplot.html'>qplot</a></span><span class='op'>(</span><span class='va'>year</span>, <span class='va'>lifeExp</span>, data <span class='op'>=</span> <span class='va'>gapminder</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/lims.html'>xlim</a></span><span class='op'>(</span><span class='fl'>1948</span>, <span class='fl'>2011</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/lims.html'>ylim</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>95</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>facet_trelliscope</span><span class='op'>(</span><span class='op'>~</span> <span class='va'>country</span> <span class='op'>+</span> <span class='va'>continent</span>, nrow <span class='op'>=</span> <span class='fl'>2</span>, ncol <span class='op'>=</span> <span class='fl'>7</span>,
+    width <span class='op'>=</span> <span class='fl'>300</span>, as_plotly <span class='op'>=</span> <span class='cn'>TRUE</span>,
+    plotly_cfg <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>displayModeBar <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -302,7 +303,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
