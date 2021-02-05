@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">trelliscopejs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
       </span>
     </div>
 
@@ -46,7 +46,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -63,7 +63,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/hafen/trelliscopejs/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -91,7 +91,7 @@
     
     
 <p>Trelliscope is a visualization approach based on the idea of <a href="https://www.juiceanalytics.com/writing/better-know-visualization-small-multiples">“small multiples”</a> or Trellis Display, where data are split into groups and a plot is made for each group, with the resulting plots arranged in a grid. This approach is very simple yet is considered to be <a href="https://en.wikipedia.org/wiki/Small_multiple">“the best design solution for a wide range or problems in data presentation”</a>. Trelliscope makes small multiple displays come alive by providing the ability to interactively sort and filter the plots based on summary statistics computed for each group.</p>
-<p>The <strong>trelliscopejs</strong> R package is an interface for creating Trelliscope displays with the goal of providing methods that are convenient to use in traditional visual / analytical workflows. For example, the package provides methods that allow you to easily generate Trelliscope displays from ggplot2 or <a href="https://blog.rstudio.org/2016/09/15/tidyverse-1-0-0/">“tidy”</a> workflows.</p>
+<p>The <strong>trelliscopejs</strong> R package is an interface for creating Trelliscope displays with the goal of providing methods that are convenient to use in traditional visual / analytical workflows. For example, the package provides methods that allow you to easily generate Trelliscope displays from ggplot2 or <a href="https://blog.rstudio.com/2016/09/15/tidyverse-1-0-0/">“tidy”</a> workflows.</p>
 <p>At the core of the <strong>trelliscopejs</strong> is a JavaScript library, <a href="https://github.com/hafen/trelliscopejs-lib">trelliscopejs-lib</a>, which provides the interactive viewer for the displays, and the R package is an <a href="http://www.htmlwidgets.org/">htmlwidget</a> around this library, meaning that it is easy to share your displays whether through embedding in an RMarkdown document / notebook or simply sending the resulting html file to someone or hosting on the web.</p>
 <div id="getting-started" class="section level1">
 <h1 class="hasAnchor">
@@ -100,10 +100,12 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install <strong>trelliscopejs</strong> from CRAN with the following:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"trelliscopejs"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"trelliscopejs"</span><span class="op">)</span></code></pre></div>
 <p>To intall the latest development version:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="co"># install.packages("remotes") # if "remotes" is not already installed</span>
-<span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"hafen/trelliscopejs"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># install.packages("remotes") # if "remotes" is not already installed</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"hafen/trelliscopejs"</span><span class="op">)</span></code></pre></div>
 <p>Any other package that you see in this document that is not already installed along with <strong>trelliscopejs</strong> will be available on CRAN and can be installed with <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code>.</p>
 </div>
 </div>
@@ -112,11 +114,12 @@
 <a href="#ggplot2-interface-facet_trelliscope" class="anchor"></a>“ggplot2” Interface: facet_trelliscope</h1>
 <p>For ggplot2 users, the easiest way to get quick results with <strong>trelliscopejs</strong> is with the function <code><a href="../reference/facet_trelliscope.html">facet_trelliscope()</a></code>. If you are familiar with faceting in ggplot2 using <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap()</a></code>, you can easily transform your static faceted plot into an interactive one by swapping out <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap()</a></code> with <code><a href="../reference/facet_trelliscope.html">facet_trelliscope()</a></code>.</p>
 <p>To illustrate, let’s look at the gapminder dataset available in the <strong>gapminder</strong> package, which provides some population statistics about many countries in the world:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">trelliscopejs</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggplot2</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">gapminder</span>)
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hafen/trelliscopejs">trelliscopejs</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jennybc/gapminder">gapminder</a></span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">gapminder</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">gapminder</span><span class="op">)</span></code></pre></div>
 <pre><code>tibble [1,704 × 6] (S3: tbl_df/tbl/data.frame)
  $ country  : Factor w/ 142 levels "Afghanistan",..: 1 1 1 1 1 1 1 1 1 1 ...
  $ continent: Factor w/ 5 levels "Africa","Americas",..: 3 3 3 3 3 3 3 3 3 3 ...
@@ -125,20 +128,23 @@
  $ pop      : int [1:1704] 8425333 9240934 10267083 11537966 13079460 14880372 12881816 13867957 16317921 22227415 ...
  $ gdpPercap: num [1:1704] 779 821 853 836 740 ...</code></pre>
 <p>We might be interested looking at life expectancy vs. year for each country in Europe:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/qplot.html">qplot</a></span>(<span class="no">year</span>, <span class="no">lifeExp</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span>(<span class="no">gapminder</span>, <span class="no">continent</span> <span class="kw">==</span> <span class="st">"Europe"</span>)) +
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(~ <span class="no">country</span> + <span class="no">continent</span>) +
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/qplot.html">qplot</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">lifeExp</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">gapminder</span>, <span class="va">continent</span> <span class="op">==</span> <span class="st">"Europe"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">country</span> <span class="op">+</span> <span class="va">continent</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p><img src="trelliscopejs_files/figure-html/unnamed-chunk-2-1.png" width="1132.8"></p>
 <p>Now suppose we want to be able to see all countries:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/qplot.html">qplot</a></span>(<span class="no">year</span>, <span class="no">lifeExp</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">gapminder</span>) +
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span>(<span class="fl">1948</span>, <span class="fl">2011</span>) + <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">ylim</a></span>(<span class="fl">10</span>, <span class="fl">95</span>) + <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() +
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(~ <span class="no">country</span> + <span class="no">continent</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/qplot.html">qplot</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">lifeExp</span>, data <span class="op">=</span> <span class="va">gapminder</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span><span class="op">(</span><span class="fl">1948</span>, <span class="fl">2011</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">ylim</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">95</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">country</span> <span class="op">+</span> <span class="va">continent</span><span class="op">)</span></code></pre></div>
 <p><img src="trelliscopejs_files/figure-html/unnamed-chunk-3-1.png" width="1132.8"></p>
 <p>There are too many to show on a single plot. This is where we can turn to Trelliscope.</p>
 <p>To create the same plot with Trelliscope, swap <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap()</a></code> for the <strong>trelliscopejs</strong> function <code><a href="../reference/facet_trelliscope.html">facet_trelliscope()</a></code>:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/qplot.html">qplot</a></span>(<span class="no">year</span>, <span class="no">lifeExp</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">gapminder</span>) +
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span>(<span class="fl">1948</span>, <span class="fl">2011</span>) + <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">ylim</a></span>(<span class="fl">10</span>, <span class="fl">95</span>) + <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() +
-  <span class="fu"><a href="../reference/facet_trelliscope.html">facet_trelliscope</a></span>(~ <span class="no">country</span> + <span class="no">continent</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">7</span>, <span class="kw">width</span> <span class="kw">=</span> <span class="fl">300</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/qplot.html">qplot</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">lifeExp</span>, data <span class="op">=</span> <span class="va">gapminder</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">xlim</a></span><span class="op">(</span><span class="fl">1948</span>, <span class="fl">2011</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html">ylim</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">95</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="../reference/facet_trelliscope.html">facet_trelliscope</a></span><span class="op">(</span><span class="op">~</span> <span class="va">country</span> <span class="op">+</span> <span class="va">continent</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">7</span>, width <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
 <p>A simple change! The output will look something like this:</p>
 <div style="text-align: center;">
 <iframe width="850" height="600" src="https://hafen.github.io/trelliscopejs-demo/gapminder/" frameborder="0" allowfullscreen>
@@ -176,22 +182,23 @@ This example brings up a few more options for `facet_trelliscope()`. First, you 
 <div id="tidyverse-interface" class="section level1">
 <h1 class="hasAnchor">
 <a href="#tidyverse-interface" class="anchor"></a>“tidyverse” Interface</h1>
-<p>In addition to <code><a href="../reference/facet_trelliscope.html">facet_trelliscope()</a></code>, this package comes with a more generic <code><a href="../reference/trelliscope.html">trelliscope()</a></code> method that fits naturally into <a href="https://blog.rstudio.org/2016/09/15/tidyverse-1-0-0/">“tidy”</a> workflows involving dplyr / tidyr / purrr / etc.</p>
-<p>An emerging use case for analyzing data in the tidyverse is computing summaries, models, and other transformations for each group of a data set and storing the results as a data frame with one row per group, with columns of data frames containing the data for each group and possibly additional columns containing other derived data such as models, etc. A nice example of this is illustrated in “Many Models” section of <a href="http://r4ds.had.co.nz/many-models.html">R for Data Science</a>. That book chapter (and any necessary material preceding it) can be taken as prerequisite material to fully appreciate the visualization approach outlined in this section and fully be able to apply these techniques to your own problems. In particular, pay attention to the concepts of nested data frames and list-columns.</p>
-<p>The example in the <a href="http://r4ds.had.co.nz/many-models.html">“Many Models”</a> chapter uses the Gapminder data and illustrates grouping the data by country, nesting the data for each country into a new column of data frames, and then fitting a linear model of life expectancy vs. time for each group. In this example, to visualize the model results, the model residuals are un-nested and visualized in a single plot. This is a common visualization workflow: group the data, compute summaries or derived data for each group, pull all the results back together, and create a single visualization of the result. This is a good and useful thing to do, but additionally visualizing the detailed per-group data is invariably very enlightening. This is where Trelliscope comes in.</p>
+<p>In addition to <code><a href="../reference/facet_trelliscope.html">facet_trelliscope()</a></code>, this package comes with a more generic <code><a href="../reference/trelliscope.html">trelliscope()</a></code> method that fits naturally into <a href="https://blog.rstudio.com/2016/09/15/tidyverse-1-0-0/">“tidy”</a> workflows involving dplyr / tidyr / purrr / etc.</p>
+<p>An emerging use case for analyzing data in the tidyverse is computing summaries, models, and other transformations for each group of a data set and storing the results as a data frame with one row per group, with columns of data frames containing the data for each group and possibly additional columns containing other derived data such as models, etc. A nice example of this is illustrated in “Many Models” section of <a href="https://r4ds.had.co.nz/many-models.html">R for Data Science</a>. That book chapter (and any necessary material preceding it) can be taken as prerequisite material to fully appreciate the visualization approach outlined in this section and fully be able to apply these techniques to your own problems. In particular, pay attention to the concepts of nested data frames and list-columns.</p>
+<p>The example in the <a href="https://r4ds.had.co.nz/many-models.html">“Many Models”</a> chapter uses the Gapminder data and illustrates grouping the data by country, nesting the data for each country into a new column of data frames, and then fitting a linear model of life expectancy vs. time for each group. In this example, to visualize the model results, the model residuals are un-nested and visualized in a single plot. This is a common visualization workflow: group the data, compute summaries or derived data for each group, pull all the results back together, and create a single visualization of the result. This is a good and useful thing to do, but additionally visualizing the detailed per-group data is invariably very enlightening. This is where Trelliscope comes in.</p>
 <div id="gapminder-example" class="section level3">
 <h3 class="hasAnchor">
 <a href="#gapminder-example" class="anchor"></a>Gapminder example</h3>
 <p>Let’s set up a scenario in which we will produce a plot similar to the Gapminder plot we created using <code><a href="../reference/facet_trelliscope.html">facet_trelliscope()</a></code>, but using nested data frames and list-columns.</p>
 <p>We want to plot life expectancy vs. year by country. So first we will nest our data frame by country and continent using <code><a href="https://tidyr.tidyverse.org/reference/nest.html">tidyr::nest()</a></code> to obtain a data frame with one row per country and continent with each unique country’s data stored in a new column of nested data frames, <code>data</code>:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tidyr</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">purrr</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">gapminder</span>)
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://purrr.tidyverse.org">purrr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jennybc/gapminder">gapminder</a></span><span class="op">)</span>
 
-<span class="no">by_country</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">nest</a></span>(<span class="no">gapminder</span>, <span class="kw">data</span> <span class="kw">=</span> !<span class="fu"><a href="https://dplyr.tidyverse.org/reference/reexports.html">one_of</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"country"</span>, <span class="st">"continent"</span>)))
+<span class="va">by_country</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">nest</a></span><span class="op">(</span><span class="va">gapminder</span>, data <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/one_of.html">one_of</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"country"</span>, <span class="st">"continent"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
-<span class="no">by_country</span></pre></body></html></div>
+<span class="va">by_country</span></code></pre></div>
 <pre><code># A tibble: 142 x 3
    country     continent data             
    &lt;fct&gt;       &lt;fct&gt;     &lt;list&gt;           
@@ -208,13 +215,14 @@ This example brings up a few more options for `facet_trelliscope()`. First, you 
 # … with 132 more rows</code></pre>
 <p>We can now do all kinds of per-group operations by operating on the rows of this data frame or on elements of the columns of this data frame, and we can even attach these results as new columns of the data frame, allowing us to keep all per-group computations organized by group in a familiar data structure. For example, in “R for Data Science” takes this result and fits a model to each group using <code><a href="https://purrr.tidyverse.org/reference/map.html">purrr::map()</a></code>.</p>
 <p>Let’s go ahead and add the model fit as well:</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">country_model</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">df</span>)
-  <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="no">lifeExp</span> ~ <span class="no">year</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">df</span>)
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">country_model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">lifeExp</span> <span class="op">~</span> <span class="va">year</span>, data <span class="op">=</span> <span class="va">df</span><span class="op">)</span>
 
-<span class="no">by_country</span> <span class="kw">&lt;-</span> <span class="no">by_country</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">model</span> <span class="kw">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span>(<span class="no">data</span>, <span class="no">country_model</span>))
+<span class="va">by_country</span> <span class="op">&lt;-</span> <span class="va">by_country</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">country_model</span><span class="op">)</span><span class="op">)</span>
 
-<span class="no">by_country</span></pre></body></html></div>
+<span class="va">by_country</span></code></pre></div>
 <pre><code># A tibble: 142 x 4
    country     continent data              model 
    &lt;fct&gt;       &lt;fct&gt;     &lt;list&gt;            &lt;list&gt;
@@ -244,7 +252,8 @@ This example brings up a few more options for `facet_trelliscope()`. First, you 
 </ul>
 <p>These are all basically wrappers around the corresponding purrr functions (<code><a href="https://purrr.tidyverse.org/reference/map.html">purrr::map()</a></code>, <code><a href="https://purrr.tidyverse.org/reference/map2.html">purrr::map2()</a></code>, etc.) that indicate that an output is a list of plots. These functions can be used to operate over columns of a data frame to apply a user-defined plotting function to each group. Your plot function can return a wide variety of plot objects, including ggplot2, lattice, and htmlwidgets.</p>
 <p>Let’s look at an example. With our nested Gapminder data, let’s use <code><a href="../reference/map2_plot.html">map2_plot()</a></code> to add a plot column to our data set which plots both the raw data and the fitted line. <code><a href="../reference/map2_plot.html">map2_plot()</a></code> allows us to specify two columns (we’ll want to use the columns <code>data</code> and <code>model</code>) as input to our plot function, whereas we can only specify one column with <code><a href="../reference/map_plot.html">map_plot()</a></code>. In this example we use the <a href="https://plotly-r.com">plotly</a> package, which is an htmlwidget, to create the plots.</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">plotly</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://plotly-r.com">plotly</a></span><span class="op">)</span></code></pre></div>
 <pre><code>
 Attaching package: 'plotly'</code></pre>
 <pre><code>The following object is masked from 'package:ggplot2':
@@ -256,23 +265,24 @@ Attaching package: 'plotly'</code></pre>
 <pre><code>The following object is masked from 'package:graphics':
 
     layout</code></pre>
-<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">trelliscopejs</span>)
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hafen/trelliscopejs">trelliscopejs</a></span><span class="op">)</span>
 
-<span class="no">country_plot</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">data</span>, <span class="no">model</span>) {
-  <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/plot_ly.html">plot_ly</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">data</span>, <span class="kw">x</span> <span class="kw">=</span> ~<span class="no">year</span>, <span class="kw">y</span> <span class="kw">=</span> ~<span class="no">lifeExp</span>,
-    <span class="kw">type</span> <span class="kw">=</span> <span class="st">"scatter"</span>, <span class="kw">mode</span> <span class="kw">=</span> <span class="st">"markers"</span>, <span class="kw">name</span> <span class="kw">=</span> <span class="st">"data"</span>) <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/add_trace.html">add_trace</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">data</span>, <span class="kw">x</span> <span class="kw">=</span> ~<span class="no">year</span>, <span class="kw">y</span> <span class="kw">=</span> ~<span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(<span class="no">model</span>),
-      <span class="kw">mode</span> <span class="kw">=</span> <span class="st">"lines"</span>, <span class="kw">name</span> <span class="kw">=</span> <span class="st">"lm"</span>) <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/layout.html">layout</a></span>(
-      <span class="kw">xaxis</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">range</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1948</span>, <span class="fl">2011</span>)),
-      <span class="kw">yaxis</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">range</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">10</span>, <span class="fl">95</span>)),
-      <span class="kw">showlegend</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-}
+<span class="va">country_plot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">model</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/plot_ly.html">plot_ly</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, x <span class="op">=</span> <span class="op">~</span><span class="va">year</span>, y <span class="op">=</span> <span class="op">~</span><span class="va">lifeExp</span>,
+    type <span class="op">=</span> <span class="st">"scatter"</span>, mode <span class="op">=</span> <span class="st">"markers"</span>, name <span class="op">=</span> <span class="st">"data"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/add_trace.html">add_trace</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, x <span class="op">=</span> <span class="op">~</span><span class="va">year</span>, y <span class="op">=</span> <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>,
+      mode <span class="op">=</span> <span class="st">"lines"</span>, name <span class="op">=</span> <span class="st">"lm"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/layout.html">layout</a></span><span class="op">(</span>
+      xaxis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1948</span>, <span class="fl">2011</span><span class="op">)</span><span class="op">)</span>,
+      yaxis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">95</span><span class="op">)</span><span class="op">)</span>,
+      showlegend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="op">}</span>
 
-<span class="no">by_country</span> <span class="kw">&lt;-</span> <span class="no">by_country</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/reexports.html">mutate</a></span>(<span class="kw">data_plot</span> <span class="kw">=</span> <span class="fu"><a href="../reference/map2_plot.html">map2_plot</a></span>(<span class="no">data</span>, <span class="no">model</span>, <span class="no">country_plot</span>))
+<span class="va">by_country</span> <span class="op">&lt;-</span> <span class="va">by_country</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>data_plot <span class="op">=</span> <span class="fu"><a href="../reference/map2_plot.html">map2_plot</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">model</span>, <span class="va">country_plot</span><span class="op">)</span><span class="op">)</span>
 
-<span class="no">by_country</span></pre></body></html></div>
+<span class="va">by_country</span></code></pre></div>
 <pre><code># A tibble: 142 x 5
    country     continent data              model  data_plot 
    &lt;fct&gt;       &lt;fct&gt;     &lt;list&gt;            &lt;list&gt; &lt;trllscp_&gt;
@@ -289,8 +299,9 @@ Attaching package: 'plotly'</code></pre>
 # … with 132 more rows</code></pre>
 <p>The <code>by_country</code> data frame now has a new column, <code>data_plot</code> that contains the plot object for each group. In addition to storing nested data in our data frame, we are storing plots!</p>
 <p>We can now pipe this into a call to <code><a href="../reference/trelliscope.html">trelliscope()</a></code>:</p>
-<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="no">by_country</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/trelliscope.html">trelliscope</a></span>(<span class="kw">name</span> <span class="kw">=</span> <span class="st">"life_expectancy"</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">4</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">by_country</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/trelliscope.html">trelliscope</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"life_expectancy"</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
 <p>The output will look like this:</p>
 <div style="text-align: center;">
 <iframe width="850" height="600" src="https://hafen.github.io/trelliscopejs-demo/gap1/" frameborder="0" allowfullscreen>
@@ -308,25 +319,28 @@ Attaching package: 'plotly'</code></pre>
 <p><strong>trelliscopejs</strong> tries to make the specification of cognostics as easy as possible. As you have noticed in tidy example above, any available atomic variables in a data frame are automatically turned into cognostics. Also, note that since the original data is preserved in the nested <code>data</code> column, <code><a href="../reference/trelliscope.html">trelliscope()</a></code> detects this and computes automatic cognostics for the variables in that column. Currently these automatic summaries are simply means if the variable is numeric, and the value of any categorical variable that is fixed within each group. The same is done for <code><a href="../reference/facet_trelliscope.html">facet_trelliscope()</a></code> as you may have noticed above. We will be adding more automatic cognostics in the future, particularly geared toward extracting cognostics based on the context of what is being plotted (see “upcoming work” below).</p>
 <p>The <strong>trelliscopejs</strong> package has some convenience functions for specifying cognostics that help describe their behavior in the Trelliscope viewer. One of the most useful attributes is a cognostics <em>description</em> that helps the user navigating the displays know more about what the summary statistics that they are looking at mean.</p>
 <p>Let’s add a new cognostic to our gapminder data frame that illustrates the use of <code><a href="../reference/cog.html">cog()</a></code>. Suppose we wish to be able to organize the panels of the display with respect to a goodness-of-fit measure of our linear model. Let’s add a new column, <code>resid_mad</code> that computes the median absolute deviation of the residuals for each country’s fit.</p>
-<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">by_country</span> <span class="kw">&lt;-</span> <span class="no">by_country</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/reexports.html">mutate</a></span>(<span class="kw">resid_mad</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cog.html">cog</a></span>(
-    <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl</a></span>(<span class="no">model</span>, ~ <span class="fu"><a href="https://rdrr.io/r/stats/mad.html">mad</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span>(<span class="no">.x</span>))),
-    <span class="kw">desc</span> <span class="kw">=</span> <span class="st">"median absolute deviation of residuals"</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">by_country</span> <span class="op">&lt;-</span> <span class="va">by_country</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>resid_mad <span class="op">=</span> <span class="fu"><a href="../reference/cog.html">cog</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl</a></span><span class="op">(</span><span class="va">model</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/mad.html">mad</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
+    desc <span class="op">=</span> <span class="st">"median absolute deviation of residuals"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>The variable <code>resid_mad</code> will now be available in a new Trelliscope display we create with this data, and the description “median absolute deviation of residuals” will be used in the viewer to help users be oriented with what this variable means. Note that we could have left out the <code><a href="../reference/cog.html">cog()</a></code> function and the variable would still be available in the display, just without the description.</p>
 <p>You can look at the documentation for <code><a href="../reference/cog.html">cog()</a></code> to see what other options are available.</p>
 </div>
 <div id="customizing-displays-with-data-frame-operations" class="section level3">
 <h3 class="hasAnchor">
 <a href="#customizing-displays-with-data-frame-operations" class="anchor"></a>Customizing displays with data frame operations</h3>
-<p>Note that we can use data frame operations such as dplyr’s <code><a href="https://rdrr.io/pkg/plotly/man/reexports.html">arrange()</a></code> and <code><a href="https://rdrr.io/pkg/plotly/man/reexports.html">filter()</a></code> prior to calling <code><a href="../reference/trelliscope.html">trelliscope()</a></code> to customize Trelliscope displays.</p>
+<p>Note that we can use data frame operations such as dplyr’s <code><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange()</a></code> and <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> prior to calling <code><a href="../reference/trelliscope.html">trelliscope()</a></code> to customize Trelliscope displays.</p>
 <p>For example, I might want the default sort order of panels to be by <code>resid_mad</code> from high to low. I can simply order the data frame and pass the result into <code><a href="../reference/trelliscope.html">trelliscope()</a></code> to achieve this effect:</p>
-<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="no">by_country</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/reexports.html">arrange</a></span>(-<span class="no">resid_mad</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/trelliscope.html">trelliscope</a></span>(<span class="kw">name</span> <span class="kw">=</span> <span class="st">"by_country_lm"</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">4</span>)</pre></body></html></div>
-<p>Or suppose I only want to make a display for the country of Africa. I can use <code><a href="https://rdrr.io/pkg/plotly/man/reexports.html">filter()</a></code> to keep records only for Africa and pass this result to <code><a href="../reference/trelliscope.html">trelliscope()</a></code>:</p>
-<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="no">by_country</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/reexports.html">filter</a></span>(<span class="no">continent</span> <span class="kw">==</span> <span class="st">"Africa"</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/trelliscope.html">trelliscope</a></span>(<span class="kw">name</span> <span class="kw">=</span> <span class="st">"by_country_africa_lm"</span>, <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">4</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">by_country</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="op">-</span><span class="va">resid_mad</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/trelliscope.html">trelliscope</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"by_country_lm"</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
+<p>Or suppose I only want to make a display for the country of Africa. I can use <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> to keep records only for Africa and pass this result to <code><a href="../reference/trelliscope.html">trelliscope()</a></code>:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">by_country</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">continent</span> <span class="op">==</span> <span class="st">"Africa"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/trelliscope.html">trelliscope</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"by_country_africa_lm"</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="working-with-displays" class="section level1">
@@ -348,7 +362,7 @@ Attaching package: 'plotly'</code></pre>
 <h2 class="hasAnchor">
 <a href="#embedding-sharing" class="anchor"></a>Embedding / sharing</h2>
 <p>While all of the examples so far have created a single application that fills the window of your viewer pane or web browser, you can embed multiple trelliscope displays inside of RMarkdown documents or RMarkdown Notebooks. When using <strong>trelliscopejs</strong> in RMarkdown documents, each display is embedded within the flow of the document (and dimensions can be controlled in the usual way), but an additional “fullscreen” button appears in the bottom right corner allowing toggling between full window mode. In RMarkdown Notebooks, however, you do not get the fullscreen option because Notebooks embed htmlwidgets as iframes rather than as an integrated part of the page.</p>
-<p><strong>trelliscopejs</strong> displays are also easy to share as standalone apps on the web through Github or a simple web server. For example, some of the examples from this document have been made available through Github (see <a href="http://hafen.github.io/trelliscopejs-demo/housing/">here</a>, <a href="http://hafen.github.io/trelliscopejs-demo/gapminder/">here</a>, and <a href="http://hafen.github.io/trelliscopejs-demo/mpg/">here</a>).</p>
+<p><strong>trelliscopejs</strong> displays are also easy to share as standalone apps on the web through Github or a simple web server. For example, some of the examples from this document have been made available through Github (see <a href="https://hafen.github.io/trelliscopejs-demo/housing/">here</a>, <a href="https://hafen.github.io/trelliscopejs-demo/gapminder/">here</a>, and <a href="https://hafen.github.io/trelliscopejs-demo/mpg/">here</a>).</p>
 </div>
 <div id="low-level-functions" class="section level2">
 <h2 class="hasAnchor">
@@ -366,47 +380,47 @@ Attaching package: 'plotly'</code></pre>
 <p>While the power of small multiples often lies in making rapid comparisons across many panels, it can also be useful to study individual subsets of data over a large space of subsets. A good example of this is with data available in the <a href="https://github.com/hafen/housingData">“housingData”</a> package.</p>
 <p>This package has a dataset, “housing” that gives the monthly median list and sold price for residential homes by US county, provided by Zillow. Let’s take a look at the median list price over time by county.</p>
 <p>Here, we are going to compute our own custom summary “cognostics”, including the slope of a fitted line, the median list and sold price, the number of non-NA observations, and a special “href” cognostic, which will provide a link to Zillow showing the homes for sale in the county.</p>
-<p>For this one I would recommend using <a href="http://hafen.github.io/rbokeh/">rbokeh</a> or plotly over ggplot2 simply because of the time it takes to generate the panels with ggplot2.</p>
-<div class="sourceCode" id="cb23"><html><body><pre class="r">library(housingData)
-housing$state &lt;- as.character(housing$state)
-housing$county &lt;- as.character(housing$county)
-
-slope_fn &lt;- function(x, y)
-  coef(lm(y ~ x))[2]
-
-d &lt;- nest(housing, data = !one_of(c("county", "state"))
-
-d &lt;- d %&gt;%
-  mutate(
-    cogs = map(data, function(x, state, county) {
-      tibble(
-        slope = slope_fn(x$time, x$medListPriceSqft),
-        mean_list = mean(x$medListPriceSqft, na.rm = TRUE),
-        mean_sold = mean(x$medSoldPriceSqft, na.rm = TRUE),
-        n_obs = length(which(!is.na(x$medListPriceSqft)))
-      )
-    }),
-    zillow_link = sprintf("http://www.zillow.com/homes/%s_rb/",
-      gsub(" ", "-", paste(county, state)))
-  ) %&gt;%
-  unnest(cogs) %&gt;%
-  filter(n_obs &gt; 1)
-
-d &lt;- d %&gt;%
-  mutate(
-    panel = map_plot(data, function(x) {
-      plot_ly(data = x, x = ~time, y = ~medListPriceSqft,
-        type = "scatter", mode = "markers") %&gt;%
-        layout(
-          xaxis = list(title = "time"),
-          yaxis = list(title = "median list price / sq ft"))
-    })
-  )
-
-d %&gt;%
-  trelliscope(name = "list_vs_time",
-    desc = "monthly median list price vs. time for 2984 US counties from 2008–2016",
-    nrow = 2, ncol = 4)</pre></body></html></div>
+<p>For this one I would recommend using <a href="https://hafen.github.io/rbokeh/">rbokeh</a> or plotly over ggplot2 simply because of the time it takes to generate the panels with ggplot2.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">library</span>(housingData)</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2">housing<span class="op">$</span>state &lt;-<span class="st"> </span><span class="kw">as.character</span>(housing<span class="op">$</span>state)</a>
+<a class="sourceLine" id="cb23-3" data-line-number="3">housing<span class="op">$</span>county &lt;-<span class="st"> </span><span class="kw">as.character</span>(housing<span class="op">$</span>county)</a>
+<a class="sourceLine" id="cb23-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb23-5" data-line-number="5">slope_fn &lt;-<span class="st"> </span><span class="cf">function</span>(x, y)</a>
+<a class="sourceLine" id="cb23-6" data-line-number="6">  <span class="kw">coef</span>(<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x))[<span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb23-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb23-8" data-line-number="8">d &lt;-<span class="st"> </span><span class="kw">nest</span>(housing, <span class="dt">data =</span> <span class="op">!</span><span class="kw">one_of</span>(<span class="kw">c</span>(<span class="st">"county"</span>, <span class="st">"state"</span>))</a>
+<a class="sourceLine" id="cb23-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb23-10" data-line-number="10">d &lt;-<span class="st"> </span>d <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-11" data-line-number="11"><span class="st">  </span><span class="kw">mutate</span>(</a>
+<a class="sourceLine" id="cb23-12" data-line-number="12">    <span class="dt">cogs =</span> <span class="kw">map</span>(data, <span class="cf">function</span>(x, state, county) {</a>
+<a class="sourceLine" id="cb23-13" data-line-number="13">      <span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb23-14" data-line-number="14">        <span class="dt">slope =</span> <span class="kw">slope_fn</span>(x<span class="op">$</span>time, x<span class="op">$</span>medListPriceSqft),</a>
+<a class="sourceLine" id="cb23-15" data-line-number="15">        <span class="dt">mean_list =</span> <span class="kw">mean</span>(x<span class="op">$</span>medListPriceSqft, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb23-16" data-line-number="16">        <span class="dt">mean_sold =</span> <span class="kw">mean</span>(x<span class="op">$</span>medSoldPriceSqft, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb23-17" data-line-number="17">        <span class="dt">n_obs =</span> <span class="kw">length</span>(<span class="kw">which</span>(<span class="op">!</span><span class="kw">is.na</span>(x<span class="op">$</span>medListPriceSqft)))</a>
+<a class="sourceLine" id="cb23-18" data-line-number="18">      )</a>
+<a class="sourceLine" id="cb23-19" data-line-number="19">    }),</a>
+<a class="sourceLine" id="cb23-20" data-line-number="20">    <span class="dt">zillow_link =</span> <span class="kw">sprintf</span>(<span class="st">"http://www.zillow.com/homes/%s_rb/"</span>,</a>
+<a class="sourceLine" id="cb23-21" data-line-number="21">      <span class="kw">gsub</span>(<span class="st">" "</span>, <span class="st">"-"</span>, <span class="kw">paste</span>(county, state)))</a>
+<a class="sourceLine" id="cb23-22" data-line-number="22">  ) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-23" data-line-number="23"><span class="st">  </span><span class="kw">unnest</span>(cogs) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-24" data-line-number="24"><span class="st">  </span><span class="kw">filter</span>(n_obs <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb23-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb23-26" data-line-number="26">d &lt;-<span class="st"> </span>d <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-27" data-line-number="27"><span class="st">  </span><span class="kw">mutate</span>(</a>
+<a class="sourceLine" id="cb23-28" data-line-number="28">    <span class="dt">panel =</span> <span class="kw">map_plot</span>(data, <span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb23-29" data-line-number="29">      <span class="kw">plot_ly</span>(<span class="dt">data =</span> x, <span class="dt">x =</span> <span class="op">~</span>time, <span class="dt">y =</span> <span class="op">~</span>medListPriceSqft,</a>
+<a class="sourceLine" id="cb23-30" data-line-number="30">        <span class="dt">type =</span> <span class="st">"scatter"</span>, <span class="dt">mode =</span> <span class="st">"markers"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-31" data-line-number="31"><span class="st">        </span><span class="kw">layout</span>(</a>
+<a class="sourceLine" id="cb23-32" data-line-number="32">          <span class="dt">xaxis =</span> <span class="kw">list</span>(<span class="dt">title =</span> <span class="st">"time"</span>),</a>
+<a class="sourceLine" id="cb23-33" data-line-number="33">          <span class="dt">yaxis =</span> <span class="kw">list</span>(<span class="dt">title =</span> <span class="st">"median list price / sq ft"</span>))</a>
+<a class="sourceLine" id="cb23-34" data-line-number="34">    })</a>
+<a class="sourceLine" id="cb23-35" data-line-number="35">  )</a>
+<a class="sourceLine" id="cb23-36" data-line-number="36"></a>
+<a class="sourceLine" id="cb23-37" data-line-number="37">d <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb23-38" data-line-number="38"><span class="st">  </span><span class="kw">trelliscope</span>(<span class="dt">name =</span> <span class="st">"list_vs_time"</span>,</a>
+<a class="sourceLine" id="cb23-39" data-line-number="39">    <span class="dt">desc =</span> <span class="st">"monthly median list price vs. time for 2984 US counties from 2008–2016"</span>,</a>
+<a class="sourceLine" id="cb23-40" data-line-number="40">    <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">ncol =</span> <span class="dv">4</span>)</a></code></pre></div>
 <p>Here is the resulting display:</p>
 <div style="text-align: center;">
 <iframe width="850" height="600" src="https://hafen.github.io/trelliscopejs-demo/housing/" frameborder="0" allowfullscreen>
@@ -424,8 +438,8 @@ d %&gt;%
 <h1 class="hasAnchor">
 <a href="#trelliscopejs-lib" class="anchor"></a>trelliscopejs-lib</h1>
 <p><strong>trelliscopejs</strong> is an <a href="http://www.htmlwidgets.org/">htmlwidget</a> interface to the <a href="https://www.npmjs.com/package/trelliscopejs-lib">trelliscopejs-lib</a> JavaScript library. While this is a (probably) rare example of an htmlwidget where both the JavaScript and R libraries are entirely written and maintained by the same entity, trelliscopejs-lib is designed to be language-agnostic, meaning that for a new language to provide a binding to trelliscopejs-lib, it simply needs to provide a JSON specification that trelliscopejs-lib knows how to handle. The schema for this spec is settling in, but is still subject to change. More documentation will be provided as demand necessitates.</p>
-<p>For those who are interested, trelliscopejs-lib is written using <a href="https://facebook.github.io/react/">React</a>, <a href="http://redux.js.org/">redux</a>, and <a href="https://webpack.github.io/">Webpack</a>. Other major components include <a href="http://www.material-ui.com/#/">material-ui</a> and <a href="https://www.npmjs.com/package/crossfilter2">crossfilter</a>, and <a href="https://d3js.org/">d3</a>.</p>
-<p>The library is available on <a href="https://www.npmjs.com/package/trelliscopejs-lib">npm</a> and therefore over CDN using <a href="http://unpkg.com/">unpkg</a>. All dependencies, fonts, css, etc. are bundled into the library and it weighs in at a little over 1MB.</p>
+<p>For those who are interested, trelliscopejs-lib is written using <a href="https://reactjs.org/">React</a>, <a href="https://redux.js.org/">redux</a>, and <a href="https://webpack.github.io/">Webpack</a>. Other major components include <a href="https://material-ui.com/">material-ui</a> and <a href="https://www.npmjs.com/package/crossfilter2">crossfilter</a>, and <a href="https://d3js.org/">d3</a>.</p>
+<p>The library is available on <a href="https://www.npmjs.com/package/trelliscopejs-lib">npm</a> and therefore over CDN using <a href="https://unpkg.com/">unpkg</a>. All dependencies, fonts, css, etc. are bundled into the library and it weighs in at a little over 1MB.</p>
 <div id="embedding-trelliscopejs-apps" class="section level3">
 <h3 class="hasAnchor">
 <a href="#embedding-trelliscopejs-apps" class="anchor"></a>Embedding trelliscopejs apps</h3>
@@ -464,7 +478,7 @@ d %&gt;%
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -4,7 +4,7 @@ utils::globalVariables(c(".", "x", "y", "label"))
 #'
 #' Create interactive Trelliscope displays
 #'
-#' \url{http://hafen.github.io/trelliscopejs/}
+#' \url{https://hafen.github.io/trelliscopejs/}
 #'
 #' @name trelliscopejs-package
 #' @examples

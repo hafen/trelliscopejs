@@ -24,16 +24,16 @@ devtools::install_github("hafen/trelliscopejs")
 
 ## Demos
 
-- [Gapminder](http://hafen.github.io/trelliscopejs-demo/gapminder)
-- [Gapminder with Plotly panels](http://hafen.github.io/trelliscopejs-demo/gapminder_plotly)
-- [Monthly U.S. home prices by county](http://hafen.github.io/trelliscopejs-demo/housing)
-- [Pokemon](http://hafen.github.io/trelliscopejs-demo/pokemon)
+- [Gapminder](https://hafen.github.io/trelliscopejs-demo/gapminder/)
+- [Gapminder with Plotly panels](https://hafen.github.io/trelliscopejs-demo/gapminder_plotly/)
+- [Monthly U.S. home prices by county](https://hafen.github.io/trelliscopejs-demo/housing/)
+- [Pokemon](https://hafen.github.io/trelliscopejs-demo/pokemon/)
 
 ## Examples
 
 Here is a simple example using the ggplot2 interface. Using trelliscopejs in this way is as easy as swapping `facet_wrap()` with `facet_trelliscope()` and specifying some additional options.
 
-Please see the [package vignettes](https://hafen.github.io/trelliscopejs) for more.
+Please see the [package vignettes](https://hafen.github.io/trelliscopejs/) for more.
 
 ```r
 library(trelliscopejs)
