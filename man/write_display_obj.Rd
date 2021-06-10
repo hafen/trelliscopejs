@@ -17,6 +17,7 @@ write_display_obj(
   inputs = NULL,
   md_desc = "",
   state = NULL,
+  google_analytics_id = NULL,
   views = NULL,
   jsonp = TRUE,
   split_sig = NULL,
@@ -54,6 +55,8 @@ write_display_obj(
 \item{md_desc}{optional string of markdown that will be shown in the viewer for additional context about the display}
 
 \item{state}{the initial state the display will open in}
+
+\item{google_analytics_id}{optional string specifying Google Analytics ID}
 
 \item{views}{an optional list of pre-specified views of the display (experimental)}
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/input_cogs.R
 \name{input_cogs}
 \alias{input_cogs}
-\title{Specify a collection of input cognostics}
+\title{Specify a collection of input cognostics to be stored in browser localStorage}
 \usage{
 input_cogs(..., feedback_email = NULL, extra_cogs = NULL)
 }
@@ -15,5 +15,5 @@ input_cogs(..., feedback_email = NULL, extra_cogs = NULL)
 \code{\link{input_text}}}
 }
 \description{
-Specify a collection of input cognostics
+Specify a collection of input cognostics to be stored in browser localStorage
 }

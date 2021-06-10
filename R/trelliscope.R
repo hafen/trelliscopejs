@@ -20,6 +20,7 @@
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
 #' @param require_token require a special token for all displays to be visible (experimental)
+#' @param google_analytics_id optional string specifying Google Analytics ID
 #' @param id set a hard-coded ID for this app (do not set this if the display will be part of a larger web page)
 #' @param order an integer indicating the order that the display should appear in if using multiple displays
 #' @param disclaimer an optional string of html to include as a disclaimer for the set of displays
@@ -28,6 +29,7 @@
 #' @export
 trelliscope <- function(x, name, group = "common", panel_col = NULL,
   desc = "", md_desc = "", path, height = 500, width = 500, inputs = NULL,
+  google_analytics_id = NULL,
   auto_cog = FALSE, state = NULL, views = NULL,
   nrow = 1, ncol = 1, jsonp = TRUE, split_sig = NULL,
   self_contained = FALSE,
@@ -38,7 +40,8 @@ trelliscope <- function(x, name, group = "common", panel_col = NULL,
 #' @export
 trelliscope.data.frame <- function(
   x, name, group = "common", panel_col = NULL,
-  desc = "", md_desc = "", path = NULL, height = 500, width = 500, inputs = NULL,
+  desc = "", md_desc = "", path = NULL, height = 500, width = 500,
+  inputs = NULL, google_analytics_id = NULL,
   auto_cog = FALSE, state = NULL, views = NULL, nrow = 1, ncol = 1,
   jsonp = TRUE, split_sig = NULL, self_contained = FALSE,
   thumb = FALSE, require_token = FALSE, id = NULL, order = 1,
@@ -163,7 +166,8 @@ trelliscope.data.frame <- function(
     desc = desc,
     height = height,
     width = width,
-    inputs = inputs,
+    inputs = params$inputs,
+    google_analytics_id = google_analytics_id,
     md_desc = md_desc,
     state = params$state,
     jsonp = params$jsonp,

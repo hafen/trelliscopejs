@@ -24,6 +24,7 @@ facet_trelliscope(
   plotly_args = NULL,
   plotly_cfg = NULL,
   split_sig = NULL,
+  google_analytics_id = NULL,
   self_contained = FALSE,
   thumb = TRUE,
   require_token = FALSE,
@@ -73,6 +74,8 @@ facet_trelliscope(
 \item{plotly_cfg}{optional named list of arguments to send to plotly's \code{config} method}
 
 \item{split_sig}{optional string that specifies the "signature" of the data splitting. If not specified, this is calculated as the md5 hash of the sorted unique facet variables. This is used to identify "related displays" - different displays that are based on the same faceting scheme. This parameter should only be specified manually if a display's faceting is mostly similar to another display's.}
+
+\item{google_analytics_id}{optional string specifying Google Analytics ID}
 
 \item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
 

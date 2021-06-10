@@ -24,6 +24,7 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
 #' @param require_token require a special token for all displays to be visible (experimental)
+#' @param google_analytics_id optional string specifying Google Analytics ID
 #' @param id set a hard-coded ID for this app (do not set this if the display will be part of a larger web page)
 #' @param order an integer indicating the order that the display should appear in if using multiple displays
 #' @param disclaimer an optional string of html to include as a disclaimer for the set of displays
@@ -42,6 +43,7 @@ facet_trelliscope <- function(
   height = 500, width = 500, inputs = NULL,
   state = NULL, views = NULL, jsonp = TRUE, as_plotly = FALSE,
   plotly_args = NULL, plotly_cfg = NULL, split_sig = NULL,
+  google_analytics_id = NULL,
   self_contained = FALSE, thumb = TRUE, require_token = FALSE, id = NULL,
   order = 1, disclaimer = FALSE, auto_cog = FALSE, split_layout = FALSE,
   data = ggplot2::waiver()
@@ -73,6 +75,7 @@ facet_trelliscope <- function(
     split_sig = split_sig,
     path = path,
     self_contained = self_contained,
+    google_analytics_id = google_analytics_id,
     nrow = nrow,
     ncol = ncol,
     scales = scales,
@@ -96,7 +99,7 @@ facet_trelliscope <- function(
 ggplot_add.facet_trelliscope <- function(object, plot, object_name) {
   attr(plot, "trelliscope") <- object[
     c("facets", "facet_cols", "name", "group",
-      "desc", "md_desc", "height", "width", "inputs", "state", "jsonp", "self_contained",
+      "desc", "md_desc", "height", "width", "inputs", "state", "jsonp", "self_contained", "google_analytics_id",
       "path", "state", "nrow", "ncol", "scales", "thumb", "as_plotly",
       "split_sig", "plotly_args", "plotly_cfg", "auto_cog", "split_layout",
       "id", "disclaimer", "data", "views")]
@@ -322,6 +325,7 @@ print.facet_trelliscope <- function(x, ...) {
     height = attrs$height,
     width = attrs$width,
     inputs = params$inputs,
+    google_analytics_id = attrs$google_analytics_id,
     md_desc = attrs$md_desc,
     state = params$state,
     jsonp = params$jsonp,

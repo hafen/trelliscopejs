@@ -169,6 +169,7 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @param height height in pixels of each panel
 #' @param width width in pixels of each panel
 #' @param inputs optional set of input specifications (using \code{\link{input_cogs}}) to allow user input for each panel
+#' @param google_analytics_id optional string specifying Google Analytics ID
 #' @param md_desc optional string of markdown that will be shown in the viewer for additional context about the display
 #' @param state the initial state the display will open in
 #' @param views an optional list of pre-specified views of the display (experimental)
@@ -186,7 +187,8 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @export
 write_display_obj <- function(
   cogdf, panel_example, base_path, id, name, group = "common",
-  desc = "", height = 500, width = 500, inputs = NULL, md_desc = "", state = NULL,
+  desc = "", height = 500, width = 500, inputs = NULL, md_desc = "",
+  state = NULL, google_analytics_id = NULL,
   views = NULL, jsonp = TRUE, split_sig = NULL, panel_img_col = NULL, 
   self_contained = FALSE, thumb = TRUE, split_layout = FALSE,
   split_aspect = NULL, has_legend = FALSE, order = 1, pb = NULL
@@ -254,8 +256,11 @@ write_display_obj <- function(
     order = order,
     has_legend = has_legend,
     has_inputs = !is.null(inputs),
+    input_type = attr(inputs, "input_type"),
     input_email = attr(inputs, "feedback_email"),
     input_csv_vars = attr(inputs, "input_csv_vars"),
+    input_api = attr(inputs, "input_api"),
+    gaID = google_analytics_id,
     split_layout = split_layout,
     split_aspect = split_aspect,
     keySig = key_sig, # nolint
