@@ -1,6 +1,10 @@
 get_png_units <- function(width, height, orig_width = width, res = 72,
   base_point_size = 12, pixelratio = 2) {
 
+  width <- as.numeric(gsub("px", "", width))
+  height <- as.numeric(gsub("px", "", height))
+  orig_width <- as.numeric(gsub("px", "", orig_width))
+
   # need to convert unit to pixels
   # need to have 'fac' factor if coming from unit
   width_is_unit <- height_is_unit <- FALSE
