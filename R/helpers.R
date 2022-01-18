@@ -91,6 +91,8 @@ is_in_shiny <- function() {
     silent = TRUE)
   if (!inherits(tmp, "try-error") && !is.null(tmp))
     res <- TRUE
+  if (is.null(res))
+    res <- FALSE
   res
 }
 
