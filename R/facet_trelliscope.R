@@ -30,6 +30,8 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param disclaimer an optional string of html to include as a disclaimer for the set of displays
 #' @param auto_cog should auto cogs be computed (if possible)?
 #' @param data data used for faceting. Defaults to the first layer data
+#' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
+
 #' @template param-split-layout
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 #' @export
@@ -45,7 +47,7 @@ facet_trelliscope <- function(
   plotly_args = NULL, plotly_cfg = NULL, split_sig = NULL,
   google_analytics_id = NULL,
   self_contained = FALSE, thumb = TRUE, require_token = FALSE, id = NULL,
-  order = 1, disclaimer = FALSE, auto_cog = FALSE, split_layout = FALSE,
+  order = 1, disclaimer = FALSE, update_plots = TRUE, auto_cog = FALSE, split_layout = FALSE,
   data = ggplot2::waiver()
 ) {
   if (split_layout)
@@ -274,17 +276,19 @@ print.facet_trelliscope <- function(x, ...) {
     total = 5 + length(panels), width = getOption("width") - 8)
   pb$tick(0, tokens = list(what = "calculating         "))
 
-  write_panels(
-    panels,
-    base_path = params$path,
-    name = params$name,
-    group = params$group,
-    width = attrs$width,
-    height = attrs$height,
-    jsonp = params$jsonp,
-    split_layout = params$split_layout,
-    pb = pb
-  )
+  if (update_plots) {
+    write_panels(
+      panels,
+      base_path = params$path,
+      name = params$name,
+      group = params$group,
+      width = attrs$width,
+      height = attrs$height,
+      jsonp = params$jsonp,
+      split_layout = params$split_layout,
+      pb = pb
+    )
+  }
 
   if (inherits(attrs$desc, "waiver"))
     attrs$desc <- ifelse(is.null(p$labels$title), "", p$labels$title)

@@ -312,7 +312,7 @@ bind_cog_list_and_descs <- function(cog_list) {
 
 #' @importFrom autocogs panel_cogs
 cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list = NULL,
-  nested_cog_attrs = NULL) {
+  nested_cog_attrs = NULL, cond_cols = NULL) {
 
   atomic_cols <- names(x)[sapply(x, is.atomic)]
   non_atomic_cols <- setdiff(names(x), c(atomic_cols, panel_col))
@@ -322,7 +322,14 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list 
     stop_nice("There must be at least one atomic column in the data frame passed in",
       "to trelliscope.data.frame")
 
-  cond_cols <- find_cond_cols(x[atomic_cols], is_nested)
+  if (is.null(cond_cols)) {
+    cond_cols <- find_cond_cols(x[atomic_cols], is_nested)
+  } else {
+    if (any(sapply(x[cond_cols], function(a) any(is.na(a)))))
+      stop("cond_cols must not have any NA values")
+    if (length(unique(do.call(paste, c(x[cond_cols], sep = "_")))) != nrow(x))
+      stop("cond_cols must uniquely define each row")
+  }
 
   # if we are no longer sorted by a cond_col but are sorted by something else
   # and if sort state is not already specified, then set that as state
