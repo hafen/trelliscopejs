@@ -47,7 +47,7 @@ Suggests:
     rmarkdown,
     shiny,
     housingData
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 URL: https://github.com/hafen/trelliscopejs
 BugReports: https://github.com/hafen/trelliscopejs/issues
 VignetteBuilder: knitr

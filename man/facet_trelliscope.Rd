@@ -31,6 +31,7 @@ facet_trelliscope(
   id = NULL,
   order = 1,
   disclaimer = FALSE,
+  update_plots = TRUE,
   auto_cog = FALSE,
   split_layout = FALSE,
   data = ggplot2::waiver()
@@ -99,6 +100,8 @@ facet_trelliscope(
 Facet Trelliscope
 }
 \note{
+Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
+
 Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 }
 \examples{

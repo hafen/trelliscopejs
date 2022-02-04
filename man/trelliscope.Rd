@@ -9,6 +9,7 @@ trelliscope(
   name,
   group = "common",
   panel_col = NULL,
+  cond_cols = NULL,
   desc = "",
   md_desc = "",
   path,
@@ -28,7 +29,8 @@ trelliscope(
   require_token = FALSE,
   id = NULL,
   order = 1,
-  disclaimer = FALSE
+  disclaimer = FALSE,
+  update_plots = TRUE
 )
 }
 \arguments{
@@ -39,6 +41,8 @@ trelliscope(
 \item{group}{group that the display belongs to}
 
 \item{panel_col}{optional string specifying the column to use for panels (if there are multiple plot columns in \code{x})}
+
+\item{cond_cols}{optionsl vector of columns to specify as "conditioning" columns - combined they must be unique and not have any missing values}
 
 \item{desc}{optional text description of the display}
 
@@ -79,6 +83,8 @@ trelliscope(
 \item{order}{an integer indicating the order that the display should appear in if using multiple displays}
 
 \item{disclaimer}{an optional string of html to include as a disclaimer for the set of displays}
+
+\item{update_plots}{should the plots be updated? This is to allow slight updates to the underlying display data without the need to re-render all of the plots. Use it carefully.}
 }
 \description{
 Create a Trelliscope Display
