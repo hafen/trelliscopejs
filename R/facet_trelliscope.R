@@ -89,6 +89,7 @@ facet_trelliscope <- function(
     split_layout = split_layout,
     id = id,
     disclaimer = disclaimer,
+    update_plots = update_plots,
     data = data,
     views = views
   )
@@ -104,7 +105,7 @@ ggplot_add.facet_trelliscope <- function(object, plot, object_name) {
       "desc", "md_desc", "height", "width", "inputs", "state", "jsonp", "self_contained", "google_analytics_id",
       "path", "state", "nrow", "ncol", "scales", "thumb", "as_plotly",
       "split_sig", "plotly_args", "plotly_cfg", "auto_cog", "split_layout",
-      "id", "disclaimer", "data", "views")]
+      "id", "disclaimer", "update_plots", "data", "views")]
   class(plot) <- c("facet_trelliscope", class(plot))
   return(plot)
 }
@@ -268,15 +269,15 @@ print.facet_trelliscope <- function(x, ...) {
 
   params <- resolve_app_params(attrs$path, attrs$self_contained, attrs$jsonp,
     attrs$split_sig, name, attrs$group, attrs$state, attrs$nrow, attrs$ncol,
-    attrs$thumb, attrs$split_layout, attrs$id, attrs$disclaimer,
-    attrs$inputs)
+    attrs$thumb, attrs$split_layout, attrs$id, attrs$disclaimer, 
+    attrs$update_plots, attrs$inputs)
 
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",
     total = 5 + length(panels), width = getOption("width") - 8)
   pb$tick(0, tokens = list(what = "calculating         "))
 
-  if (update_plots) {
+  if (attrs$update_plots) {
     write_panels(
       panels,
       base_path = params$path,
@@ -361,6 +362,8 @@ print.facet_trelliscope <- function(x, ...) {
   if (params$in_knitr || params$in_shiny) {
     return(res)
   }
+
+  attr(res, "fidelius_pars") <- attr(x, "fidelius_pars") 
 
   print(res)
 }

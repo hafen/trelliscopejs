@@ -37,7 +37,8 @@ Imports:
     webshot,
     autocogs,
     tidyr,
-    rlang
+    rlang,
+    fidelius
 Suggests:
     plotly,
     testthat,
