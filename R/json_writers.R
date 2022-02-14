@@ -168,8 +168,12 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @param desc description of the display
 #' @param height height in pixels of each panel
 #' @param width width in pixels of each panel
+#' @param inputs optional set of input specifications (using \code{\link{input_cogs}}) to allow user input for each panel
+#' @param google_analytics_id optional string specifying Google Analytics ID
 #' @param md_desc optional string of markdown that will be shown in the viewer for additional context about the display
 #' @param state the initial state the display will open in
+#' @param views an optional list of pre-specified views of the display (experimental)
+#' @param order an integer indicating the order that the display should appear in if using multiple displays
 #' @param jsonp should json for display object be jsonp (TRUE) or json (FALSE)?
 #' @param split_sig optional string "signature" specifying the data splitting
 #' @param panel_img_col which column (if any) is a panel image column?
@@ -181,11 +185,14 @@ write_cognostics <- function(cogdf, base_path, id, name, group = "common", jsonp
 #' @param pb optional progress bar object to pass in and use to report progress
 #' @importFrom digest digest
 #' @export
-write_display_obj <- function(cogdf, panel_example, base_path, id, name, group = "common",
-  desc = "", height = 500, width = 500, md_desc = "", state = NULL, jsonp = TRUE,
-  split_sig = NULL, panel_img_col = NULL, self_contained = FALSE, thumb = TRUE, 
-  split_layout = FALSE, split_aspect = NULL, has_legend = FALSE, pb = NULL) {
-
+write_display_obj <- function(
+  cogdf, panel_example, base_path, id, name, group = "common",
+  desc = "", height = 500, width = 500, inputs = NULL, md_desc = "",
+  state = NULL, google_analytics_id = NULL,
+  views = NULL, jsonp = TRUE, split_sig = NULL, panel_img_col = NULL, 
+  self_contained = FALSE, thumb = TRUE, split_layout = FALSE,
+  split_aspect = NULL, has_legend = FALSE, order = 1, pb = NULL
+) {
   display_path <- file.path(base_path, "displays", group, name)
   panel_path <- file.path(display_path, ifelse(jsonp, "jsonp", "json"))
 
@@ -227,23 +234,40 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
     cogdf[[panelInterface$panelCol]] <- NULL
   }
 
+  show_md_desc <- FALSE
+  md_title <- "Information About This Display"
+  if (inherits(md_desc, "md_desc")) {
+    show_md_desc <- md_desc$show
+    md_title <- md_desc$title
+    md_desc <- md_desc$content
+  }
+
   disp_obj <- list(
     name = name,
     group = group,
     desc = desc,
     mdDesc = md_desc,
+    mdTitle = md_title,
+    showMdDesc = show_md_desc,
     updated = Sys.time(),
     n = nrow(cogdf),
     height = height,
     width = width,
+    order = order,
     has_legend = has_legend,
+    has_inputs = !is.null(inputs),
+    input_type = attr(inputs, "input_type"),
+    input_email = attr(inputs, "feedback_email"),
+    input_csv_vars = attr(inputs, "input_csv_vars"),
+    input_api = attr(inputs, "input_api"),
+    gaID = google_analytics_id,
     split_layout = split_layout,
     split_aspect = split_aspect,
     keySig = key_sig, # nolint
     cogInterface = list(name = name, group = group, type = "JSON"),
     panelInterface = panelInterface,
     imgSrcLookup = imgSrcLookup,
-    cogInfo = get_cog_info(cogdf),
+    cogInfo = get_cog_info(cogdf, inputs),
     cogDistns = get_cog_distributions(cogdf)
   )
 
@@ -268,6 +292,7 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
     }
   }
   disp_obj$state <- state
+  disp_obj$views <- views
 
   if (!dir.exists(display_path))
     dir.create(display_path, recursive = TRUE)
@@ -283,7 +308,12 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
 
   write_cognostics(cogdf, base_path, id = id, name = name, group = group, jsonp = jsonp)
 
-  thumb_message <- ifelse(thumb, "writing thumbnail   ", "empty thumbnail     ")
+  if (is.character(thumb)) {
+    thumb_message <- "img thumbnail       "
+    panel_example <- thumb
+  } else if (is.logical(thumb)) {
+    thumb_message <- ifelse(thumb, "writing thumbnail   ", "empty thumbnail     ")
+  }
 
   # if thumb is false, we still write a blank one...
   if (!is.null(pb))
@@ -300,12 +330,16 @@ write_display_obj <- function(cogdf, panel_example, base_path, id, name, group =
 #' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param jsonp should json for display list and app config be jsonp (TRUE) or json (FALSE)?
 #' @param pb optional progress bar object to pass in and use to report progress
+#' @param require_token require a special token for all displays to be visible (experimental)
+#' @param disclaimer an optional string of html to include as a disclaimer for the set of displays
 #' @export
 prepare_display <- function(
   base_path,
   id,
   self_contained = FALSE,
   jsonp = TRUE,
+  require_token = FALSE,
+  disclaimer = FALSE,
   pb = NULL
 ) {
 
@@ -321,7 +355,9 @@ prepare_display <- function(
     base_path,
     id = id,
     self_contained = self_contained,
-    jsonp = jsonp
+    jsonp = jsonp,
+    require_token = require_token,
+    disclaimer = disclaimer
   )
 }
 
@@ -355,6 +391,7 @@ update_display_list <- function(base_path, jsonp = TRUE) {
       name = obj$name,
       desc = obj$desc,
       n = obj$n,
+      order = obj$order,
       height = obj$height,
       width = obj$width,
       updated = obj$updated,
@@ -375,10 +412,15 @@ update_display_list <- function(base_path, jsonp = TRUE) {
 #' @param id a unique id for the application
 #' @param self_contained should the Trelliscope display be a self-contained html document?
 #' @param jsonp should json for app config be jsonp (TRUE) or json (FALSE)?
+#' @param require_token require a special token for all displays to be visible (experimental)
+#' @param disclaimer an optional string of html to include as a disclaimer for the set of displays
 #' @template param-split-layout
 #' @template param-has-legend
 #' @export
-write_config <- function(base_path, id, self_contained = FALSE, jsonp = TRUE, split_layout = FALSE, has_legend = FALSE) {
+write_config <- function(base_path, id, self_contained = FALSE,
+  jsonp = TRUE, require_token = FALSE, disclaimer = FALSE,
+  split_layout = FALSE, has_legend = FALSE
+) {
   cfg <- as.character(jsonlite::toJSON(
     list(
       display_base = ifelse(self_contained, "__self__", "displays"),
@@ -388,7 +430,9 @@ write_config <- function(base_path, id, self_contained = FALSE, jsonp = TRUE, sp
         info = list(base = ifelse(self_contained, "__self__", "displays"))
       ),
       split_layout = split_layout,
-      has_legend = has_legend
+      has_legend = has_legend,
+      require_token = require_token,
+      disclaimer = disclaimer
     ),
     pretty = TRUE,
     auto_unbox = TRUE

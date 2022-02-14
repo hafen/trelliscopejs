@@ -135,7 +135,11 @@ print.trelliscopejs_widget <- function(x, ..., view = interactive()) {
 
   # call html_print with the viewer
   el_tags <- htmltools::as.tags(x, standalone = FALSE)
-  trelliscope_html_print(el_tags, www_dir = www_dir, viewer = if (view) viewerFunc)
+  trelliscope_html_print(el_tags,
+    www_dir = www_dir,
+    viewer = if (view) viewerFunc,
+    fidelius_pars = attr(x, "fidelius_pars")
+  )
 
   # return value
   invisible(x)
@@ -143,8 +147,9 @@ print.trelliscopejs_widget <- function(x, ..., view = interactive()) {
 
 # nolint end
 
+#' @importFrom fidelius charm
 trelliscope_html_print <- function(html, www_dir = NULL, background = "white",
-  viewer = getOption("viewer", utils::browseURL)) {
+  viewer = getOption("viewer", utils::browseURL), fidelius_pars = NULL) {
 
   if (is.null(www_dir))
     www_dir <- tempfile("viewhtml")
@@ -155,6 +160,12 @@ trelliscope_html_print <- function(html, www_dir = NULL, background = "white",
 
   htmltools::save_html(html, file = index_html, background = background,
     libdir = "lib")
+
+  if (!is.null(fidelius_pars)) {
+    fidelius_pars$input <- index_html
+    do.call(fidelius::charm, fidelius_pars)
+  }
+
   if (!is.null(viewer))
     viewer(index_html)
 

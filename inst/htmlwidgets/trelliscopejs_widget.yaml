@@ -1,6 +1,13 @@
 dependencies:
-- name: trelliscopejs_widget
-  version: 0.3.2
-  src: htmlwidgets/lib/trelliscopejs_widget
-  script:
-    - trelliscope.min.js
+ - name: trelliscopejs_widget
+   version:  0.3.4
+   src: htmlwidgets/lib/trelliscopejs_widget
+   script: [
+     js/2.b4df4388.chunk.js,
+     js/main.36dd27f0.chunk.js,
+     js/runtime-main.d9025fd8.js,
+   ]
+   stylesheet: [
+     css/2.5a492dbc.chunk.css,
+     css/main.07565848.chunk.css,     
+   ]

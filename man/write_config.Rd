@@ -9,6 +9,8 @@ write_config(
   id,
   self_contained = FALSE,
   jsonp = TRUE,
+  require_token = FALSE,
+  disclaimer = FALSE,
   split_layout = FALSE,
   has_legend = FALSE
 )
@@ -21,6 +23,10 @@ write_config(
 \item{self_contained}{should the Trelliscope display be a self-contained html document?}
 
 \item{jsonp}{should json for app config be jsonp (TRUE) or json (FALSE)?}
+
+\item{require_token}{require a special token for all displays to be visible (experimental)}
+
+\item{disclaimer}{an optional string of html to include as a disclaimer for the set of displays}
 
 \item{split_layout}{boolean that determines if the layout is split into components like a facet_grid vs. individual panels like facet_wrap.  Only applies to ggplot2 plot objects.}
 

@@ -8,6 +8,7 @@ cog_href(
   x,
   desc = "link",
   group = "common",
+  type = c("href", "href_hash"),
   default_label = FALSE,
   default_active = FALSE,
   filterable = FALSE,
@@ -19,6 +20,8 @@ cog_href(
 \item{x}{URL to link to}
 
 \item{desc, group, default_label, default_active, filterable, sortable, log}{arguments passed to \code{\link{cog}}}
+
+\item{type}{of either "href" or "href_hash". "href" will open the link in a new page. "href_hash" will update the page's hash and reload the page (useful when changing state inside an iframe)}
 }
 \description{
 Create href to be used as cognostics in a trelliscope display

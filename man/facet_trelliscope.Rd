@@ -16,14 +16,22 @@ facet_trelliscope(
   path = NULL,
   height = 500,
   width = 500,
+  inputs = NULL,
   state = NULL,
+  views = NULL,
   jsonp = TRUE,
   as_plotly = FALSE,
   plotly_args = NULL,
   plotly_cfg = NULL,
   split_sig = NULL,
+  google_analytics_id = NULL,
   self_contained = FALSE,
   thumb = TRUE,
+  require_token = FALSE,
+  id = NULL,
+  order = 1,
+  disclaimer = FALSE,
+  update_plots = TRUE,
   auto_cog = FALSE,
   split_layout = FALSE,
   data = ggplot2::waiver()
@@ -52,7 +60,11 @@ facet_trelliscope(
 
 \item{width}{width in pixels of each panel}
 
+\item{inputs}{optional set of input specifications (using \code{\link{input_cogs}}) to allow user input for each panel}
+
 \item{state}{the initial state the display will open in}
+
+\item{views}{an optional list of pre-specified views of the display (experimental)}
 
 \item{jsonp}{should json for display object be jsonp (TRUE) or json (FALSE)?}
 
@@ -64,9 +76,19 @@ facet_trelliscope(
 
 \item{split_sig}{optional string that specifies the "signature" of the data splitting. If not specified, this is calculated as the md5 hash of the sorted unique facet variables. This is used to identify "related displays" - different displays that are based on the same faceting scheme. This parameter should only be specified manually if a display's faceting is mostly similar to another display's.}
 
+\item{google_analytics_id}{optional string specifying Google Analytics ID}
+
 \item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
 
 \item{thumb}{should a thumbnail be created?}
+
+\item{require_token}{require a special token for all displays to be visible (experimental)}
+
+\item{id}{set a hard-coded ID for this app (do not set this if the display will be part of a larger web page)}
+
+\item{order}{an integer indicating the order that the display should appear in if using multiple displays}
+
+\item{disclaimer}{an optional string of html to include as a disclaimer for the set of displays}
 
 \item{auto_cog}{should auto cogs be computed (if possible)?}
 
@@ -78,6 +100,8 @@ facet_trelliscope(
 Facet Trelliscope
 }
 \note{
+Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
+
 Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 }
 \examples{

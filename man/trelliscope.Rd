@@ -9,19 +9,28 @@ trelliscope(
   name,
   group = "common",
   panel_col = NULL,
+  cond_cols = NULL,
   desc = "",
   md_desc = "",
   path,
   height = 500,
   width = 500,
+  inputs = NULL,
+  google_analytics_id = NULL,
   auto_cog = FALSE,
   state = NULL,
+  views = NULL,
   nrow = 1,
   ncol = 1,
   jsonp = TRUE,
   split_sig = NULL,
   self_contained = FALSE,
-  thumb = FALSE
+  thumb = FALSE,
+  require_token = FALSE,
+  id = NULL,
+  order = 1,
+  disclaimer = FALSE,
+  update_plots = TRUE
 )
 }
 \arguments{
@@ -33,6 +42,8 @@ trelliscope(
 
 \item{panel_col}{optional string specifying the column to use for panels (if there are multiple plot columns in \code{x})}
 
+\item{cond_cols}{optionsl vector of columns to specify as "conditioning" columns - combined they must be unique and not have any missing values}
+
 \item{desc}{optional text description of the display}
 
 \item{md_desc}{optional string of markdown that will be shown in the viewer for additional context about the display}
@@ -43,9 +54,15 @@ trelliscope(
 
 \item{width}{width in pixels of each panel}
 
+\item{inputs}{optional set of input specifications (using \code{\link{input_cogs}}) to allow user input for each panel}
+
+\item{google_analytics_id}{optional string specifying Google Analytics ID}
+
 \item{auto_cog}{should auto cogs be computed (if possible)?}
 
 \item{state}{the initial state the display will open in}
+
+\item{views}{an optional list of pre-specified views of the display (experimental)}
 
 \item{nrow}{the number of rows of panels to display by default}
 
@@ -58,6 +75,16 @@ trelliscope(
 \item{self_contained}{should the Trelliscope display be a self-contained html document? (see note)}
 
 \item{thumb}{should a thumbnail be created?}
+
+\item{require_token}{require a special token for all displays to be visible (experimental)}
+
+\item{id}{set a hard-coded ID for this app (do not set this if the display will be part of a larger web page)}
+
+\item{order}{an integer indicating the order that the display should appear in if using multiple displays}
+
+\item{disclaimer}{an optional string of html to include as a disclaimer for the set of displays}
+
+\item{update_plots}{should the plots be updated? This is to allow slight updates to the underlying display data without the need to re-render all of the plots. Use it carefully.}
 }
 \description{
 Create a Trelliscope Display

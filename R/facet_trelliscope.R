@@ -10,7 +10,9 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param path the base directory of the trelliscope application
 #' @param height height in pixels of each panel
 #' @param width width in pixels of each panel
+#' @param inputs optional set of input specifications (using \code{\link{input_cogs}}) to allow user input for each panel
 #' @param state the initial state the display will open in
+#' @param views an optional list of pre-specified views of the display (experimental)
 #' @param nrow the number of rows of panels to display by default
 #' @param ncol the number of columns of panels to display by default
 #' @param scales should scales be the same (\code{"same"}, the default), free (\code{"free"}), or sliced (\code{"sliced"}). May provide a single string or two strings, one for the X and Y axis respectively.
@@ -21,8 +23,15 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param split_sig optional string that specifies the "signature" of the data splitting. If not specified, this is calculated as the md5 hash of the sorted unique facet variables. This is used to identify "related displays" - different displays that are based on the same faceting scheme. This parameter should only be specified manually if a display's faceting is mostly similar to another display's.
 #' @param self_contained should the Trelliscope display be a self-contained html document? (see note)
 #' @param thumb should a thumbnail be created?
+#' @param require_token require a special token for all displays to be visible (experimental)
+#' @param google_analytics_id optional string specifying Google Analytics ID
+#' @param id set a hard-coded ID for this app (do not set this if the display will be part of a larger web page)
+#' @param order an integer indicating the order that the display should appear in if using multiple displays
+#' @param disclaimer an optional string of html to include as a disclaimer for the set of displays
 #' @param auto_cog should auto cogs be computed (if possible)?
 #' @param data data used for faceting. Defaults to the first layer data
+#' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
+
 #' @template param-split-layout
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
 #' @export
@@ -33,13 +42,14 @@ facet_trelliscope <- function(
   facets,
   nrow = 1, ncol = 1, scales = "same", name = NULL, group = "common",
   desc = ggplot2::waiver(), md_desc = ggplot2::waiver(), path = NULL,
-  height = 500, width = 500,
-  state = NULL, jsonp = TRUE, as_plotly = FALSE,
+  height = 500, width = 500, inputs = NULL,
+  state = NULL, views = NULL, jsonp = TRUE, as_plotly = FALSE,
   plotly_args = NULL, plotly_cfg = NULL, split_sig = NULL,
-  self_contained = FALSE, thumb = TRUE, auto_cog = FALSE,
-  split_layout = FALSE, data = ggplot2::waiver()
+  google_analytics_id = NULL,
+  self_contained = FALSE, thumb = TRUE, require_token = FALSE, id = NULL,
+  order = 1, disclaimer = FALSE, update_plots = TRUE, auto_cog = FALSE, split_layout = FALSE,
+  data = ggplot2::waiver()
 ) {
-
   if (split_layout)
     stop("Sorry - the viewer doesn't support rendering split layout yet...")
 
@@ -61,11 +71,13 @@ facet_trelliscope <- function(
     md_desc = md_desc,
     height = height,
     width = width,
+    inputs = inputs,
     state = state,
     jsonp = jsonp,
     split_sig = split_sig,
     path = path,
     self_contained = self_contained,
+    google_analytics_id = google_analytics_id,
     nrow = nrow,
     ncol = ncol,
     scales = scales,
@@ -75,7 +87,11 @@ facet_trelliscope <- function(
     plotly_cfg = plotly_cfg,
     auto_cog = auto_cog,
     split_layout = split_layout,
-    data = data
+    id = id,
+    disclaimer = disclaimer,
+    update_plots = update_plots,
+    data = data,
+    views = views
   )
 
   class(ret) <- "facet_trelliscope"
@@ -86,10 +102,10 @@ facet_trelliscope <- function(
 ggplot_add.facet_trelliscope <- function(object, plot, object_name) {
   attr(plot, "trelliscope") <- object[
     c("facets", "facet_cols", "name", "group",
-      "desc", "md_desc", "height", "width", "state", "jsonp", "self_contained",
+      "desc", "md_desc", "height", "width", "inputs", "state", "jsonp", "self_contained", "google_analytics_id",
       "path", "state", "nrow", "ncol", "scales", "thumb", "as_plotly",
       "split_sig", "plotly_args", "plotly_cfg", "auto_cog", "split_layout",
-      "data")]
+      "id", "disclaimer", "update_plots", "data", "views")]
   class(plot) <- c("facet_trelliscope", class(plot))
   return(plot)
 }
@@ -253,24 +269,27 @@ print.facet_trelliscope <- function(x, ...) {
 
   params <- resolve_app_params(attrs$path, attrs$self_contained, attrs$jsonp,
     attrs$split_sig, name, attrs$group, attrs$state, attrs$nrow, attrs$ncol,
-    attrs$thumb, attrs$split_layout)
+    attrs$thumb, attrs$split_layout, attrs$id, attrs$disclaimer, 
+    attrs$update_plots, attrs$inputs)
 
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",
     total = 5 + length(panels), width = getOption("width") - 8)
   pb$tick(0, tokens = list(what = "calculating         "))
 
-  write_panels(
-    panels,
-    base_path = params$path,
-    name = params$name,
-    group = params$group,
-    width = attrs$width,
-    height = attrs$height,
-    jsonp = params$jsonp,
-    split_layout = params$split_layout,
-    pb = pb
-  )
+  if (attrs$update_plots) {
+    write_panels(
+      panels,
+      base_path = params$path,
+      name = params$name,
+      group = params$group,
+      width = attrs$width,
+      height = attrs$height,
+      jsonp = params$jsonp,
+      split_layout = params$split_layout,
+      pb = pb
+    )
+  }
 
   if (inherits(attrs$desc, "waiver"))
     attrs$desc <- ifelse(is.null(p$labels$title), "", p$labels$title)
@@ -310,6 +329,8 @@ print.facet_trelliscope <- function(x, ...) {
     desc = attrs$desc,
     height = attrs$height,
     width = attrs$width,
+    inputs = params$inputs,
+    google_analytics_id = attrs$google_analytics_id,
     md_desc = attrs$md_desc,
     state = params$state,
     jsonp = params$jsonp,
@@ -318,13 +339,14 @@ print.facet_trelliscope <- function(x, ...) {
     split_aspect = split_aspect,
     has_legend,
     split_sig = params$split_sig,
+    views = attrs$views,
+    order = order,
     pb = pb
   )
 
   prepare_display(
     params$path, params$id, params$self_contained, params$jsonp,
-    pb = pb
-  )
+    attrs$require_token, params$disclaimer, pb = pb)
 
   res <- trelliscope_widget(
     id = params$id,
@@ -340,6 +362,8 @@ print.facet_trelliscope <- function(x, ...) {
   if (params$in_knitr || params$in_shiny) {
     return(res)
   }
+
+  attr(res, "fidelius_pars") <- attr(x, "fidelius_pars") 
 
   print(res)
 }

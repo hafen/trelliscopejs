@@ -14,8 +14,11 @@ write_display_obj(
   desc = "",
   height = 500,
   width = 500,
+  inputs = NULL,
   md_desc = "",
   state = NULL,
+  google_analytics_id = NULL,
+  views = NULL,
   jsonp = TRUE,
   split_sig = NULL,
   panel_img_col = NULL,
@@ -24,6 +27,7 @@ write_display_obj(
   split_layout = FALSE,
   split_aspect = NULL,
   has_legend = FALSE,
+  order = 1,
   pb = NULL
 )
 }
@@ -46,9 +50,15 @@ write_display_obj(
 
 \item{width}{width in pixels of each panel}
 
+\item{inputs}{optional set of input specifications (using \code{\link{input_cogs}}) to allow user input for each panel}
+
 \item{md_desc}{optional string of markdown that will be shown in the viewer for additional context about the display}
 
 \item{state}{the initial state the display will open in}
+
+\item{google_analytics_id}{optional string specifying Google Analytics ID}
+
+\item{views}{an optional list of pre-specified views of the display (experimental)}
 
 \item{jsonp}{should json for display object be jsonp (TRUE) or json (FALSE)?}
 
@@ -65,6 +75,8 @@ write_display_obj(
 \item{split_aspect}{list indicating aspect ratios of axes for a split layout.  Only applies to ggplot2 plot objects.}
 
 \item{has_legend}{should a legend be reported for split_layout}
+
+\item{order}{an integer indicating the order that the display should appear in if using multiple displays}
 
 \item{pb}{optional progress bar object to pass in and use to report progress}
 }

@@ -1,19 +1,27 @@
 write_thumb <- function(panel_example, path, width, height, thumb = TRUE) {
-  if (thumb) {
-    if (inherits(panel_example, "htmlwidget")) {
-      widget_thumbnail(panel_example, path, width, height)
-    } else {
+  if (is.character(panel_example) && file.exists(panel_example)) {
+    ext <- tools::file_ext(panel_example)
+    if (ext == "png") {
+      path <- paste0(tools::file_path_sans_ext(path), ".", ext)
+      file.copy(thumb, path)
+    }
+  } else {
+    if (thumb) {
+      if (inherits(panel_example, "htmlwidget")) {
+        widget_thumbnail(panel_example, path, width, height)
+      } else {
+        suppressMessages(
+          make_png(panel_example, file = path,
+            width = width, height = height))
+      }
+    }
+
+    # need "!thumb" in case overwriting existing
+    if (!file.exists(path) || !thumb) {
       suppressMessages(
-        make_png(panel_example, file = path,
+        make_png(blank_image(), file = path,
           width = width, height = height))
     }
-  }
-
-  # need "!thumb" in case overwriting existing
-  if (!file.exists(path) || !thumb) {
-    suppressMessages(
-      make_png(blank_image(), file = path,
-        width = width, height = height))
   }
 }
 

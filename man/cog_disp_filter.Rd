@@ -10,6 +10,7 @@ cog_disp_filter(
   val,
   desc = "link",
   group = "common",
+  type = c("href", "href_hash"),
   default_label = FALSE,
   default_active = FALSE,
   filterable = FALSE,
@@ -26,6 +27,8 @@ cog_disp_filter(
 \item{desc}{a description for this cognostic value}
 
 \item{group}{optional categorization of the cognostic for organizational purposes in the viewer (currently not implemented in the viewer)}
+
+\item{type}{of either "href" or "href_hash". "href" will open the link in a new page. "href_hash" will update the page's hash and reload the page (useful when changing state inside an iframe)}
 
 \item{default_label}{should this cognostic be used as a panel label in the viewer by default?}
 

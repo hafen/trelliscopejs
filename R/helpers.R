@@ -1,3 +1,46 @@
+#' Specify a markdown description for a display
+#' @param content Markdown content
+#' @param title Title of the dialog box that displays this content
+#' @param show should the markdown description be shown by default when the display is loaded?
+#' @export
+md_description <- function(
+  content = "",
+  title = "Information About This Display",
+  show = FALSE
+) {
+  structure(list(
+    content = content,
+    title = title,
+    show = show
+  ), class = c("list", "md_desc"))
+}
+
+#' Construct a list of view items
+#' @param ... Objects created using \code{\link{view_item}}
+#' @export
+view_list <- function(...) {
+  cls <- unlist(lapply(list(...), function(x) {
+    inherits(x, "view_item")
+  }))
+  if (any(!cls))
+    stop("All arguments to view_list() must be created with view_item()")
+
+  structure(list(...), class = c("list", "view_list"))
+}
+
+#' Construct a list of view items
+#' @param name A string indicating the name of the view (will be displayed in the "Views" sidebar)
+#' @param hash A URL hash that sends the user to this view (typically the URL starting with &nrow=...)
+#' @export
+view_item <- function(name, hash) {
+  # TODO: validation
+  structure(list(
+    name = name,
+    state = hash
+  ), class = c("list", "view_item"))
+}
+
+
 #' Cast a vector of URLs pointing to images as an image panel source
 #'
 #' @param x a vector of URLs pointing to images
@@ -48,11 +91,14 @@ is_in_shiny <- function() {
     silent = TRUE)
   if (!inherits(tmp, "try-error") && !is.null(tmp))
     res <- TRUE
+  if (is.null(res))
+    res <- FALSE
   res
 }
 
-resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, group,
-  state, nrow = 1, ncol = 1, thumb = TRUE, split_layout = FALSE) {
+resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, 
+  group, state, nrow = 1, ncol = 1, thumb = TRUE, split_layout = FALSE,
+  id = NULL, disclaimer = FALSE, inputs = NULL, google_analytics_id = NULL) {
 
   spa <- TRUE # "single-page application"
 
@@ -146,9 +192,30 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, gro
 
   # TODO: check filter state
 
-
   # make sure split_layout is a boolean
   split_layout <- isTRUE(split_layout)
+
+  if (is.null(id))
+    id <- get_id(path)
+
+  if (length(disclaimer) > 1 || disclaimer != FALSE) {
+    if (is.character(disclaimer)) {
+      disclaimer <- list(cols = 2, text = disclaimer)
+    } else if (is.list(disclaimer)) {
+      if (!all(c("cols", "text") %in% names(disclaimer))) {
+        message("'disclaimer' must be text or a list with 'cols' and 'text'.",
+          " Ignoring...")
+        disclaimer <- FALSE
+      }
+    } else {
+      disclaimer <- FALSE
+    }
+  }
+
+  if (!is.null(inputs) && !inherits(inputs, "input_cogs")) {
+    message("'inputs' must be a set of inputs specified with 'input_cogs'. Ignoring...")
+    inputs <- NULL
+  }
 
   list(
     path = path,
@@ -159,7 +226,9 @@ resolve_app_params <- function(path, self_contained, jsonp, split_sig, name, gro
     self_contained = self_contained,
     name = sanitize(name),
     group = sanitize(group),
-    id = get_id(path),
+    id = id,
+    disclaimer = disclaimer,
+    inputs = inputs,
     spa = spa,
     state = state,
     in_knitr = in_knitr,
@@ -203,7 +272,7 @@ get_jsonp_text <- function(jsonp, fn_name) {
   }
 }
 
-get_cog_info <- function(x) {
+get_cog_info <- function(x, inputs = NULL) {
   if (! inherits(x, "cognostics"))
     stop_nice("Cognostics data frame must be a cognostics object - ",
       "call as_cognostics() to cast it as such.")
@@ -213,6 +282,14 @@ get_cog_info <- function(x) {
     tmp <- attr(x[[i]], "cog_attrs")
     data.frame(name = nms[i], tmp, stringsAsFactors = FALSE)
   }))
+
+  na_idx <- which(is.na(cog_info$type))
+  if (length(na_idx) > 0) {
+    message("Cognostics: ", paste(cog_info$name[na_idx], collapse = ", "),
+      " have type 'NA' - setting type to 'factor'. To set to something ",
+      "else, use cog(..., type='...').")
+    cog_info$type[na_idx] <- "factor"
+  }
 
   tmp <- lapply(seq_len(nrow(cog_info)), function(i) {
     res <- as.list(cog_info[i, ])
@@ -235,6 +312,14 @@ get_cog_info <- function(x) {
     res
   })
   names(tmp) <- sapply(tmp, function(x) x$name)
+  if (!is.null(inputs)) {
+    nms <- unlist(lapply(inputs, function(x) x$name))
+    names(inputs) <- nms
+    if (any(nms %in% names(tmp)))
+      stop("Inputs have names matching at least one of the cognostics.")
+    tmp <- c(tmp, inputs)
+  }
+
   tmp
 }
 
