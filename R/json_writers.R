@@ -294,6 +294,16 @@ write_display_obj <- function(
   disp_obj$state <- state
   disp_obj$views <- views
 
+  tmp <- lapply(disp_obj$cogInfo, function(x) {
+    dplyr::tibble(group = x$group, name = x$name)
+  }) %>% 
+  dplyr::bind_rows() %>%
+  tidyr::nest(data = c("name"))
+  cog_groups <- tmp$data
+  names(cog_groups) <- tmp$group
+  disp_obj$cogGroups <- lapply(cog_groups, function(x)
+    I(x$name))
+
   if (!dir.exists(display_path))
     dir.create(display_path, recursive = TRUE)
 
