@@ -202,7 +202,7 @@ print.facet_trelliscope <- function(x, ...) {
   # group by all the facets
   data <- data %>%
     ungroup() %>%
-    dplyr::mutate(.id = seq_len(nrow(data))) %>%
+    dplyr::mutate(.id = dplyr::row_number()) %>%
     dplyr::group_by_at(facet_cols) %>%
     tidyr::nest() %>%
     dplyr::ungroup()
