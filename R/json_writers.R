@@ -385,12 +385,17 @@ update_display_list <- function(base_path, jsonp = TRUE) {
   names <- unlist(lapply(groups, function(gp) {
     list.files(gp, full.names = TRUE)
   }))
+  # only try ones that are directories and have displayObj
+  names <- names[dir.exists(names)]
+  idx <- file.exists(file.path(names, "displayObj.json")) |
+    file.exists(file.path(names, "displayObj.jsonp"))
+  names <- names[idx]
 
   display_list <- lapply(names, function(path) {
     ff <- file.path(path, "displayObj.json")
     if (file.exists(ff)) {
       obj <- jsonlite::fromJSON(ff)
-    } else {
+    } else if (file.exists(file.path(path, "displayObj.jsonp"))) {
       ff <- file.path(path, "displayObj.jsonp")
       tmp <- readLines(ff, warn = FALSE)
       rgxp <- paste0("^__loadDisplayObj__[a-zA-Z0-9_/\\.]+\\((.*)\\)")
