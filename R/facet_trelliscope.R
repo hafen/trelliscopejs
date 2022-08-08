@@ -202,7 +202,8 @@ print.facet_trelliscope <- function(x, ...) {
   # group by all the facets
   data <- data %>%
     ungroup() %>%
-    dplyr::mutate(.id = dplyr::row_number()) %>%
+    dplyr::mutate(.id = row_number()) %>%
+    dplyr::mutate(.id = seq_len(nrow(data))) %>%
     dplyr::group_by_at(facet_cols) %>%
     tidyr::nest() %>%
     dplyr::ungroup()
@@ -267,10 +268,23 @@ print.facet_trelliscope <- function(x, ...) {
   if (is.null(name))
     name <- paste("by_", paste(facet_cols, collapse = "_"), sep = "")
 
-  params <- resolve_app_params(attrs$path, attrs$self_contained, attrs$jsonp,
-    attrs$split_sig, name, attrs$group, attrs$state, attrs$nrow, attrs$ncol,
-    attrs$thumb, attrs$split_layout, attrs$id, attrs$disclaimer, 
-    attrs$update_plots, attrs$inputs)
+  params <- resolve_app_params(
+    path = attrs$path,
+    self_contained = attrs$self_contained,
+    jsonp = attrs$jsonp,
+    split_sig = attrs$split_sig,
+    name = name,
+    group = attrs$group,
+    state = attrs$state,
+    nrow = attrs$nrow,
+    ncol = attrs$ncol,
+    thumb = attrs$thumb,
+    split_layout = attrs$split_layout,
+    id = attrs$id,
+    disclaimer = attrs$disclaimer,
+    # update_plots = attrs$update_plots,
+    inputs = attrs$inputs
+  )
 
   pb <- progress::progress_bar$new(
     format = ":what [:bar] :percent :current/:total eta::eta",

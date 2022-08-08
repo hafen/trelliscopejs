@@ -482,3 +482,61 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list 
     state = state
   )
 }
+
+#' Create a cognostics template that can be edited and used to specify
+#' cognostics in a display
+#' #' @param x a data frame that will be used as an input for the
+#' trelliscope display. If NULL, a blank template will be created.
+#'
+#' @note The input `x` can be a starting point and does not need to
+#' contain all variables that may be added later.
+#' Also note that after you edit the output (for example using the
+#' editData package, or writing to a csv and editing in Excel) to reflect
+#' how you would like the cognostics to display in the viewer, you can
+#' Add this specification to your trelliscope display with
+#' [add_cog_template()].
+#' @export
+create_cog_template <- function(x = NULL) {
+  if (is.null(x))
+    x <- data.frame(example_variable = 1:10)
+  csv <- dplyr::bind_rows(lapply(names(x), function(nm) {
+    cg <- attributes(cog(x[[nm]]))$cog_attrs
+    dplyr::tibble(
+      name = nm,
+      desc = cg$desc,
+      type = cg$type,
+      group = cg$group,
+      defLabel = cg$defLabel,
+      defActive = cg$defActive,
+      filterable = cg$filterable,
+      log = cg$log
+    )
+  }))
+
+  message(
+    "A data frame with a cognostics specification template has been ",
+    " created.\n",
+    "You can edit this data frame (either write to csv and edit, or use ",
+    "the editData package) and provide it to a trelliscope display ",
+    "definition by adding %>% add_cog_template(updated_df) to your ",
+    "trellscope display specification.")
+  message("The following columns are present in the template:")
+  message("  name: name of the cognostic (must match a variable name in ",
+    "your dataset)")
+  message("  desc: description of the cognostic")
+  message("  type: type of the cognostic")
+  message("  group: group(s) to organize the congostic into in the UI. ",
+    "If more than one group separate them with a semicolon.")
+  message("  defLabel: should this cognostic be used as a panel label in ",
+    "the viewer by default?")
+  message("  defActive: should this cognostic be active (available for ",
+    "sort / filter / sample) by default?")
+  message("  filterable: should this cognostic be filterable? Default is ",
+    "TRUE. It can be useful to set this to FALSE if the cognostic is ",
+    "categorical with many unique values and is only desired to be used ",
+    "as a panel label.")
+  message(" log: when being used in the viewer for visual univariate ",
+    "and bivariate filters, should the variable be log transformed? ")
+
+  csv
+}

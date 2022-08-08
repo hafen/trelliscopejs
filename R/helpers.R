@@ -96,10 +96,23 @@ is_in_shiny <- function() {
   res
 }
 
-resolve_app_params <- function(path, self_contained, jsonp, split_sig, name,
-  group, state, nrow = 1, ncol = 1, thumb = TRUE, split_layout = FALSE,
-  id = NULL, disclaimer = FALSE, inputs = NULL, google_analytics_id = NULL) {
-
+resolve_app_params <- function(
+  path,
+  self_contained,
+  jsonp,
+  split_sig,
+  name,
+  group,
+  state,
+  nrow = 1,
+  ncol = 1,
+  thumb = TRUE,
+  split_layout = FALSE,
+  id = NULL,
+  disclaimer = FALSE,
+  inputs = NULL,
+  google_analytics_id = NULL
+) {
   spa <- TRUE # "single-page application"
 
   if (is.null(thumb))
