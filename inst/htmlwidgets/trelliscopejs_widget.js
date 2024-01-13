@@ -27,8 +27,8 @@ HTMLWidgets.widget({
         el.appendChild(dv);
 
         if (x.in_knitr) {
-          el.style.marginTop = '30px';
-          el.style.marginBottom = '30px';
+          el.style.marginTop = '0px';
+          el.style.marginBottom = '0px';
         }
 
         var scrpt = document.createElement('script');
