@@ -99,7 +99,7 @@ facet_trelliscope <- function(
 }
 
 #' @export
-ggplot_add.facet_trelliscope <- function(object, plot, object_name) {
+ggplot_add.facet_trelliscope <- function(object, plot, ...) {
   attr(plot, "trelliscope") <- object[
     c("facets", "facet_cols", "name", "group",
       "desc", "md_desc", "height", "width", "inputs", "state", "jsonp", "self_contained", "google_analytics_id",
