@@ -2,9 +2,14 @@
 % Please edit documentation in R/trelliscopejs-package.R
 \docType{package}
 \name{trelliscopejs-package}
+\alias{trelliscopejs}
 \alias{trelliscopejs-package}
-\title{trelliscopejs}
+\title{trelliscopejs: Create Interactive Trelliscope Displays}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
+Trelliscope is a scalable, flexible, interactive approach to visualizing data (Hafen, 2013 \doi{10.1109/LDAV.2013.6675164}). This package provides methods that make it easy to create a Trelliscope display specification for TrelliscopeJS. High-level functions are provided for creating displays from within 'tidyverse' or 'ggplot2' workflows. Low-level functions are also provided for creating new interfaces.
+
 Create interactive Trelliscope displays
 }
 \details{
@@ -13,3 +18,22 @@ Create interactive Trelliscope displays
 \examples{
 help(package = trelliscopejs)
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://hafen.github.io/trelliscopejs/}
+  \item \url{https://github.com/hafen/trelliscopejs}
+  \item Report bugs at \url{https://github.com/hafen/trelliscopejs/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Ryan Hafen \email{rhafen@gmail.com} (\href{https://orcid.org/0000-0002-5516-8367}{ORCID})
+
+Authors:
+\itemize{
+  \item Barret Schloerke \email{schloerke@gmail.com}
+}
+
+}
+\keyword{internal}

@@ -28,6 +28,7 @@ utils::globalVariables(c(".", "ggplotly"))
 #' @param id set a hard-coded ID for this app (do not set this if the display will be part of a larger web page)
 #' @param order an integer indicating the order that the display should appear in if using multiple displays
 #' @param disclaimer an optional string of html to include as a disclaimer for the set of displays
+#' @param update_plots should the plots be updated? This is to allow slight updates to the underlying display data without the need to re-render all of the plots. Use it carefully.
 #' @param auto_cog should auto cogs be computed (if possible)?
 #' @param data data used for faceting. Defaults to the first layer data
 #' @note Note that \code{self_contained} is severely limiting and should only be used in cases where you would either like your display to show up in the RStudio viewer pane, in an interactive R Markdown Notebook, or in a self-contained R Markdown html document.
@@ -99,7 +100,7 @@ facet_trelliscope <- function(
 }
 
 #' @export
-ggplot_add.facet_trelliscope <- function(object, plot, object_name) {
+ggplot_add.facet_trelliscope <- function(object, plot, object_name, ...) {
   attr(plot, "trelliscope") <- object[
     c("facets", "facet_cols", "name", "group",
       "desc", "md_desc", "height", "width", "inputs", "state", "jsonp", "self_contained", "google_analytics_id",

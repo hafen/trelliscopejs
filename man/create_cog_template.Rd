@@ -3,17 +3,17 @@
 \name{create_cog_template}
 \alias{create_cog_template}
 \title{Create a cognostics template that can be edited and used to specify
-cognostics in a display
-#' @param x a data frame that will be used as an input for the
-trelliscope display. If NULL, a blank template will be created.}
+cognostics in a display}
 \usage{
 create_cog_template(x = NULL)
+}
+\arguments{
+\item{x}{a data frame that will be used as an input for the
+trelliscope display. If NULL, a blank template will be created.}
 }
 \description{
 Create a cognostics template that can be edited and used to specify
 cognostics in a display
-#' @param x a data frame that will be used as an input for the
-trelliscope display. If NULL, a blank template will be created.
 }
 \note{
 The input `x` can be a starting point and does not need to
