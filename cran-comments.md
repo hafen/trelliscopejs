@@ -16,4 +16,6 @@ Updates since last release:
 
 ## Reverse dependencies
 
-We checked two of three reverse dependencies (timetk, modeltime), comparing R CMD check results across CRAN and dev versions of this package. We saw 0 new problems. One reverse dependency (pmartR) could not be installed as it was not found on CRAN and we could not build from source, so it could not be checked.
+We checked two of three reverse dependencies (timetk, modeltime), comparing R CMD check results across CRAN and dev versions of this package. We saw 0 new problems.
+
+One reverse dependency (pmartR) could not be installed as it was not found on CRAN and we could not build from source, so it could not be checked.
