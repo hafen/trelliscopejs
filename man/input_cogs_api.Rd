@@ -8,8 +8,8 @@ input_cogs_api(
   ...,
   set_url,
   get_url,
-  get_request_options = list(mode = "cors", method = "GET", headers =
-    list(`Content-Type` = "application/json", Accept = "application/json")),
+  get_request_options = list(mode = "cors", method = "GET", headers = list(`Content-Type`
+    = "application/json", Accept = "application/json")),
   set_request_options = list(mode = "cors", method = "POST", headers =
     list(`Content-Type` = "application/json", Accept = "application/json"))
 )

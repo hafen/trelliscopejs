@@ -306,7 +306,8 @@ get_cog_info <- function(x, inputs = NULL) {
 
   tmp <- lapply(seq_len(nrow(cog_info)), function(i) {
     res <- as.list(cog_info[i, ])
-    if (res$type == "factor" && length(unique(x[[res$name]])) <= 5000) {
+    # if (res$type == "factor" && length(unique(x[[res$name]])) <= 5000) {
+    if (res$type == "factor") {
       res$levels <- unique(x[[res$name]])
       res$levels[is.na(res$levels)] <- "NA"
     }

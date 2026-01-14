@@ -1,5 +1,10 @@
 utils::globalVariables(c(".", "x", "y", "label"))
 
+#' @keywords internal
+"_PACKAGE"
+
+## usethis namespace: start
+## usethis namespace: end
 #' trelliscopejs
 #'
 #' Create interactive Trelliscope displays
@@ -9,7 +14,6 @@ utils::globalVariables(c(".", "x", "y", "label"))
 #' @name trelliscopejs-package
 #' @examples
 #' help(package = trelliscopejs)
-#' @docType package
 NULL
 
 #' Labels for ggplot2 "mpg" data

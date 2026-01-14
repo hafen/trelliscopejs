@@ -10,3 +10,6 @@ _test
 inst/doc
 _gh-pages
 *.code-workspace
+^revdep$
+^\.github$
+^CRAN-SUBMISSION$

@@ -1,12 +1,13 @@
-Resubmission:
+## Release summary
 
-Addressed possibly invalid URL corrections requests.
+Updates since last release:
+
+- Updated use of a ggplot2 S3 generic to be compatible with an upcoming ggplot2 release.
 
 ## Test environments
 
-* local OS X install, R 4.0.3
-* ubuntu 16.04 (on travis-ci), R 4.0.2
-* Windows R (on Appveyor) R 4.0.3
+* local OS X install, R 4.5.1
+* ubuntu 24.04.2 (on GitHub Actions), R 4.5.1
 * win-builder (devel and release)
 
 ## R CMD check results
@@ -15,4 +16,6 @@ Addressed possibly invalid URL corrections requests.
 
 ## Reverse dependencies
 
-There are no reverse dependencies.
+We checked two of three reverse dependencies (timetk, modeltime), comparing R CMD check results across CRAN and dev versions of this package. We saw 0 new problems.
+
+One reverse dependency (pmartR) could not be installed as it was not found on CRAN and we could not build from source, so it could not be checked.

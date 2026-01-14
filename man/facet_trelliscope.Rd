@@ -90,6 +90,8 @@ facet_trelliscope(
 
 \item{disclaimer}{an optional string of html to include as a disclaimer for the set of displays}
 
+\item{update_plots}{should the plots be updated? This is to allow slight updates to the underlying display data without the need to re-render all of the plots. Use it carefully.}
+
 \item{auto_cog}{should auto cogs be computed (if possible)?}
 
 \item{split_layout}{boolean that determines if the layout is split into components like a facet_grid vs. individual panels like facet_wrap.  Only applies to ggplot2 plot objects.}

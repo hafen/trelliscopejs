@@ -485,7 +485,7 @@ cog_df_info <- function(x, panel_col, state, auto_cog = FALSE, nested_data_list 
 
 #' Create a cognostics template that can be edited and used to specify
 #' cognostics in a display
-#' #' @param x a data frame that will be used as an input for the
+#' @param x a data frame that will be used as an input for the
 #' trelliscope display. If NULL, a blank template will be created.
 #'
 #' @note The input `x` can be a starting point and does not need to

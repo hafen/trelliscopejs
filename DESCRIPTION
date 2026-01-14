@@ -1,6 +1,6 @@
 Package: trelliscopejs
 Title: Create Interactive Trelliscope Displays
-Version: 0.2.10
+Version: 0.2.11
 Authors@R: c(
     person(given = "Ryan",
            family = "Hafen",
@@ -48,7 +48,7 @@ Suggests:
     rmarkdown,
     shiny,
     housingData
-RoxygenNote: 7.1.2
+RoxygenNote: 7.3.2
 URL: https://hafen.github.io/trelliscopejs/, https://github.com/hafen/trelliscopejs
 BugReports: https://github.com/hafen/trelliscopejs/issues
 VignetteBuilder: knitr
